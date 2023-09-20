@@ -1,0 +1,8 @@
+[+] allocated buffer
+[+] allocated lexem!
+Linha: 1 - Lexema: 123 - Token: NUM
+Linha: 2 - Lexema: int - Token: INT
+Linha: 3 - Lexema: 33 - Token: NUM
+Linha: 3 - Lexema: 32 - Token: NUM
+Linha: 3 - Lexema: float - Token: FLOAT
+Linha: 3 - Lexema: 2 - Token: NUM
