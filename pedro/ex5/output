@@ -1,0 +1,35 @@
+[+] allocated buffer
+[+] allocated lexem!
+Linha: 6 - Lexema: read - Token: READ
+Linha: 6 - Lexema: x - Token: IDENTIFIER
+Linha: 6 - Lexema: ; - Token: SPECIAL CHAR
+Linha: 8 - Lexema: if - Token: IF
+Linha: 8 - Lexema: 0 - Token: DIGIT
+Linha: 8 - Lexema: < - Token: SPECIAL CHAR
+Linha: 8 - Lexema: x - Token: IDENTIFIER
+Linha: 8 - Lexema: then - Token: THEN
+Linha: 9 - Lexema: fact - Token: IDENTIFIER
+Linha: 9 - Lexema: := - Token: ATRIBUITTION
+Linha: 9 - Lexema: 1 - Token: DIGIT
+Linha: 9 - Lexema: ; - Token: SPECIAL CHAR
+Linha: 10 - Lexema: repeat - Token: REPEAT
+Linha: 11 - Lexema: fact - Token: IDENTIFIER
+Linha: 11 - Lexema: := - Token: ATRIBUITTION
+Linha: 11 - Lexema: fact - Token: IDENTIFIER
+Linha: 11 - Lexema: * - Token: SPECIAL CHAR
+Linha: 11 - Lexema: x - Token: IDENTIFIER
+Linha: 11 - Lexema: ; - Token: SPECIAL CHAR
+Linha: 12 - Lexema: x - Token: IDENTIFIER
+Linha: 12 - Lexema: := - Token: ATRIBUITTION
+Linha: 12 - Lexema: x - Token: IDENTIFIER
+Linha: 12 - Lexema: - - Token: SPECIAL CHAR
+Linha: 12 - Lexema: 1 - Token: DIGIT
+Linha: 14 - Lexema: until - Token: UNTIL
+Linha: 14 - Lexema: x - Token: IDENTIFIER
+Linha: 14 - Lexema: = - Token: SPECIAL CHAR
+Linha: 14 - Lexema: 0 - Token: DIGIT
+Linha: 14 - Lexema: ; - Token: SPECIAL CHAR
+Linha: 16 - Lexema: write - Token: WRITE
+Linha: 16 - Lexema: f - Token: IDENTIFIER
+Linha: 16 - Lexema: act - Token: IDENTIFIER
+Linha: 18 - Lexema: end - Token: END
