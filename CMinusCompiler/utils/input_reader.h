@@ -2,6 +2,7 @@
 #define INPUT_READER_H
 
 #include <stdlib.h>
+#include <stdio.h>
 #include "types.h"
 
 /* Put it here since its related to input size, not buffer structure itself. */
