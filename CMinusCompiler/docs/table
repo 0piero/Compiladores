@@ -1,0 +1,5 @@
+     |             CHAR TYPE               |
+STATE| CHAR (0) | NUMBER (1) | SPECIAL (2) |
+  S0 |    S1    |    S2      |    S3       |
+  S1 |    ??    |    ??      |    ??       |
+  S2 |    --    |    S2      |    --       |
