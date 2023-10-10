@@ -1,7 +1,7 @@
 #include <stdio.h>
-#include "./utils/input_reader.c"
-#include "./utils/char_type_checker.c"
-#include "./tests/tests.c"
+#include "./utils/input_reader.h"
+#include "./utils/char_type_checker.h"
+#include "./tests/tests.h"
 
 int main(){
 
