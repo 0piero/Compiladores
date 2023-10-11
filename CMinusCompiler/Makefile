@@ -7,7 +7,6 @@ MAIN = $(SRC_MAIN:.c=.o)
 CFLAGS = -Wall
 
 all: $(OBJ) $(MAIN)
-	$(MAKE) -C utils
 	$(CC) -o $(TARGET) $(OBJ) $(MAIN) $(CFLAGS)
 
 %.o: %.c
@@ -15,5 +14,5 @@ all: $(OBJ) $(MAIN)
 
 clean:
 	rm *.o
+	rm */*.o
 	rm main
-	rm main.exe
