@@ -8,12 +8,14 @@ int main(){
 
     FILE *fp = fopen("input.txt", "r");
     input_buffer input_buff = create_and_allocate_buffer();
-    table dfa_table = create_and_allocate_table();
+    // table dfa_table = create_and_allocate_table();
 
     test_char_type_checker();
+    test_input_reader();
+    test_table();
 
     /* Initial state  */
-    int state = 0; 
+    // int state = 0; 
 
     do {
         char * p_str = fgets(input_buff.word_buffer, BUFFER_SIZE, fp);

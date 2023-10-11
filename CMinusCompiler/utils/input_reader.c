@@ -13,7 +13,7 @@ input_buffer create_and_allocate_buffer(){
     buff.curr_line = 1;
     buff.word_buffer = (char*) malloc(BUFFER_SIZE);
     clear_buffer(buff);
-    printf("[+] allocated buffer\n");
+    // printf("[+] allocated buffer\n");
     return buff;
 }
 
