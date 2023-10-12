@@ -2,3 +2,4 @@
 *.o
 .vscode/*
 main
+input.txt
