@@ -1,6 +1,13 @@
 #include <stdio.h>
 #include "tests.h"
 
+void run_tests(){
+    test_char_type_checker();
+    test_input_reader();
+    test_table();
+    printf("\n");
+}
+
 void test_char_type_checker(){
     if(
         is_special_char('/') &&
@@ -43,7 +50,7 @@ void test_input_reader(){
 
 void test_table(){
     if(
-       create_and_allocate_table()
+       create_and_allocate_table(3, 3)
     ) {
         printf("[+] test_table: PASS!\n");
         return;
