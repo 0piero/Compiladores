@@ -2,6 +2,7 @@
 #define TABLE_H
 
 #include <stdlib.h>
+#include "generic_types.h"
 
 #define DIGIT_COL 0
 #define CHAR_COL 1
@@ -10,8 +11,6 @@
 #define SA 999
 
 int TABLE_NUM_COLUMNS;
-
-typedef int** table;
 
 int **create_and_allocate_table(int num_states, int num_chrs);
 void default_table_init(table tbl);
