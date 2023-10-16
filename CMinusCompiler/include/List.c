@@ -7,7 +7,7 @@ typedef struct List List;
 
 Node* list_getittem(List* l, int idx){
 	int i;
-	Node* nod; Node* p = l->head;
+	Node* p = l->head;
 	for(i=0;i<idx;i++){
 		p = p->next;
 	}
