@@ -64,9 +64,13 @@ int get_current_char_idx(char c, int state){
             if(is_alpha(c)) return CHAR_COL;
             if(!is_alpha(c)) return DIGIT_COL; // Estado de aceitação
         case 3:
-            if(is_special_symbol(previous_symbol, c)) return SYMBOL_COL; // Estado de aceitação
-            if(!is_special_char(c)) return DIGIT_COL; // Estado de aceitação
-            if(is_special_char(c)) return DIGIT_COL; // Estado de aceitação
+            if(is_special_symbol(previous_symbol, c)) return SYMBOL_COL; 
+            /* Estados de aceitação 
+            Deixei assim para ressaltar casos de dois simbolos seguidos,
+            que para o compilador é errado, mas para o lexer não necessariamente.
+            */
+            if(!is_special_char(c)) return DIGIT_COL;
+            if(is_special_char(c)) return DIGIT_COL;
     }
 
     return -1; // Retorna -1 porque não deveria chegar neste ponto.
