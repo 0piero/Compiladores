@@ -29,7 +29,7 @@ void test_char_type_checker(){
 }
 
 void test_input_reader(){
-    input_buffer buffer = create_and_allocate_buffer();
+    input_buffer buffer = create_and_allocate_input_buffer();
     buffer.word_buffer[0] = 'a';
 
     char c = get_next_char(&buffer, TRUE, TRUE);

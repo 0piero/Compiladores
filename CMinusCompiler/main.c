@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "./utils/input_reader.h"
+#include "./utils/lexem.h"
 #include "./utils/char_type_checker.h"
 #include "./utils/table.h"
 #include "./tests/tests.h"
@@ -10,7 +11,8 @@ int main(){
     run_tests();
 
     FILE *fp = fopen("input.txt", "r");
-    input_buffer input_buff = create_and_allocate_buffer();
+    input_buffer input_buff = create_and_allocate_input_buffer();
+    lexem_buffer lexem_buff = create_and_allocate_lexem_buffer();
     table dfa_table = create_and_allocate_table(4, 4);
     default_table_init(dfa_table);
 
@@ -43,18 +45,18 @@ int main(){
             if(curr_char=='\0') state = SA;
 
             if(state == SA){
-                printf("Lex accepted!\n");
+                print_lexem(&lexem_buff);
                 state = 0;
                 input_buff.curr_char_pos--; // Funciona como um não inclui [other], manter o continue.
                 if(curr_char == '\0') return 0;
                 continue;
             }
 
-            printf("Char: %c Line: %d State: %d CharIdx: %d\n", curr_char, input_buff.curr_line, state, curr_char_idx);
+            update_lexem_buffer(&lexem_buff, curr_char, input_buff.curr_line, state);        
         }
 
         input_buff.curr_char_pos = 0;
-        clear_buffer(input_buff);
+        clear_input_buffer(input_buff);
         if(!p_str) break;
     } while(1);
 
