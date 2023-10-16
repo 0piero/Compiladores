@@ -5,6 +5,7 @@ void run_tests(){
     test_char_type_checker();
     test_input_reader();
     test_table();
+    test_lexem();
     printf("\n");
 }
 
@@ -57,6 +58,25 @@ void test_table(){
     }
     else {
         printf("[-] test_table: FAIL!\n");
+        exit(1);
+    }
+}
+
+void test_lexem(){
+    lexem_buffer buffer = create_and_allocate_lexem_buffer();
+    update_lexem_buffer (&buffer, 'a', 1, 1);
+    
+    if(
+        buffer.word_buffer[0] == 'a' &&
+        buffer.curr_char_pos &&
+        buffer.curr_line == 1 &&
+        buffer.token == 1
+    ) {
+        printf("[+] test_lexem: PASS!\n");
+        return;
+    }
+    else {
+        printf("[-] test_lexem: FAIL!\n");
         exit(1);
     }
 }
