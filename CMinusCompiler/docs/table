@@ -1,8 +1,0 @@
-     |             CHAR TYPE               |
-STATE| NUMBER (1) | CHAR (2) | SPECIAL (3) |
-  S0 |    S1      |    S2    |    S3       |
-  S1 |    S1      |    SA    |    SA       |
-  S2 |    SA      |    S2    |    SA       |
-
-
-SA -> Acception state

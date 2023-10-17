@@ -8,12 +8,12 @@
 
 int main(){
 
-    run_tests();
+    // run_tests();
 
     FILE *fp = fopen("input.txt", "r");
     input_buffer input_buff = create_and_allocate_input_buffer();
     lexem_buffer lexem_buff = create_and_allocate_lexem_buffer();
-    table dfa_table = create_and_allocate_table(4, 4);
+    table dfa_table = create_and_allocate_table(7, 7);
     default_table_init(dfa_table);
 
     /* Initial state  */
@@ -39,7 +39,15 @@ int main(){
 
             curr_char_idx = get_current_char_idx(curr_char, state);
 
-            // printf("Previous state: %d\n", state);
+            if(curr_char_idx == -1){
+                state = 0;
+                lexem_buff.curr_char_pos = 0;
+                clear_lexem_buffer(lexem_buff);
+                input_buff.curr_char_pos--; // Funciona como um não inclui [other], manter o continue.
+                continue;
+            }
+
+            // printf("Previous state: %d - %d - %c\n", state,curr_char_idx, curr_char);
 
             state = dfa_table[state][curr_char_idx];
             if(curr_char=='\0') state = SA;

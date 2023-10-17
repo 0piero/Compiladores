@@ -41,8 +41,20 @@ boolean is_special_symbol(char first_char, char second_char){
         (first_char == '<' && second_char == '=') ||
         (first_char == '>' && second_char == '=') ||
         (first_char == '=' && second_char == '=') ||
-        (first_char == '!' && second_char == '=') ||
-        (first_char == '/' && second_char == '*') ||
+        (first_char == '!' && second_char == '=') 
+    ) return TRUE;
+    return FALSE;
+}
+
+boolean is_open_comment(char first_char, char second_char){
+    if(
+        (first_char == '/' && second_char == '*')
+    ) return TRUE;
+    return FALSE;
+}
+
+boolean is_close_comment(char first_char, char second_char){
+    if(
         (first_char == '*' && second_char == '/')
     ) return TRUE;
     return FALSE;
@@ -65,12 +77,26 @@ int get_current_char_idx(char c, int state){
             if(!is_alpha(c)) return DIGIT_COL; // Estado de aceitação
         case 3:
             if(is_special_symbol(previous_symbol, c)) return SYMBOL_COL; 
+            if(is_open_comment(previous_symbol, c)) return CHAR_COL;  // reaproveitando espaco da tabela
             /* Estados de aceitação 
             Deixei assim para ressaltar casos de dois simbolos seguidos,
             que para o compilador é errado, mas para o lexer não necessariamente.
             */
             if(!is_special_char(c)) return DIGIT_COL;
             if(is_special_char(c)) return DIGIT_COL;
+         case 4:
+            if(is_special_symbol(previous_symbol, c)) return DIGIT_COL; // Estado de aceitação
+            if(!is_special_char(c)) return DIGIT_COL; // Estado de aceitação
+            if(is_special_char(c)) return DIGIT_COL; // Estado de aceitação
+        case 5:
+            if(c == '*') {
+                previous_symbol = c;
+                return SYMBOL_COL;
+            }
+            else return DIGIT_COL;
+        case 6:
+            if(is_close_comment(previous_symbol, c)) return SYMBOL_COL;
+            else return DIGIT_COL;
     }
 
     return -1; // Retorna -1 porque não deveria chegar neste ponto.

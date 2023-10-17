@@ -1,0 +1,16 @@
+     |             CHAR TYPE               |
+STATE| NUMBER (1) | CHAR (2) | SPECIAL (3) |
+  S0 |    S1      |    S2    |    S3       |
+  S1 |    S1      |    SA    |    SA       |
+  S2 |    SA      |    S2    |    SA       |
+  S3 |    SA      |    S5    |   *S4|S5*   |  SIMBOLOS-1
+  S4 |    SA      |    SA    |    SA       |  SIMBOLOS-2
+  S5 |    S5      |    S5    |  * -> S6    |  COMENTARIOS
+  S6 |    S5      |    S5    |  / -> -1    |  COMENTARIOS
+
+SA -> Acception state
+
+OBS:
+
+S3* Estas transições checam somente por SIMBOLOS-2 válidos e abertura de comentários.
+    S5 em CHAR é usado somente para reaproveitar espaco

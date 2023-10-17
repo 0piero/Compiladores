@@ -29,8 +29,24 @@ void default_table_init(table tbl){
 
   /* S3 */
   insert_transition_table(3, DIGIT_COL ,  SA, tbl);
-  insert_transition_table(3, CHAR_COL  ,  SA, tbl);
-  insert_transition_table(3, SYMBOL_COL,   3, tbl);
+  insert_transition_table(3, CHAR_COL  ,   5, tbl);
+  insert_transition_table(3, SYMBOL_COL,   4, tbl);
+
+  /* S4 */
+  insert_transition_table(4, DIGIT_COL ,  SA, tbl);
+  insert_transition_table(4, CHAR_COL  ,  SA, tbl);
+  insert_transition_table(4, SYMBOL_COL,  SA, tbl);
+
+  /* S5 */
+  insert_transition_table(5, DIGIT_COL ,  5, tbl);
+  insert_transition_table(5, CHAR_COL  ,  5, tbl);
+  insert_transition_table(5, SYMBOL_COL,  6, tbl);
+
+  /* S6 */
+  insert_transition_table(6, DIGIT_COL ,   5, tbl);
+  insert_transition_table(6, CHAR_COL  ,   5, tbl);
+  insert_transition_table(6, SYMBOL_COL,   -1, tbl);
+
 }
 
 void insert_transition_table(int from_state_num, int char_idx_trns, int to_state_num, table tbl){
