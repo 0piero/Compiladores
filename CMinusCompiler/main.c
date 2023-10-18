@@ -13,7 +13,7 @@ int main(){
     FILE *fp = fopen("input.txt", "r");
     input_buffer input_buff = create_and_allocate_input_buffer();
     lexem_buffer lexem_buff = create_and_allocate_lexem_buffer();
-    table dfa_table = create_and_allocate_table(7, 7);
+    table dfa_table = create_and_allocate_table(9, 7);
     default_table_init(dfa_table);
 
     /* Initial state  */
@@ -38,25 +38,26 @@ int main(){
             */
 
             curr_char_idx = get_current_char_idx(curr_char, state);
-
-            if(curr_char_idx == -1){
-                state = 0;
-                lexem_buff.curr_char_pos = 0;
-                clear_lexem_buffer(lexem_buff);
-                input_buff.curr_char_pos--; // Funciona como um não inclui [other], manter o continue.
-                continue;
+            
+            if(curr_char_idx == INVALID_CHAR){
+                printf("ERRO LÉXICO: %c", curr_char);
+                printf("LINHA: %d", input_buff.curr_line);
+                exit(1);                
             }
 
-            // printf("Previous state: %d - %d - %c\n", state,curr_char_idx, curr_char);
-
             state = dfa_table[state][curr_char_idx];
-            if(curr_char=='\0') state = SA;
 
             if(state == SA){
                 print_lexem(&lexem_buff);
                 state = 0;
                 input_buff.curr_char_pos--; // Funciona como um não inclui [other], manter o continue.
                 if(curr_char == '\0') return 0;
+                continue;
+            }
+            if (state == 0){
+                printf("<CLEAR>\n");
+                lexem_buff.curr_char_pos = 0;
+                clear_lexem_buffer(lexem_buff);
                 continue;
             }
 

@@ -25,7 +25,7 @@ void update_lexem_buffer(lexem_buffer *lexem_buff, char curr_char, int curr_line
 }
 
 void print_lexem(lexem_buffer *lexem_buff){
-    printf("Line: %d Token: %d Lexem: %s\n", lexem_buff->curr_line, lexem_buff->token, lexem_buff->word_buffer);
+    printf("Line: %d Token: %d Lexem: [%s]\n", lexem_buff->curr_line, lexem_buff->token, lexem_buff->word_buffer);
     lexem_buff->curr_char_pos = 0;
     clear_lexem_buffer(*lexem_buff);
 }
