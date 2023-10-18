@@ -1,4 +1,5 @@
 123abc456
 ;=====
 /* abc*xy   z*/
-abc
+abc;
+if

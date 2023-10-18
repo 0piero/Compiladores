@@ -5,12 +5,15 @@
 #include "generic_types.h"
 
 #define DIGIT_COL 0
-#define CHAR_COL 1
+#define CHAR_GRP1_COL 1
 #define SYMBOL1_COL 2
 #define SYMBOL2_COL 3
 #define BAR_COL 4
 #define STAR_COL 5
 #define EQUAL_SGN_COL 6
+#define CHAR_OTHER_COL 7
+#define I_CHAR_COL 8
+#define F_CHAR_COL 9
 
 #define SA 999
 
