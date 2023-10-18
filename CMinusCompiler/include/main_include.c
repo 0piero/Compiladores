@@ -2,7 +2,7 @@
 #include "libs.h"
 #include <math.h>
 
-int main(int argc, char** argv){
+int main_include(int argc, char** argv){
 	int i;
 	time_t t;
 	srand((unsigned) time(&t));
