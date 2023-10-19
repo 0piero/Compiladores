@@ -1,1 +1,3 @@
-void abc();
+while(1){
+    int abc;
+}

@@ -25,6 +25,9 @@
 #define V_CHAR_COL 18
 #define O_CHAR_COL 19
 #define D_CHAR_COL 20
+#define W_CHAR_COL 21
+#define H_CHAR_COL 22
+
 
 #define SA 999
 

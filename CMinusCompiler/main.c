@@ -13,7 +13,7 @@ int main(){
     FILE *fp = fopen("input.txt", "r");
     input_buffer input_buff = create_and_allocate_input_buffer();
     lexem_buffer lexem_buff = create_and_allocate_lexem_buffer();
-    table dfa_table = create_and_allocate_table(27, 19); // (row, col)
+    table dfa_table = create_and_allocate_table(31, 21); // (row, col)
     default_table_init(dfa_table);
 
     /* Initial state  */

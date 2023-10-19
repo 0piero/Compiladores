@@ -23,6 +23,8 @@ boolean is_u_char(char curr_char);
 boolean is_v_char(char curr_char);
 boolean is_o_char(char curr_char);
 boolean is_d_char(char curr_char);
+boolean is_w_char(char curr_char);
+boolean is_h_char(char curr_char);
 
 boolean is_special_char(char curr_char);
 boolean is_special_symbol(char first_char, char second_char);
