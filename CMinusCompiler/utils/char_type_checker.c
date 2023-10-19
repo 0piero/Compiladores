@@ -49,6 +49,16 @@ boolean is_s_char(char curr_char){
     return FALSE;
 }
 
+boolean is_n_char(char curr_char){
+    if(curr_char == 'n') return TRUE;
+    return FALSE;
+}
+
+boolean is_t_char(char curr_char){
+    if(curr_char == 't') return TRUE;
+    return FALSE;
+}
+
 boolean is_special_char(char curr_char){
     if(
         curr_char == '+' ||
@@ -163,6 +173,7 @@ int get_current_char_idx(char c, int state){
     if (!is_valid(c)) return INVALID_CHAR;
     switch (state){
         case 0:
+            if(is_white(c)) return WHITE_SPACE_COL;
             if(is_digit(c)) return DIGIT_COL;
             if(is_alpha_grp1(c)) return CHAR_GRP1_COL;
             if(is_i_char(c)){
@@ -202,6 +213,10 @@ int get_current_char_idx(char c, int state){
                 add_digit_code('0');
                 return F_CHAR_COL;
             } 
+            if(is_n_char(c)){ // Palavra reservada INT
+                add_digit_code('1');
+                return N_CHAR_COL;
+            } 
             if(is_alpha(c)) return CHAR_GRP1_COL; // ID que ainda não terminou (exemploe: iABC)
             return DIGIT_COL; // ID que terminou (exemplo: i%)
         case 9:
@@ -230,6 +245,17 @@ int get_current_char_idx(char c, int state){
             if(is_alpha(c)) return CHAR_GRP1_COL; // ID que ainda não terminou (exemploe: iABC)
             return DIGIT_COL; // ID que terminou (exemplo: i%)
         case 13:
+            if(is_alpha(c)) return CHAR_GRP1_COL;
+            add_digit_code('0');
+            return DIGIT_COL;
+        case 14:
+            if(is_t_char(c)){ // Palavra reservada INT
+                add_digit_code('1');
+                return T_CHAR_COL;
+            } 
+            if(is_alpha(c)) return CHAR_GRP1_COL; // ID que ainda não terminou (exemploe: iABC)
+            return DIGIT_COL; // ID que terminou (exemplo: i%)
+        case 15:
             if(is_alpha(c)) return CHAR_GRP1_COL;
             add_digit_code('0');
             return DIGIT_COL;

@@ -1,6 +1,1 @@
-123abc456
-;=====
-/* abc*xy   z*/
-abc;
-if(1);
-else;
+int abc = 1;

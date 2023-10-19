@@ -5,12 +5,18 @@
 #include "table.h"
 #include "code.h"
 #define INVALID_CHAR -1
+#define WHITE_SPACE_CHAR -2
 
 boolean is_digit(char curr_char);
 boolean is_alpha(char curr_char);
 boolean is_alpha_grp1(char curr_char);
 boolean is_i_char(char curr_char);
 boolean is_f_char(char curr_char);
+boolean is_e_char(char curr_char);
+boolean is_l_char(char curr_char);
+boolean is_s_char(char curr_char);
+boolean is_n_char(char curr_char);
+boolean is_t_char(char curr_char);
 boolean is_special_char(char curr_char);
 boolean is_special_symbol(char first_char, char second_char);
 boolean is_special_char_grp1(char curr_char);

@@ -13,7 +13,7 @@ int main(){
     FILE *fp = fopen("input.txt", "r");
     input_buffer input_buff = create_and_allocate_input_buffer();
     lexem_buffer lexem_buff = create_and_allocate_lexem_buffer();
-    table dfa_table = create_and_allocate_table(15, 12); // (row, col)
+    table dfa_table = create_and_allocate_table(17, 14); // (row, col)
     default_table_init(dfa_table);
 
     /* Initial state  */
@@ -59,7 +59,7 @@ int main(){
                 continue;
             }
             if (state == 0){
-                printf("<CLEAR>\n");
+                // printf("<CLEAR>\n");
                 lexem_buff.curr_char_pos = 0;
                 clear_lexem_buffer(lexem_buff);
                 reset_code();
