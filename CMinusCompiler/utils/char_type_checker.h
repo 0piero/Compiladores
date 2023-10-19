@@ -3,10 +3,14 @@
 
 #include "generic_types.h"
 #include "table.h"
+#include "code.h"
 #define INVALID_CHAR -1
 
 boolean is_digit(char curr_char);
 boolean is_alpha(char curr_char);
+boolean is_alpha_grp1(char curr_char);
+boolean is_i_char(char curr_char);
+boolean is_f_char(char curr_char);
 boolean is_special_char(char curr_char);
 boolean is_special_symbol(char first_char, char second_char);
 boolean is_special_char_grp1(char curr_char);

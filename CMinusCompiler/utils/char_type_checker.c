@@ -1,5 +1,6 @@
 #include "char_type_checker.h"
 #include <ctype.h>
+#include <stdio.h>
 
 boolean is_digit(char curr_char){
     if(isdigit(curr_char)) return TRUE;
@@ -11,7 +12,24 @@ boolean is_alpha(char curr_char){
     return FALSE;
 }
 
-/* Single char symbols */
+boolean is_alpha_grp1(char curr_char){
+    if(
+        isalpha(curr_char) && 
+        curr_char != 'i'
+    ) return TRUE;
+    return FALSE;
+}
+
+boolean is_i_char(char curr_char){
+    if(curr_char == 'i') return TRUE;
+    return FALSE;
+}
+
+boolean is_f_char(char curr_char){
+    if(curr_char == 'f') return TRUE;
+    return FALSE;
+}
+
 boolean is_special_char(char curr_char){
     if(
         curr_char == '+' ||
@@ -88,6 +106,7 @@ boolean is_white(char curr_char){
         ) return TRUE;
     return FALSE;
 }
+
 boolean is_valid(char curr_char){
     if (is_white(curr_char)) return TRUE;
     if (is_alpha(curr_char)) return TRUE;
@@ -126,15 +145,19 @@ int get_current_char_idx(char c, int state){
     switch (state){
         case 0:
             if(is_digit(c)) return DIGIT_COL;
-            if(is_alpha(c)) return CHAR_COL;
+            if(is_alpha_grp1(c)) return CHAR_GRP1_COL;
+            if(is_i_char(c)){
+                add_digit_code('2');
+                return I_CHAR_COL;
+            }
             if(is_special_char_grp1(c)) return SYMBOL1_COL; // vai pra S3
             if(is_special_char_grp2(c)) return SYMBOL2_COL; // vai pra S4
             if(is_right_bar(c)) return BAR_COL; // vai pra S5
         case 1:
             if(is_digit(c)) return DIGIT_COL;
-            if(!is_digit(c)) return CHAR_COL; // Estado de aceitação
+            if(!is_digit(c)) return CHAR_GRP1_COL; // Estado de aceitação
         case 2:
-            if(is_alpha(c)) return CHAR_COL;
+            if(is_alpha(c)) return CHAR_GRP1_COL;
             if(!is_alpha(c)) return DIGIT_COL; // Estado de aceitação
         case 3:
             return DIGIT_COL; // qualquer character vai p aceitacao
@@ -151,5 +174,17 @@ int get_current_char_idx(char c, int state){
             if(is_right_bar(c)) return BAR_COL; //vai pra S0
             if(is_star(c)) return STAR_COL;
             return DIGIT_COL;
+        case 8:
+            if(is_f_char(c)){ // Palavra reservada IF
+                add_digit_code('0');
+                return F_CHAR_COL;
+            } 
+            if(is_alpha(c)) return CHAR_GRP1_COL; // ID que ainda não terminou (exemploe: iABC)
+            return DIGIT_COL; // ID que terminou (exemplo: i%)
+        case 9:
+            if(is_alpha(c)) return CHAR_GRP1_COL;
+            add_digit_code('0');
+            return DIGIT_COL;
     }
+    return -1;
 }
