@@ -14,6 +14,9 @@
 #define CHAR_OTHER_COL 7
 #define I_CHAR_COL 8
 #define F_CHAR_COL 9
+#define E_CHAR_COL 10
+#define L_CHAR_COL 11
+#define S_CHAR_COL 12
 
 #define SA 999
 
