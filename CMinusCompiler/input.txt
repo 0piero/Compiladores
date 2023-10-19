@@ -1,2 +1,1 @@
-int abc = 1;
-return abc;
+void abc();

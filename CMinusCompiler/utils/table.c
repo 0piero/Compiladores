@@ -21,6 +21,7 @@ void default_table_init(table tbl){
   insert_transition_table(0, I_CHAR_COL, 8, tbl);
   insert_transition_table(0, E_CHAR_COL, 10, tbl);
   insert_transition_table(0, R_CHAR_COL, 16, tbl);
+  insert_transition_table(0, V_CHAR_COL, 22, tbl);
 
   /* S1 */
   insert_transition_table(1, DIGIT_COL ,   1, tbl);
@@ -116,6 +117,25 @@ void default_table_init(table tbl){
   /* S21 */
   insert_transition_table(21, CHAR_GRP1_COL,  2, tbl);
   insert_transition_table(21, DIGIT_COL    , SA, tbl);
+
+  /* S22 */
+  insert_transition_table(22, O_CHAR_COL   ,  23, tbl);
+  insert_transition_table(22, CHAR_GRP1_COL, 2, tbl);
+  insert_transition_table(22, DIGIT_COL    , SA, tbl);
+
+  /* S23 */
+  insert_transition_table(23, I_CHAR_COL   ,  24, tbl);
+  insert_transition_table(23, CHAR_GRP1_COL, 2, tbl);
+  insert_transition_table(23, DIGIT_COL    , SA, tbl);
+
+  /* S24 */
+  insert_transition_table(24, D_CHAR_COL   ,  25, tbl);
+  insert_transition_table(24, CHAR_GRP1_COL, 2, tbl);
+  insert_transition_table(24, DIGIT_COL    , SA, tbl);
+
+  /* S25 */
+  insert_transition_table(25, CHAR_GRP1_COL,  2, tbl);
+  insert_transition_table(25, DIGIT_COL    , SA, tbl);
 }
 
 void insert_transition_table(int from_state_num, int char_idx_trns, int to_state_num, table tbl){

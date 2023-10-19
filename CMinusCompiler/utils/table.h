@@ -22,6 +22,9 @@
 #define WHITE_SPACE_COL 15
 #define R_CHAR_COL 16
 #define U_CHAR_COL 17
+#define V_CHAR_COL 18
+#define O_CHAR_COL 19
+#define D_CHAR_COL 20
 
 #define SA 999
 

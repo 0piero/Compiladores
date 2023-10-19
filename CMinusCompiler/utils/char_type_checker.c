@@ -69,6 +69,21 @@ boolean is_u_char(char curr_char){
     return FALSE;
 }
 
+boolean is_v_char(char curr_char){
+    if(curr_char == 'v') return TRUE;
+    return FALSE;
+}
+
+boolean is_o_char(char curr_char){
+    if(curr_char == 'o') return TRUE;
+    return FALSE;
+}
+
+boolean is_d_char(char curr_char){
+    if(curr_char == 'd') return TRUE;
+    return FALSE;
+}
+
 boolean is_special_char(char curr_char){
     if(
         curr_char == '+' ||
@@ -194,9 +209,13 @@ int get_current_char_idx(char c, int state){
                 add_digit_code('1');
                 return E_CHAR_COL;
             }
-             if(is_r_char(c)){
+            if(is_r_char(c)){
                 add_digit_code('4');
                 return R_CHAR_COL;
+            }
+            if(is_v_char(c)){
+                add_digit_code('3');
+                return V_CHAR_COL;
             }
             if(is_special_char_grp1(c)) return SYMBOL1_COL; // vai pra S3
             if(is_special_char_grp2(c)) return SYMBOL2_COL; // vai pra S4
@@ -309,6 +328,31 @@ int get_current_char_idx(char c, int state){
             if(is_alpha(c)) return CHAR_GRP1_COL; // ID que ainda não terminou (exemploe: iABC)
             return DIGIT_COL; // ID que terminou (exemplo: i%)
         case 21:
+            if(is_alpha(c)) return CHAR_GRP1_COL;
+            add_digit_code('0');
+            return DIGIT_COL;
+        case 22:
+            if(is_o_char(c)){ // Palavra reservada VOID
+                add_digit_code('0');
+                return O_CHAR_COL;
+            } 
+            if(is_alpha(c)) return CHAR_GRP1_COL; // ID que ainda não terminou (exemploe: iABC)
+            return DIGIT_COL; // ID que terminou (exemplo: i%)
+        case 23:
+            if(is_i_char(c)){ // Palavra reservada VOID
+                add_digit_code('0');
+                return I_CHAR_COL;
+            } 
+            if(is_alpha(c)) return CHAR_GRP1_COL; // ID que ainda não terminou (exemploe: iABC)
+            return DIGIT_COL; // ID que terminou (exemplo: i%)
+        case 24:
+            if(is_d_char(c)){ // Palavra reservada VOID
+                add_digit_code('2');
+                return D_CHAR_COL;
+            } 
+            if(is_alpha(c)) return CHAR_GRP1_COL; // ID que ainda não terminou (exemploe: iABC)
+            return DIGIT_COL; // ID que terminou (exemplo: i%)
+        case 25:
             if(is_alpha(c)) return CHAR_GRP1_COL;
             add_digit_code('0');
             return DIGIT_COL;
