@@ -20,6 +20,8 @@
 #define N_CHAR_COL 13
 #define T_CHAR_COL 14
 #define WHITE_SPACE_COL 15
+#define R_CHAR_COL 16
+#define U_CHAR_COL 17
 
 #define SA 999
 

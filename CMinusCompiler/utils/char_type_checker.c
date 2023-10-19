@@ -59,6 +59,16 @@ boolean is_t_char(char curr_char){
     return FALSE;
 }
 
+boolean is_r_char(char curr_char){
+    if(curr_char == 'r') return TRUE;
+    return FALSE;
+}
+
+boolean is_u_char(char curr_char){
+    if(curr_char == 'u') return TRUE;
+    return FALSE;
+}
+
 boolean is_special_char(char curr_char){
     if(
         curr_char == '+' ||
@@ -184,6 +194,10 @@ int get_current_char_idx(char c, int state){
                 add_digit_code('1');
                 return E_CHAR_COL;
             }
+             if(is_r_char(c)){
+                add_digit_code('4');
+                return R_CHAR_COL;
+            }
             if(is_special_char_grp1(c)) return SYMBOL1_COL; // vai pra S3
             if(is_special_char_grp2(c)) return SYMBOL2_COL; // vai pra S4
             if(is_right_bar(c)) return BAR_COL; // vai pra S5
@@ -256,6 +270,45 @@ int get_current_char_idx(char c, int state){
             if(is_alpha(c)) return CHAR_GRP1_COL; // ID que ainda não terminou (exemploe: iABC)
             return DIGIT_COL; // ID que terminou (exemplo: i%)
         case 15:
+            if(is_alpha(c)) return CHAR_GRP1_COL;
+            add_digit_code('0');
+            return DIGIT_COL;
+        case 16:
+            if(is_e_char(c)){ // Palavra reservada RETURN
+                add_digit_code('0');
+                return E_CHAR_COL;
+            } 
+            if(is_alpha(c)) return CHAR_GRP1_COL; // ID que ainda não terminou (exemploe: iABC)
+            return DIGIT_COL; // ID que terminou (exemplo: i%)
+        case 17:
+            if(is_t_char(c)){ // Palavra reservada RETURN
+                add_digit_code('1');
+                return T_CHAR_COL;
+            } 
+            if(is_alpha(c)) return CHAR_GRP1_COL; // ID que ainda não terminou (exemploe: iABC)
+            return DIGIT_COL; // ID que terminou (exemplo: i%)
+        case 18:
+            if(is_u_char(c)){ // Palavra reservada RETURN
+                add_digit_code('1');
+                return U_CHAR_COL;
+            } 
+            if(is_alpha(c)) return CHAR_GRP1_COL; // ID que ainda não terminou (exemploe: iABC)
+            return DIGIT_COL; // ID que terminou (exemplo: i%)
+        case 19:
+            if(is_r_char(c)){ // Palavra reservada RETURN
+                add_digit_code('0');
+                return R_CHAR_COL;
+            } 
+            if(is_alpha(c)) return CHAR_GRP1_COL; // ID que ainda não terminou (exemploe: iABC)
+            return DIGIT_COL; // ID que terminou (exemplo: i%)
+        case 20:
+            if(is_n_char(c)){ // Palavra reservada RETURN
+                add_digit_code('0');
+                return N_CHAR_COL;
+            } 
+            if(is_alpha(c)) return CHAR_GRP1_COL; // ID que ainda não terminou (exemploe: iABC)
+            return DIGIT_COL; // ID que terminou (exemplo: i%)
+        case 21:
             if(is_alpha(c)) return CHAR_GRP1_COL;
             add_digit_code('0');
             return DIGIT_COL;
