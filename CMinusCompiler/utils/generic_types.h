@@ -15,7 +15,7 @@ struct buff {
 typedef struct buff input_buffer;
 
 struct lexem {
-    int token;
+    int state;
     int curr_line;
     int curr_char_pos;
     char * word_buffer;

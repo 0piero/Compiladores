@@ -50,8 +50,8 @@ int main(){
             // printf("state-2: %d\n", state);
 
             if(state == SA){
-                printf("Code: %s ", code);
-                print_lexem(&lexem_buff);
+                // printf("Code: %d ", atoi(code));
+                print_lexem(&lexem_buff, atoi(code));
                 state = 0;
                 input_buff.curr_char_pos--; // Funciona como um não inclui [other], manter o continue.
                 reset_code();
