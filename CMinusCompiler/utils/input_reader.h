@@ -6,7 +6,6 @@
 #include "generic_types.h"
 
 
-/* Put it here since its related to input size, not buffer structure itself. */
 #define BUFFER_SIZE 32
 
 void clear_input_buffer(input_buffer buff);
