@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "./utils/input_reader.h"
 #include "./utils/lexem.h"
 #include "./utils/char_type_checker.h"
@@ -13,7 +14,7 @@ int main(){
     FILE *fp = fopen("input.txt", "r");
     input_buffer input_buff = create_and_allocate_input_buffer();
     lexem_buffer lexem_buff = create_and_allocate_lexem_buffer();
-    table dfa_table = create_and_allocate_table(31, 21); // (row, col)
+    table dfa_table = create_and_allocate_table(31, 23); // (row, col)
     default_table_init(dfa_table);
 
     /* Initial state  */
@@ -28,7 +29,7 @@ int main(){
         while(input_buff.curr_char_pos != BUFFER_SIZE - 1){
             curr_char = get_next_char(&input_buff, update_char_num, update_line_num);
             if(curr_char == '\n') break; // Caso contrário, ele cai nesse if(curr_char == '\0') return 0;
-
+            
             /* 
                 Esse trecho aqui é bem rabisco mesmo, a gente 
                 precisa pensar o jeito certinho de fazer.
@@ -55,7 +56,16 @@ int main(){
                 state = 0;
                 input_buff.curr_char_pos--; // Funciona como um não inclui [other], manter o continue.
                 reset_code();
-                if(curr_char == '\0') return 0;
+                if(curr_char == '\0') {
+                    free(lexem_buff.word_buffer);
+                    free(input_buff.word_buffer);
+                    for(int k = 0; k < 31; k++){
+                        free(dfa_table[k]);
+                    }
+                    free(dfa_table);
+                    fclose(fp);
+                    return 0;
+                }
                 continue;
             }
             if (state == 0){
@@ -74,5 +84,12 @@ int main(){
         if(!p_str) break;
     } while(1);
 
+    free(lexem_buff.word_buffer);
+    free(input_buff.word_buffer);
+    for(int k = 0; k < 31; k++){
+        free(dfa_table[k]);
+    }
+    free(dfa_table);
+    fclose(fp);
     return 0;
 }
