@@ -70,7 +70,7 @@ void test_lexem(){
         buffer.word_buffer[0] == 'a' &&
         buffer.curr_char_pos &&
         buffer.curr_line == 1 &&
-        buffer.token == 1
+        buffer.state == 1
     ) {
         printf("[+] test_lexem: PASS!\n");
         return;

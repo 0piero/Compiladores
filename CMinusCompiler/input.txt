@@ -1,5 +1,7 @@
-123abc456
-;=====
-/* abc*xy   z*/
-abc;
-if
+void func(){
+    while(1){
+        int abc;
+        if(a) return;
+        else abc = 1;
+    }
+}

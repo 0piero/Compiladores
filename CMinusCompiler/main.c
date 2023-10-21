@@ -13,7 +13,7 @@ int main(){
     FILE *fp = fopen("input.txt", "r");
     input_buffer input_buff = create_and_allocate_input_buffer();
     lexem_buffer lexem_buff = create_and_allocate_lexem_buffer();
-    table dfa_table = create_and_allocate_table(11, 9); // (row, col)
+    table dfa_table = create_and_allocate_table(31, 21); // (row, col)
     default_table_init(dfa_table);
 
     /* Initial state  */
@@ -45,13 +45,13 @@ int main(){
                 exit(1);                
             }
 
-            // printf("state-1: %d idx: %d ", state, curr_char_idx);
+            // printf("char: %c state-1: %d idx: %d ", curr_char, state, curr_char_idx);
             state = dfa_table[state][curr_char_idx];
             // printf("state-2: %d\n", state);
 
             if(state == SA){
-                printf("Code: %s ", code);
-                print_lexem(&lexem_buff);
+                // printf("Code: %d ", atoi(code));
+                print_lexem(&lexem_buff, atoi(code));
                 state = 0;
                 input_buff.curr_char_pos--; // Funciona como um não inclui [other], manter o continue.
                 reset_code();
@@ -59,7 +59,7 @@ int main(){
                 continue;
             }
             if (state == 0){
-                printf("<CLEAR>\n");
+                // printf("<CLEAR>\n");
                 lexem_buff.curr_char_pos = 0;
                 clear_lexem_buffer(lexem_buff);
                 reset_code();

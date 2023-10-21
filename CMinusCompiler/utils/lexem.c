@@ -1,4 +1,5 @@
 #include "lexem.h"
+#include "token.h"
 
 void clear_lexem_buffer(lexem_buffer buff){
     int i = 0;
@@ -9,7 +10,7 @@ void clear_lexem_buffer(lexem_buffer buff){
 
 lexem_buffer create_and_allocate_lexem_buffer(){
     lexem_buffer buff;
-    buff.token = -1;
+    buff.state = -1;
     buff.curr_line = 1;
     buff.curr_char_pos = 0;
     buff.word_buffer = (char*) malloc(LEX_BUFF_SIZE);
@@ -17,15 +18,15 @@ lexem_buffer create_and_allocate_lexem_buffer(){
     return buff;
 }
 
-void update_lexem_buffer(lexem_buffer *lexem_buff, char curr_char, int curr_line, int state){
+void update_lexem_buffer(lexem_buffer *lexem_buff, char curr_char, int curr_line, int code){
     lexem_buff->word_buffer[lexem_buff->curr_char_pos] = curr_char;
     lexem_buff->curr_line = curr_line;
-    lexem_buff->token = state;
+    lexem_buff->state = code;
     lexem_buff->curr_char_pos++;
 }
 
-void print_lexem(lexem_buffer *lexem_buff){
-    printf("Line: %d Token: %d Lexem: [%s]\n", lexem_buff->curr_line, lexem_buff->token, lexem_buff->word_buffer);
+void print_lexem(lexem_buffer *lexem_buff, int code){
+    printf("Line: %d Token: %s Lexem: [%s]\n", lexem_buff->curr_line, token_arr[code-1], lexem_buff->word_buffer);
     lexem_buff->curr_char_pos = 0;
     clear_lexem_buffer(*lexem_buff);
 }
