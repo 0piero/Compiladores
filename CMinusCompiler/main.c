@@ -14,7 +14,7 @@ int main(){
     FILE *fp = fopen("input.txt", "r");
     input_buffer input_buff = create_and_allocate_input_buffer();
     lexem_buffer lexem_buff = create_and_allocate_lexem_buffer();
-    table dfa_table = create_and_allocate_table(31, 23); // (row, col)
+    table dfa_table = create_and_allocate_table(11, 9); // (row, col)
     default_table_init(dfa_table);
 
     /* Initial state  */
@@ -39,6 +39,7 @@ int main(){
             */
 
             curr_char_idx = get_current_char_idx(curr_char, state);
+            // printf("char: %c state-1: %d idx: %d ", curr_char, state, curr_char_idx);
 
             if(curr_char_idx == INVALID_CHAR){
                 printf("ERRO LÉXICO: %c", curr_char);
@@ -46,7 +47,6 @@ int main(){
                 exit(1);                
             }
 
-            // printf("char: %c state-1: %d idx: %d ", curr_char, state, curr_char_idx);
             state = dfa_table[state][curr_char_idx];
             // printf("state-2: %d\n", state);
 
@@ -59,7 +59,7 @@ int main(){
                 if(curr_char == '\0') {
                     free(lexem_buff.word_buffer);
                     free(input_buff.word_buffer);
-                    for(int k = 0; k < 31; k++){
+                    for(int k = 0; k < 10; k++){
                         free(dfa_table[k]);
                     }
                     free(dfa_table);
@@ -86,7 +86,7 @@ int main(){
 
     free(lexem_buff.word_buffer);
     free(input_buff.word_buffer);
-    for(int k = 0; k < 31; k++){
+    for(int k = 0; k < 11; k++){
         free(dfa_table[k]);
     }
     free(dfa_table);
