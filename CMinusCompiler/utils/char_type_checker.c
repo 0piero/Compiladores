@@ -12,6 +12,88 @@ boolean is_alpha(char curr_char){
     return FALSE;
 }
 
+boolean is_alpha_grp1(char curr_char){
+    if(
+        isalpha(curr_char) && 
+        curr_char != 'i' &&
+        curr_char != 'e' &&
+        curr_char != 'r' &&
+        curr_char != 'v' &&
+        curr_char != 'w'
+    ) return TRUE;
+    return FALSE;
+}
+
+boolean is_i_char(char curr_char){
+    if(curr_char == 'i') return TRUE;
+    return FALSE;
+}
+
+boolean is_f_char(char curr_char){
+    if(curr_char == 'f') return TRUE;
+    return FALSE;
+}
+
+boolean is_e_char(char curr_char){
+    if(curr_char == 'e') return TRUE;
+    return FALSE;
+}
+
+boolean is_l_char(char curr_char){
+    if(curr_char == 'l') return TRUE;
+    return FALSE;
+}
+
+boolean is_s_char(char curr_char){
+    if(curr_char == 's') return TRUE;
+    return FALSE;
+}
+
+boolean is_n_char(char curr_char){
+    if(curr_char == 'n') return TRUE;
+    return FALSE;
+}
+
+boolean is_t_char(char curr_char){
+    if(curr_char == 't') return TRUE;
+    return FALSE;
+}
+
+boolean is_r_char(char curr_char){
+    if(curr_char == 'r') return TRUE;
+    return FALSE;
+}
+
+boolean is_u_char(char curr_char){
+    if(curr_char == 'u') return TRUE;
+    return FALSE;
+}
+
+boolean is_v_char(char curr_char){
+    if(curr_char == 'v') return TRUE;
+    return FALSE;
+}
+
+boolean is_o_char(char curr_char){
+    if(curr_char == 'o') return TRUE;
+    return FALSE;
+}
+
+boolean is_d_char(char curr_char){
+    if(curr_char == 'd') return TRUE;
+    return FALSE;
+}
+
+boolean is_w_char(char curr_char){
+    if(curr_char == 'w') return TRUE;
+    return FALSE;
+}
+
+boolean is_h_char(char curr_char){
+    if(curr_char == 'h') return TRUE;
+    return FALSE;
+}
+
 boolean is_special_char(char curr_char){
     if(
         curr_char == '+' ||
@@ -179,4 +261,34 @@ int get_current_char_idx(char c, int state){
             return DIGIT_COL;
     }
     return -1;
+}
+
+int get_word_token(char *lexem){
+    int state = 0;
+
+    for(int i = 0; i < strlen(lexem)+1; i++){
+        switch(state){
+        case 0:
+            if(is_alpha_grp1(lexem[i])) return 6;
+            else if(is_i_char(lexem[i])) state = 1;
+            break;
+        case 1:
+            if(is_f_char(lexem[i])) state = 2;
+            else if(is_n_char(lexem[i])) state = 3;
+            else return 6;
+            break;
+        case 2:
+            if(lexem[i] == '\0') return 1;
+            else return 6;
+            break;
+        case 3:
+            break;
+        case 4:
+            break;
+        case 5:
+            break;
+        }
+    }
+
+    return 6;
 }

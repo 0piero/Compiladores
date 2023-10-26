@@ -26,6 +26,10 @@ void update_lexem_buffer(lexem_buffer *lexem_buff, char curr_char, int curr_line
 }
 
 void print_lexem(lexem_buffer *lexem_buff, int code){
+    if(code-1 == 6) {
+        printf("Code: %d ", get_word_token(lexem_buff->word_buffer)+1);
+        code = get_word_token(lexem_buff->word_buffer)+1;
+    }
     printf("Line: %d Token: %s Lexem: [%s]\n", lexem_buff->curr_line, token_arr[code-1], lexem_buff->word_buffer);
     lexem_buff->curr_char_pos = 0;
     clear_lexem_buffer(*lexem_buff);

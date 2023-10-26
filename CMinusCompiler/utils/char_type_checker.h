@@ -1,6 +1,8 @@
 #ifndef CHAR_TYPE_CHECKER_H
 #define CHAR_TYPE_CHECKER_H
 
+#include <string.h>
+#include <stdio.h>
 #include "generic_types.h"
 #include "table.h"
 #include "code.h"
@@ -36,5 +38,6 @@ boolean is_equal_sgn(char curr_char);
 boolean is_valid(char curr_char);
 boolean is_white(char curr_char);
 int get_current_char_idx(char c, int state);
+int get_word_token(char *lexem);
 
 #endif

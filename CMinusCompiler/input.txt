@@ -1,7 +1,2 @@
-void func(){
-    while(1){
-        int abc;
-        if(a) return;
-        else abc = 1;
-    }
-}
+abc;
+if;

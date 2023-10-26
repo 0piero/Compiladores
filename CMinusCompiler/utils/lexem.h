@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "generic_types.h"
+#include "char_type_checker.h"
 
 #define LEX_BUFF_SIZE 1024
 
