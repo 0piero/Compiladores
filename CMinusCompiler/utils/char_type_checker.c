@@ -282,8 +282,12 @@ int get_word_token(char *lexem){
             else return 6;
             break;
         case 3:
+            if(is_t_char(lexem[i])) state = 4;
+            else return 6;
             break;
         case 4:
+            if(lexem[i] == '\0') return 2;
+            else return 6;
             break;
         case 5:
             break;
