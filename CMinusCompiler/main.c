@@ -43,7 +43,7 @@ int main(){
 
             if(curr_char_idx == INVALID_CHAR){
                 printf("ERRO LÉXICO: %c", curr_char);
-                printf("LINHA: %d", input_buff.curr_line);
+                printf("LINHA: %d\n", input_buff.curr_line);
                 exit(1);                
             }
 

@@ -1,4 +1,1 @@
-/* oi oi oi 
-abc 123 + ou ; /* */
-
-int main(){};
+/* asd *a/

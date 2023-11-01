@@ -230,11 +230,12 @@ int get_current_char_idx(char c, int state){
             return DIGIT_COL; // aceita
         case 6:
             if(is_star(c)) return STAR_COL; //vai pra S7
+            if(c == '\0') return INVALID_CHAR;
             return DIGIT_COL; // vai pra S6
         case 7:
             if(is_right_bar(c)) return BAR_COL; //vai pra S0
             if(is_star(c)) return STAR_COL;
-            return DIGIT_COL;
+            return DIGIT_COL; // vai pra S6
     }
     return -1;
 }
