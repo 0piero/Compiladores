@@ -221,6 +221,7 @@ int get_current_char_idx(char c, int state){
             if(is_alpha(c)) return CHAR_COL;
             if(!is_alpha(c)) return DIGIT_COL; // Estado de aceitação
         case 3:
+            if(is_right_bar(c)) return INVALID_CHAR; 
             return DIGIT_COL;
         case 4:
             if(is_equal_sgn(c)) return EQUAL_SGN_COL; // vai pra S3
