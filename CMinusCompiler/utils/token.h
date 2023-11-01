@@ -1,16 +1,13 @@
 #ifndef TOKEN_H
 #define TOKEN_H
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
 
-char token_arr[10][9] = {
-    "ELSE",
-    "IF",
-    "INT",
-    "VOID",
-    "RETURN",
-    "WHILE",
-    "ID",
-    "DIGIT",
-    "SYMBOL"
-};
+static char* __rsv_word_tbl[6] = {"if", "while", "int", "void", "return", "else"};
+static char* __token_tbl[6] = {"IF", "WHILE", "INT", "VOID", "RETURN", "ELSE"};
+
+int str_to_int(char* lxm);
+char* lxm_to_token(char* lxm);
 
 #endif
