@@ -52,7 +52,7 @@ int main(){
 
             if(state == SA){
                 // printf("Code: %d ", atoi(code));
-                print_lexem(&lexem_buff, atoi(code));
+                print_lexem(&lexem_buff);
                 state = 0;
                 input_buff.curr_char_pos--; // Funciona como um não inclui [other], manter o continue.
                 reset_code();

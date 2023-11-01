@@ -19,9 +19,12 @@ int str_to_int(char* lxm){
 }
 
 char* lxm_to_token(char* lxm){
+    if(is_digit(lxm[0])) return "NUMBER";
+    if(!is_digit(lxm[0]) && !is_alpha(lxm[0])) return "SYMBOL";
+
 	int int_repr = str_to_int(lxm);
 	int idx = hash_func(int_repr);
-	if (idx > 6) return "ID";
+	if (idx >= 6) return "ID";
 	else if (!strcmp(__rsv_word_tbl[idx], lxm)) return __token_tbl[idx];
 	else return "ID";
 }

@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include "char_type_checker.h"
 
 static char* __rsv_word_tbl[6] = {"if", "while", "int", "void", "return", "else"};
 static char* __token_tbl[6] = {"IF", "WHILE", "INT", "VOID", "RETURN", "ELSE"};
