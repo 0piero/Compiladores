@@ -38,6 +38,5 @@ boolean is_equal_sgn(char curr_char);
 boolean is_valid(char curr_char);
 boolean is_white(char curr_char);
 int get_current_char_idx(char c, int state);
-int get_word_token(char *lexem);
 
 #endif
