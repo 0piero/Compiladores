@@ -12,6 +12,8 @@ int main(){
     // run_tests();
 
     FILE *fp = fopen("input.txt", "r");
+    FILE *output = fopen("output.txt", "w");
+
     input_buffer input_buff = create_and_allocate_input_buffer();
     lexem_buffer lexem_buff = create_and_allocate_lexem_buffer();
     table dfa_table = create_and_allocate_table(11, 9); // (row, col)
@@ -52,6 +54,7 @@ int main(){
 
             if(state == SA){
                 // printf("Code: %d ", atoi(code));
+                fprintf(output, "%s\n", lxm_to_token((&lexem_buff)->word_buffer));
                 print_lexem(&lexem_buff);
                 state = 0;
                 input_buff.curr_char_pos--; // Funciona como um não inclui [other], manter o continue.

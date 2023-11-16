@@ -1,1 +1,21 @@
-/* /* asd */ */
+int fibonacci(int n){
+	int c; int next;
+	int first; int second;
+	first = 0;
+	second = 1;
+	c = 1;
+	while(c < n){
+			next = first + second;
+			first = second;
+			second = next;
+
+		c = c + 1;
+	}
+	return next;
+}
+
+void main(void){
+	int n;
+	n = input();
+	output(fibonacci(n));
+}
