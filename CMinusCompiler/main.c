@@ -12,30 +12,30 @@ static lexem_buffer lexem_buff;
 static table dfa_table;
 static int state = 0; 
 static int curr_char_idx = -1;
+static char *p_str;
+static char curr_char;
 
 char* next_token() {
     if (!fp) {
         fp = fopen("input.txt", "r");
-        input_buffer input_buff = create_and_allocate_input_buffer();
-        lexem_buffer lexem_buff = create_and_allocate_lexem_buffer();
-        table dfa_table = create_and_allocate_table(11, 9);
+        input_buff = create_and_allocate_input_buffer();
+        lexem_buff = create_and_allocate_lexem_buffer();
+        dfa_table = create_and_allocate_table(11, 9);
         default_table_init(dfa_table);
+        p_str = fgets(input_buff.word_buffer, BUFFER_SIZE, fp);
     }
-    char curr_char;
+    
     boolean update_char_num = TRUE, update_line_num = TRUE;
 
-    if (input_buff.curr_char_pos == BUFFER_SIZE - 1) {
-        char *p_str = fgets(input_buff.word_buffer, BUFFER_SIZE, fp);
-        if (!p_str) return NULL;
+    if (input_buff.curr_char_pos == BUFFER_SIZE - 1 || curr_char == '\n') {
         input_buff.curr_char_pos = 0;
         clear_input_buffer(input_buff);
+        p_str = fgets(input_buff.word_buffer, BUFFER_SIZE, fp);
+        if (!p_str) return NULL;
     }
 
     while(input_buff.curr_char_pos != BUFFER_SIZE - 1){
         curr_char = get_next_char(&input_buff, update_char_num, update_line_num);
-        printf("%c",  curr_char);
-        if(curr_char == '\n') break;
-
         curr_char_idx = get_current_char_idx(curr_char, state);
 
         if(curr_char_idx == INVALID_CHAR){
@@ -49,7 +49,9 @@ char* next_token() {
         if(state == SA) {
             char* token = strdup(lxm_to_token((&lexem_buff)->word_buffer));
             state = 0;
-            input_buff.curr_char_pos--; // Funciona como um não inclui [other], manter o continue.
+            input_buff.curr_char_pos--; 
+            lexem_buff.curr_char_pos = 0;
+            clear_lexem_buffer(lexem_buff);
             reset_code();
             if(curr_char == '\0') {
                 free(lexem_buff.word_buffer);
@@ -59,9 +61,9 @@ char* next_token() {
                 }
                 free(dfa_table);
                 fclose(fp);
-                return 0;
+                return token;
             }
-            return "token";
+            return token;
         }
 
         if (state == 0){
@@ -86,7 +88,14 @@ int main() {
         printf("Token: %s\n", token);
         free(token);
     }
-    // Liberar recursos, fechar arquivos, etc...
+
+    free(lexem_buff.word_buffer);
+    free(input_buff.word_buffer);
+    for(int k = 0; k < 11; k++){
+        free(dfa_table[k]);
+    }
+    free(dfa_table);
+    fclose(fp);
     return 0;
 }
 
@@ -116,12 +125,5 @@ int main() {
 //         if(!p_str) break;
 //     } while(1);
 
-//     free(lexem_buff.word_buffer);
-//     free(input_buff.word_buffer);
-//     for(int k = 0; k < 11; k++){
-//         free(dfa_table[k]);
-//     }
-//     free(dfa_table);
-//     fclose(fp);
-//     return 0;
+  
 // }
