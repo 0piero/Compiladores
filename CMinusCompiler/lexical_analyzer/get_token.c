@@ -1,6 +1,6 @@
 #include "get_token.h"
 
-char* next_token() {
+TokenNode* next_token() {
     if (!fp) {
         fp = fopen("input.txt", "r");
         input_buff = create_and_allocate_input_buffer();
@@ -11,6 +11,8 @@ char* next_token() {
     }
     
     boolean update_char_num = TRUE, update_line_num = TRUE;
+
+    TokenNode *node = allocate_token_node();
 
     if (input_buff.curr_char_pos == BUFFER_SIZE - 1 || curr_char == '\n') {
         input_buff.curr_char_pos = 0;
@@ -32,7 +34,9 @@ char* next_token() {
         state = dfa_table[state][curr_char_idx];
 
         if(state == SA) {
-            char* token = strdup(lxm_to_token((&lexem_buff)->word_buffer));
+            node->token = strdup(lxm_to_token((&lexem_buff)->word_buffer));
+            node->lexem = strdup((&lexem_buff)->word_buffer);
+            node->line = (&lexem_buff)->curr_line;
             state = 0;
             input_buff.curr_char_pos--; 
             lexem_buff.curr_char_pos = 0;
@@ -45,9 +49,9 @@ char* next_token() {
                 }
                 free(dfa_table);
                 fclose(fp);
-                return token;
+                return node;
             }
-            return token;
+            return node;
         }
 
         if (state == 0){

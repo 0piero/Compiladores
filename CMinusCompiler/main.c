@@ -1,13 +1,13 @@
 #include "./lexical_analyzer/get_token.h"
 
 int main() {
-    char *token;
+    TokenNode *node;
 
     printf("Running...\n");
 
-    while ((token = next_token()) != NULL) {
-        printf("Token: %s\n", token);
-        free(token);
+    while ((node = next_token()) != NULL) {
+        printf("Token: %s - %s - %d\n", node->token, node->lexem, node->line);
+        free(node);
     }
 
     clean_buffers();

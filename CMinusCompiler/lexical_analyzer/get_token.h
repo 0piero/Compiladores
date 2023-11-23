@@ -7,6 +7,7 @@
 #include "./lexem.h"
 #include "./char_type_checker.h"
 #include "./table.h"
+#include "../common/types.h"
 
 static FILE *fp = NULL;
 static input_buffer input_buff;
@@ -17,6 +18,6 @@ static int curr_char_idx = -1;
 static char *p_str;
 static char curr_char;
 
-char* next_token();
+TokenNode* next_token();
 void clean_buffers();
 #endif

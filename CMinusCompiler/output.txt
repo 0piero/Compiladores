@@ -1,87 +1,53 @@
-INT
-ID
-(
-INT
-ID
-)
-{
-INT
-ID
-;
-INT
-ID
-;
-INT
-ID
-;
-INT
-ID
-;
-ID
-=
-NUMBER
-;
-ID
-=
-NUMBER
-;
-ID
-=
-NUMBER
-;
-WHILE
-(
-ID
->
-ID
-)
-{
-ID
-=
-ID
-+
-ID
-;
-ID
-=
-ID
-;
-ID
-=
-ID
-;
-ID
-=
-ID
-+
-NUMBER
-;
-}
-RETURN
-ID
-;
-}
-VOID
-ID
-(
-VOID
-)
-{
-INT
-ID
-;
-ID
-=
-ID
-(
-)
-;
-ID
-(
-ID
-(
-ID
-)
-)
-;
-}
+Running...
+Token: INT - int - 1
+Token: ID - fibonacci - 1
+Token: ( - ( - 1
+Token: INT - int - 1
+Token: ID - n - 1
+Token: ) - ) - 1
+Token: { - { - 1
+Token: INT - int - 2
+Token: ID - c - 2
+Token: ; - ; - 2
+Token: INT - int - 2
+Token: ID - next - 2
+Token: ; - ; - 2
+Token: INT - int - 3
+Token: ID - first - 3
+Token: ; - ; - 3
+Token: INT - int - 3
+Token: ID - second - 3
+Token: ; - ; - 3
+Token: ID - first - 4
+Token: = - = - 4
+Token: NUMBER - 0 - 4
+Token: ; - ; - 4
+Token: ID - second - 5
+Token: = - = - 5
+Token: NUMBER - 1 - 5
+Token: ; - ; - 5
+Token: ID - c - 6
+Token: = - = - 6
+Token: NUMBER - 1 - 6
+Token: ; - ; - 6
+Token: WHILE - while - 7
+Token: ( - ( - 7
+Token: ID - c - 7
+Token: > - < - 7
+Token: ID - n - 7
+Token: ) - ) - 7
+Token: { - { - 7
+Token: ID - next - 8
+Token: = - = - 8
+Token: ID - first - 8
+Token: + - + - 8
+Token: ID - second - 8
+Token: ; - ; - 8
+Token: ID - first - 9
+Token: = - = - 9
+Token: ID - second - 9
+Token: ; - ; - 9
+Token: ID - second - 10
+Token: = - = - 10
+Token: ID - next - 10
+Token: ; - ; - 10
