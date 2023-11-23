@@ -6,7 +6,7 @@
 #include "generic_types.h"
 
 
-#define BUFFER_SIZE 32
+#define BUFFER_SIZE 128
 
 void clear_input_buffer(input_buffer buff);
 input_buffer create_and_allocate_input_buffer();
