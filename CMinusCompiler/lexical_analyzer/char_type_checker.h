@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include "generic_types.h"
 #include "table.h"
-#include "code.h"
 #define INVALID_CHAR -1
 #define WHITE_SPACE_CHAR -2
 

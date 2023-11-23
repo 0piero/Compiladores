@@ -1,9 +1,0 @@
-else: 1
-if: 2
-int: 3
-void: 4
-return: 5
-while: 6
-ID:7
-digit: 8
-sym: 9
