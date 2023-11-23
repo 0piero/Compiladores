@@ -37,7 +37,6 @@ char* next_token() {
             input_buff.curr_char_pos--; 
             lexem_buff.curr_char_pos = 0;
             clear_lexem_buffer(lexem_buff);
-            reset_code();
             if(curr_char == '\0') {
                 free(lexem_buff.word_buffer);
                 free(input_buff.word_buffer);
@@ -54,7 +53,6 @@ char* next_token() {
         if (state == 0){
             lexem_buff.curr_char_pos = 0;
             clear_lexem_buffer(lexem_buff);
-            reset_code();
             continue;
         }
 

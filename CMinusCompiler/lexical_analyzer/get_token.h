@@ -3,11 +3,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "./utils/input_reader.h"
-#include "./utils/lexem.h"
-#include "./utils/char_type_checker.h"
-#include "./utils/table.h"
-#include "./tests/tests.h"
+#include "./input_reader.h"
+#include "./lexem.h"
+#include "./char_type_checker.h"
+#include "./table.h"
 
 static FILE *fp = NULL;
 static input_buffer input_buff;
