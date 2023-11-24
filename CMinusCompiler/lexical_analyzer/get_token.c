@@ -1,6 +1,23 @@
 #include "get_token.h"
 
+int isBufferWhitespace(char *buffer) {
+    if (buffer == NULL) {
+        return 0;
+    }
+
+    for (int i = 0; buffer[i] != '\0'; ++i) {
+        if (buffer[i] != ' ' && buffer[i] != '\n' && buffer[i] != '\0') {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
 TokenNode* next_token() {
+    if(flag){
+        return NULL;
+    }
     if (!fp) {
         fp = fopen("input.txt", "r");
         input_buff = create_and_allocate_input_buffer();
@@ -8,6 +25,7 @@ TokenNode* next_token() {
         dfa_table = create_and_allocate_table(11, 9);
         default_table_init(dfa_table);
         p_str = fgets(input_buff.word_buffer, BUFFER_SIZE, fp);
+        if(!p_str) return NULL;
     }
     
     boolean update_char_num = TRUE, update_line_num = TRUE;
@@ -18,13 +36,26 @@ TokenNode* next_token() {
         input_buff.curr_char_pos = 0;
         clear_input_buffer(input_buff);
         p_str = fgets(input_buff.word_buffer, BUFFER_SIZE, fp);
-        if (!p_str) return NULL;
+        if (!p_str){
+            printf("EOF\n");
+            return NULL;
+        }
+        // printf("Line: %s", input_buff.word_buffer);
+        while(isBufferWhitespace(input_buff.word_buffer)){
+            clear_input_buffer(input_buff);
+            p_str = fgets(input_buff.word_buffer, BUFFER_SIZE, fp);
+            if (!p_str){
+                printf("EOF\n");
+                return NULL;
+            }
+            input_buff.curr_line++;
+        }        
     }
 
     while(input_buff.curr_char_pos != BUFFER_SIZE - 1){
         curr_char = get_next_char(&input_buff, update_char_num, update_line_num);
         curr_char_idx = get_current_char_idx(curr_char, state);
-
+        
         if(curr_char_idx == INVALID_CHAR){
             printf("ERRO LÉXICO: %c", curr_char);
             printf("LINHA: %d\n", input_buff.curr_line);
@@ -42,6 +73,7 @@ TokenNode* next_token() {
             lexem_buff.curr_char_pos = 0;
             clear_lexem_buffer(lexem_buff);
             if(curr_char == '\0') {
+                flag = 1;
                 free(lexem_buff.word_buffer);
                 free(input_buff.word_buffer);
                 for(int k = 0; k < 10; k++){
@@ -62,7 +94,7 @@ TokenNode* next_token() {
 
         update_lexem_buffer(&lexem_buff, curr_char, input_buff.curr_line, state);        
     }
-
+    
     return NULL;
 }
 

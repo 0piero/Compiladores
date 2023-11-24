@@ -14,10 +14,13 @@ static input_buffer input_buff;
 static lexem_buffer lexem_buff;
 static table dfa_table;
 static int state = 0; 
+static int flag = 0;
 static int curr_char_idx = -1;
 static char *p_str;
 static char curr_char;
 
+
+int is_full_white(char*);
 TokenNode* next_token();
 void clean_buffers();
 #endif

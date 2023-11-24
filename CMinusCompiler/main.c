@@ -10,6 +10,5 @@ int main() {
         free(node);
     }
 
-    clean_buffers();
     return 0;
 }
