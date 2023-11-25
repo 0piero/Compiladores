@@ -16,7 +16,10 @@ int isBufferWhitespace(char *buffer) {
 
 TokenNode* next_token() {
     if(flag){
-        return NULL;
+        TokenNode *node = allocate_token_node();
+        node->lexem = NULL;
+        node->token = "END";
+        return node;
     }
     if (!fp) {
         fp = fopen("input.txt", "r");

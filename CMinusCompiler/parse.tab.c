@@ -119,10 +119,21 @@ enum yysymbol_kind_t
   YYSYMBOL_NUMBER = 9,                     /* NUMBER  */
   YYSYMBOL_ID = 10,                        /* ID  */
   YYSYMBOL_EQL = 11,                       /* EQL  */
-  YYSYMBOL_ERR = 12,                       /* ERR  */
-  YYSYMBOL_END = 13,                       /* END  */
-  YYSYMBOL_YYACCEPT = 14,                  /* $accept  */
-  YYSYMBOL_program = 15                    /* program  */
+  YYSYMBOL_LPAREN = 12,                    /* LPAREN  */
+  YYSYMBOL_RPAREN = 13,                    /* RPAREN  */
+  YYSYMBOL_LBRA = 14,                      /* LBRA  */
+  YYSYMBOL_RBRA = 15,                      /* RBRA  */
+  YYSYMBOL_LKEY = 16,                      /* LKEY  */
+  YYSYMBOL_RKEY = 17,                      /* RKEY  */
+  YYSYMBOL_SEMICOLON = 18,                 /* SEMICOLON  */
+  YYSYMBOL_ERR = 19,                       /* ERR  */
+  YYSYMBOL_END = 20,                       /* END  */
+  YYSYMBOL_YYACCEPT = 21,                  /* $accept  */
+  YYSYMBOL_programa = 22,                  /* programa  */
+  YYSYMBOL_23_decl_lista = 23,             /* decl-lista  */
+  YYSYMBOL_decl = 24,                      /* decl  */
+  YYSYMBOL_25_var_decl = 25,               /* var-decl  */
+  YYSYMBOL_26_tipo_especificador = 26      /* tipo-especificador  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -448,21 +459,21 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  6
+#define YYFINAL  8
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   5
+#define YYLAST   9
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  14
+#define YYNTOKENS  21
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  2
+#define YYNNTS  6
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  5
+#define YYNRULES  9
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  7
+#define YYNSTATES  16
 
 /* YYMAXUTOK -- Last valid token kind.  */
-#define YYMAXUTOK   268
+#define YYMAXUTOK   275
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -502,14 +513,15 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8,     9,    10,    11,    12,    13
+       5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
+      15,    16,    17,    18,    19,    20
 };
 
 #if YYDEBUG
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    20,    20,    21,    22,    23
+       0,    21,    21,    24,    25,    28,    31,    32,    35,    36
 };
 #endif
 
@@ -526,8 +538,9 @@ static const char *yysymbol_name (yysymbol_kind_t yysymbol) YY_ATTRIBUTE_UNUSED;
 static const char *const yytname[] =
 {
   "\"end of file\"", "error", "\"invalid token\"", "IF", "ELSE", "WHILE",
-  "INT", "VOID", "RETURN", "NUMBER", "ID", "EQL", "ERR", "END", "$accept",
-  "program", YY_NULLPTR
+  "INT", "VOID", "RETURN", "NUMBER", "ID", "EQL", "LPAREN", "RPAREN",
+  "LBRA", "RBRA", "LKEY", "RKEY", "SEMICOLON", "ERR", "END", "$accept",
+  "programa", "decl-lista", "decl", "var-decl", "tipo-especificador", YY_NULLPTR
 };
 
 static const char *
@@ -537,7 +550,7 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#define YYPACT_NINF (-4)
+#define YYPACT_NINF (-15)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -551,7 +564,8 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -3,    -3,    -4,    -4,     3,    -4,    -4
+      -5,   -15,   -15,     3,    -5,   -15,   -15,    -4,   -15,   -15,
+     -14,    -2,   -15,   -10,    -9,   -15
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -559,19 +573,20 @@ static const yytype_int8 yypact[] =
    means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       5,     5,     3,     4,     0,     2,     1
+       0,     8,     9,     0,     2,     4,     5,     0,     1,     3,
+       0,     0,     6,     0,     0,     7
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -4,     4
+     -15,   -15,   -15,     4,   -15,   -15
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-       0,     4
+       0,     3,     4,     5,     6,     7
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -579,31 +594,32 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       1,     2,     3,     6,     0,     5
+      11,     1,     2,     8,    12,    14,    10,    13,     9,    15
 };
 
 static const yytype_int8 yycheck[] =
 {
-       3,     4,     5,     0,    -1,     1
+      14,     6,     7,     0,    18,    15,    10,     9,     4,    18
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
    state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     3,     4,     5,    15,    15,     0
+       0,     6,     7,    22,    23,    24,    25,    26,     0,    24,
+      10,    14,    18,     9,    15,    18
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    14,    15,    15,    15,    15
+       0,    21,    22,    23,    23,    24,    25,    25,    26,    26
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     2,     1,     1,     0
+       0,     2,     1,     2,     1,     1,     3,     6,     1,     1
 };
 
 
@@ -1066,26 +1082,56 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-  case 2: /* program: IF program  */
-#line 20 "parse.y"
-                      { printf("IF\n"); }
-#line 1073 "parse.tab.c"
-    break;
-
-  case 3: /* program: ELSE  */
+  case 2: /* programa: decl-lista  */
 #line 21 "parse.y"
-                 { printf("ELSE\n"); }
-#line 1079 "parse.tab.c"
-    break;
-
-  case 4: /* program: WHILE  */
-#line 22 "parse.y"
-                  { printf("WHILe\n"); }
-#line 1085 "parse.tab.c"
-    break;
-
-
+                       {}
 #line 1089 "parse.tab.c"
+    break;
+
+  case 3: /* decl-lista: decl-lista decl  */
+#line 24 "parse.y"
+                              {}
+#line 1095 "parse.tab.c"
+    break;
+
+  case 4: /* decl-lista: decl  */
+#line 25 "parse.y"
+                   {YYACCEPT;}
+#line 1101 "parse.tab.c"
+    break;
+
+  case 5: /* decl: var-decl  */
+#line 28 "parse.y"
+                 {}
+#line 1107 "parse.tab.c"
+    break;
+
+  case 6: /* var-decl: tipo-especificador ID SEMICOLON  */
+#line 31 "parse.y"
+                                            {}
+#line 1113 "parse.tab.c"
+    break;
+
+  case 7: /* var-decl: tipo-especificador ID LBRA NUMBER RBRA SEMICOLON  */
+#line 32 "parse.y"
+                                                             {}
+#line 1119 "parse.tab.c"
+    break;
+
+  case 8: /* tipo-especificador: INT  */
+#line 35 "parse.y"
+                          {printf("int\n");}
+#line 1125 "parse.tab.c"
+    break;
+
+  case 9: /* tipo-especificador: VOID  */
+#line 36 "parse.y"
+                           {printf("void\n");}
+#line 1131 "parse.tab.c"
+    break;
+
+
+#line 1135 "parse.tab.c"
 
       default: break;
     }
@@ -1278,20 +1324,39 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 24 "parse.y"
+#line 40 "parse.y"
 
 
 static int yylex(){
-  char* tok = next_token()->token;
-  int tok_num = tok_to_num(tok);
-  printf("Current token: %s - %d\n", tok, tok_num);
+  TokenNode* curr_token = next_token();
+  int tok_num = END;
+  char *tok, *lex;
+  if(curr_token){
+    tok = curr_token->token;
+    lex = curr_token->lexem;
+    tok_num = tok_to_num(tok);
+  }else{
+    printf("Last token received!\n");
+  }
+  if(lex)
+   printf("Current Token: %s Lexem: %s\n", tok, lex);
+  else
+   printf("Current Token: %s\n", tok);
+   
   return tok_num;
 }
 
 int tok_to_num(char* tok){
+  if(!strcmp(tok, "ID")) return ID;
   if(!strcmp(tok, "IF")) return IF;
   if(!strcmp(tok, "ELSE"))return ELSE;
+  if(!strcmp(tok, "INT"))return INT;
+  if(!strcmp(tok, "VOID"))return VOID;
   if(!strcmp(tok, "WHILE"))return WHILE;
+  if(!strcmp(tok, "["))return LBRA;
+  if(!strcmp(tok, "]"))return RBRA;
+  if(!strcmp(tok, ";"))return SEMICOLON;
+  if(!strcmp(tok, "END"))return END;
   printf("Token not found: %s\n", tok);
   return -1;
 }
