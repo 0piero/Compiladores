@@ -13,7 +13,7 @@
 %start programa
 %token IF ELSE WHILE INT VOID RETURN
 %token NUMBER ID
-%token EQL
+%token ASS EQL NEQL LT GT LET GET PLUS MINUS TIMES DIV
 %token LPAREN RPAREN LBRA RBRA LKEY RKEY COMMA SEMICOLON
 %token ERR END
 
@@ -37,7 +37,7 @@
                     | VOID { printf("void\n"); }
                     ;
   
-  fun-decl: tipo-especificador ID LPAREN params RPAREN {}
+  fun-decl: tipo-especificador ID LPAREN params RPAREN composto-decl {}
           ;
 
   params: param-lista {}
@@ -51,6 +51,72 @@
   param: tipo-especificador ID { printf("tipo ID\n"); }
        | tipo-especificador ID LBRA RBRA { printf("tipo ID []\n"); }
        ;
+
+  composto-decl: LKEY local-decls statement-lista RKEY { printf("composto-decl\n"); }
+               ;
+
+  local-decls: local-decls var-decl {}
+             | {}
+             ;
+
+  statement-lista: statement-lista statement {}
+                 | {}
+                 ;
+
+  statement: expr-decl {}
+           | composto-decl {}
+           | selec-decl {}
+           | iter-decl {}
+           | retorno-decl {}
+           ;
+
+  expr-decl: expr SEMICOLON {}
+           | SEMICOLON {}
+           ;
+
+  selec-decl: IF LPAREN expr RPAREN statement {}
+            | IF LPAREN expr RPAREN statement ELSE statement {}
+            ;
+
+  iter-decl: WHILE LPAREN expr RPAREN statement {}
+           ;
+
+  retorno-decl: RETURN SEMICOLON {}
+              | RETURN expr SEMICOLON { printf("return expr;\n"); }
+              ;
+
+  expr: var ASS expr {}
+      | simples-expr {}
+      ;
+
+  var: ID {}
+     | ID LBRA expr RBRA {}
+     ;
+
+  simples-expr: soma-expr relacional soma-expr {}
+              | soma-expr
+              ;
+
+  relacional: LET {}
+            | LT {}
+            | GT {}
+            | GET {}
+            | EQL {}
+            | NEQL {}
+            ;
+
+  soma-expr: soma-expr soma termo {}
+           | termo {}
+           ;
+
+  soma: PLUS {}
+      | MINUS {}
+      ;
+
+  termo: NUMBER {}
+       | ID {}
+       ;
+  
 %%
 
 static int yylex(){
@@ -64,7 +130,7 @@ static int yylex(){
   }else{
    // printf("Last token received!\n");
   }
-  //if(lex) printf("Current Token: %s Lexem: %s\n", tok, lex);
+  //if(lex) printf("Current Token: %s Lexem: %s Num: %d\n", tok, lex, tok_num);
   //else printf("Current Token: %s\n", tok);
    
   return tok_num;
@@ -77,10 +143,25 @@ int tok_to_num(char* tok){
   if(!strcmp(tok, "INT"))return INT;
   if(!strcmp(tok, "VOID"))return VOID;
   if(!strcmp(tok, "WHILE"))return WHILE;
+  if(!strcmp(tok, "RETURN"))return RETURN;
+
+  if(!strcmp(tok, "="))return ASS;
+  if(!strcmp(tok, "=="))return EQL;
+  if(!strcmp(tok, "!="))return NEQL;
+  if(!strcmp(tok, ">"))return GT;
+  if(!strcmp(tok, "<"))return LT;
+  if(!strcmp(tok, "<="))return LET;
+  if(!strcmp(tok, ">="))return GET;
+  if(!strcmp(tok, "+"))return PLUS;
+  if(!strcmp(tok, "-"))return MINUS;
+  if(!strcmp(tok, "*"))return TIMES;
+  if(!strcmp(tok, "/"))return DIV;
   if(!strcmp(tok, "["))return LBRA;
   if(!strcmp(tok, "]"))return RBRA;
   if(!strcmp(tok, "("))return LPAREN;
   if(!strcmp(tok, ")"))return RPAREN;
+  if(!strcmp(tok, "{"))return LKEY;
+  if(!strcmp(tok, "}"))return RKEY;
   if(!strcmp(tok, ","))return COMMA;
   if(!strcmp(tok, ";"))return SEMICOLON;
   if(!strcmp(tok, "END"))return END;

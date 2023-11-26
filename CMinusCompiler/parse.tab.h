@@ -62,17 +62,27 @@ extern int yydebug;
     RETURN = 263,                  /* RETURN  */
     NUMBER = 264,                  /* NUMBER  */
     ID = 265,                      /* ID  */
-    EQL = 266,                     /* EQL  */
-    LPAREN = 267,                  /* LPAREN  */
-    RPAREN = 268,                  /* RPAREN  */
-    LBRA = 269,                    /* LBRA  */
-    RBRA = 270,                    /* RBRA  */
-    LKEY = 271,                    /* LKEY  */
-    RKEY = 272,                    /* RKEY  */
-    COMMA = 273,                   /* COMMA  */
-    SEMICOLON = 274,               /* SEMICOLON  */
-    ERR = 275,                     /* ERR  */
-    END = 276                      /* END  */
+    ASS = 266,                     /* ASS  */
+    EQL = 267,                     /* EQL  */
+    NEQL = 268,                    /* NEQL  */
+    LT = 269,                      /* LT  */
+    GT = 270,                      /* GT  */
+    LET = 271,                     /* LET  */
+    GET = 272,                     /* GET  */
+    PLUS = 273,                    /* PLUS  */
+    MINUS = 274,                   /* MINUS  */
+    TIMES = 275,                   /* TIMES  */
+    DIV = 276,                     /* DIV  */
+    LPAREN = 277,                  /* LPAREN  */
+    RPAREN = 278,                  /* RPAREN  */
+    LBRA = 279,                    /* LBRA  */
+    RBRA = 280,                    /* RBRA  */
+    LKEY = 281,                    /* LKEY  */
+    RKEY = 282,                    /* RKEY  */
+    COMMA = 283,                   /* COMMA  */
+    SEMICOLON = 284,               /* SEMICOLON  */
+    ERR = 285,                     /* ERR  */
+    END = 286                      /* END  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
