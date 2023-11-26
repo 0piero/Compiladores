@@ -14,7 +14,7 @@
 %token IF ELSE WHILE INT VOID RETURN
 %token NUMBER ID
 %token EQL
-%token LPAREN RPAREN LBRA RBRA LKEY RKEY SEMICOLON
+%token LPAREN RPAREN LBRA RBRA LKEY RKEY COMMA SEMICOLON
 %token ERR END
 
 %%
@@ -22,22 +22,35 @@
             ;
 
   decl-lista: decl-lista decl {}
-            | decl {}
+            | decl { printf("decl\n"); }
             ;
 
-  decl: var-decl {}
-      | fun-decl {}
+  decl: var-decl { printf("var-decl\n"); }
+      | fun-decl { printf("fun-decl\n"); }
       ;
 
   var-decl: tipo-especificador ID SEMICOLON {}
           | tipo-especificador ID LBRA NUMBER RBRA SEMICOLON {}
           ;
 
-  tipo-especificador: INT {printf("int\n");}
-                    | VOID {printf("void\n");}
+  tipo-especificador: INT { printf("int\n"); }
+                    | VOID { printf("void\n"); }
                     ;
   
-  
+  fun-decl: tipo-especificador ID LPAREN params RPAREN {}
+          ;
+
+  params: param-lista {}
+        | VOID { printf("void param\n"); }
+        ;
+
+  param-lista: param-lista COMMA param { printf("param-list, param\n"); }
+            | param { printf("param\n"); }
+            ;
+
+  param: tipo-especificador ID { printf("tipo ID\n"); }
+       | tipo-especificador ID LBRA RBRA { printf("tipo ID []\n"); }
+       ;
 %%
 
 static int yylex(){
@@ -49,12 +62,10 @@ static int yylex(){
     lex = curr_token->lexem;
     tok_num = tok_to_num(tok);
   }else{
-    printf("Last token received!\n");
+   // printf("Last token received!\n");
   }
-  if(lex)
-   printf("Current Token: %s Lexem: %s\n", tok, lex);
-  else
-   printf("Current Token: %s\n", tok);
+  //if(lex) printf("Current Token: %s Lexem: %s\n", tok, lex);
+  //else printf("Current Token: %s\n", tok);
    
   return tok_num;
 }
@@ -68,6 +79,9 @@ int tok_to_num(char* tok){
   if(!strcmp(tok, "WHILE"))return WHILE;
   if(!strcmp(tok, "["))return LBRA;
   if(!strcmp(tok, "]"))return RBRA;
+  if(!strcmp(tok, "("))return LPAREN;
+  if(!strcmp(tok, ")"))return RPAREN;
+  if(!strcmp(tok, ","))return COMMA;
   if(!strcmp(tok, ";"))return SEMICOLON;
   if(!strcmp(tok, "END"))return END;
   printf("Token not found: %s\n", tok);

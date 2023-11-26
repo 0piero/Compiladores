@@ -125,15 +125,20 @@ enum yysymbol_kind_t
   YYSYMBOL_RBRA = 15,                      /* RBRA  */
   YYSYMBOL_LKEY = 16,                      /* LKEY  */
   YYSYMBOL_RKEY = 17,                      /* RKEY  */
-  YYSYMBOL_SEMICOLON = 18,                 /* SEMICOLON  */
-  YYSYMBOL_ERR = 19,                       /* ERR  */
-  YYSYMBOL_END = 20,                       /* END  */
-  YYSYMBOL_YYACCEPT = 21,                  /* $accept  */
-  YYSYMBOL_programa = 22,                  /* programa  */
-  YYSYMBOL_23_decl_lista = 23,             /* decl-lista  */
-  YYSYMBOL_decl = 24,                      /* decl  */
-  YYSYMBOL_25_var_decl = 25,               /* var-decl  */
-  YYSYMBOL_26_tipo_especificador = 26      /* tipo-especificador  */
+  YYSYMBOL_COMMA = 18,                     /* COMMA  */
+  YYSYMBOL_SEMICOLON = 19,                 /* SEMICOLON  */
+  YYSYMBOL_ERR = 20,                       /* ERR  */
+  YYSYMBOL_END = 21,                       /* END  */
+  YYSYMBOL_YYACCEPT = 22,                  /* $accept  */
+  YYSYMBOL_programa = 23,                  /* programa  */
+  YYSYMBOL_24_decl_lista = 24,             /* decl-lista  */
+  YYSYMBOL_decl = 25,                      /* decl  */
+  YYSYMBOL_26_var_decl = 26,               /* var-decl  */
+  YYSYMBOL_27_tipo_especificador = 27,     /* tipo-especificador  */
+  YYSYMBOL_28_fun_decl = 28,               /* fun-decl  */
+  YYSYMBOL_params = 29,                    /* params  */
+  YYSYMBOL_30_param_lista = 30,            /* param-lista  */
+  YYSYMBOL_param = 31                      /* param  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -459,21 +464,21 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  8
+#define YYFINAL  9
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   9
+#define YYLAST   24
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  21
+#define YYNTOKENS  22
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  6
+#define YYNNTS  10
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  9
+#define YYNRULES  17
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  16
+#define YYNSTATES  29
 
 /* YYMAXUTOK -- Last valid token kind.  */
-#define YYMAXUTOK   275
+#define YYMAXUTOK   276
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -514,14 +519,15 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-      15,    16,    17,    18,    19,    20
+      15,    16,    17,    18,    19,    20,    21
 };
 
 #if YYDEBUG
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    21,    21,    24,    25,    28,    31,    32,    35,    36
+       0,    21,    21,    24,    25,    28,    29,    32,    33,    36,
+      37,    40,    43,    44,    47,    48,    51,    52
 };
 #endif
 
@@ -539,8 +545,9 @@ static const char *const yytname[] =
 {
   "\"end of file\"", "error", "\"invalid token\"", "IF", "ELSE", "WHILE",
   "INT", "VOID", "RETURN", "NUMBER", "ID", "EQL", "LPAREN", "RPAREN",
-  "LBRA", "RBRA", "LKEY", "RKEY", "SEMICOLON", "ERR", "END", "$accept",
-  "programa", "decl-lista", "decl", "var-decl", "tipo-especificador", YY_NULLPTR
+  "LBRA", "RBRA", "LKEY", "RKEY", "COMMA", "SEMICOLON", "ERR", "END",
+  "$accept", "programa", "decl-lista", "decl", "var-decl",
+  "tipo-especificador", "fun-decl", "params", "param-lista", "param", YY_NULLPTR
 };
 
 static const char *
@@ -550,12 +557,12 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#define YYPACT_NINF (-15)
+#define YYPACT_NINF (-13)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
 
-#define YYTABLE_NINF (-1)
+#define YYTABLE_NINF (-14)
 
 #define yytable_value_is_error(Yyn) \
   0
@@ -564,8 +571,9 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -5,   -15,   -15,     3,    -5,   -15,   -15,    -4,   -15,   -15,
-     -14,    -2,   -15,   -10,    -9,   -15
+      -2,   -13,   -13,     2,    -2,   -13,   -13,    -1,   -13,   -13,
+     -13,   -11,     0,     1,   -13,     3,     4,     5,    -6,   -13,
+       6,     8,   -13,    -2,    -4,     9,   -13,   -13,   -13
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -573,20 +581,21 @@ static const yytype_int8 yypact[] =
    means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       0,     8,     9,     0,     2,     4,     5,     0,     1,     3,
-       0,     0,     6,     0,     0,     7
+       0,     9,    10,     0,     2,     4,     5,     0,     6,     1,
+       3,     0,     0,     0,     7,    10,     0,     0,    12,    15,
+       0,    16,    11,     0,     0,     0,    14,     8,    17
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -15,   -15,   -15,     4,   -15,   -15
+     -13,   -13,   -13,    13,   -13,   -12,   -13,   -13,   -13,   -10
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-       0,     3,     4,     5,     6,     7
+       0,     3,     4,     5,     6,     7,     8,    17,    18,    19
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -594,32 +603,39 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-      11,     1,     2,     8,    12,    14,    10,    13,     9,    15
+      16,    12,     9,    13,     1,     2,     1,    15,    14,    11,
+      20,    16,    23,    26,    21,    27,   -13,    10,    22,     0,
+       0,    24,    25,     0,    28
 };
 
 static const yytype_int8 yycheck[] =
 {
-      14,     6,     7,     0,    18,    15,    10,     9,     4,    18
+      12,    12,     0,    14,     6,     7,     6,     7,    19,    10,
+       9,    23,    18,    23,    10,    19,    13,     4,    13,    -1,
+      -1,    15,    14,    -1,    15
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
    state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     6,     7,    22,    23,    24,    25,    26,     0,    24,
-      10,    14,    18,     9,    15,    18
+       0,     6,     7,    23,    24,    25,    26,    27,    28,     0,
+      25,    10,    12,    14,    19,     7,    27,    29,    30,    31,
+       9,    10,    13,    18,    15,    14,    31,    19,    15
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    21,    22,    23,    23,    24,    25,    25,    26,    26
+       0,    22,    23,    24,    24,    25,    25,    26,    26,    27,
+      27,    28,    29,    29,    30,    30,    31,    31
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     1,     2,     1,     1,     3,     6,     1,     1
+       0,     2,     1,     2,     1,     1,     1,     3,     6,     1,
+       1,     5,     1,     1,     3,     1,     2,     4
 };
 
 
@@ -1085,53 +1101,101 @@ yyreduce:
   case 2: /* programa: decl-lista  */
 #line 21 "parse.y"
                        {}
-#line 1089 "parse.tab.c"
+#line 1105 "parse.tab.c"
     break;
 
   case 3: /* decl-lista: decl-lista decl  */
 #line 24 "parse.y"
                               {}
-#line 1095 "parse.tab.c"
+#line 1111 "parse.tab.c"
     break;
 
   case 4: /* decl-lista: decl  */
 #line 25 "parse.y"
-                   {YYACCEPT;}
-#line 1101 "parse.tab.c"
+                   { printf("decl\n"); }
+#line 1117 "parse.tab.c"
     break;
 
   case 5: /* decl: var-decl  */
 #line 28 "parse.y"
-                 {}
-#line 1107 "parse.tab.c"
+                 { printf("var-decl\n"); }
+#line 1123 "parse.tab.c"
     break;
 
-  case 6: /* var-decl: tipo-especificador ID SEMICOLON  */
-#line 31 "parse.y"
-                                            {}
-#line 1113 "parse.tab.c"
+  case 6: /* decl: fun-decl  */
+#line 29 "parse.y"
+                 { printf("fun-decl\n"); }
+#line 1129 "parse.tab.c"
     break;
 
-  case 7: /* var-decl: tipo-especificador ID LBRA NUMBER RBRA SEMICOLON  */
+  case 7: /* var-decl: tipo-especificador ID SEMICOLON  */
 #line 32 "parse.y"
-                                                             {}
-#line 1119 "parse.tab.c"
-    break;
-
-  case 8: /* tipo-especificador: INT  */
-#line 35 "parse.y"
-                          {printf("int\n");}
-#line 1125 "parse.tab.c"
-    break;
-
-  case 9: /* tipo-especificador: VOID  */
-#line 36 "parse.y"
-                           {printf("void\n");}
-#line 1131 "parse.tab.c"
-    break;
-
-
+                                            {}
 #line 1135 "parse.tab.c"
+    break;
+
+  case 8: /* var-decl: tipo-especificador ID LBRA NUMBER RBRA SEMICOLON  */
+#line 33 "parse.y"
+                                                             {}
+#line 1141 "parse.tab.c"
+    break;
+
+  case 9: /* tipo-especificador: INT  */
+#line 36 "parse.y"
+                          { printf("int\n"); }
+#line 1147 "parse.tab.c"
+    break;
+
+  case 10: /* tipo-especificador: VOID  */
+#line 37 "parse.y"
+                           { printf("void\n"); }
+#line 1153 "parse.tab.c"
+    break;
+
+  case 11: /* fun-decl: tipo-especificador ID LPAREN params RPAREN  */
+#line 40 "parse.y"
+                                                       {}
+#line 1159 "parse.tab.c"
+    break;
+
+  case 12: /* params: param-lista  */
+#line 43 "parse.y"
+                      {}
+#line 1165 "parse.tab.c"
+    break;
+
+  case 13: /* params: VOID  */
+#line 44 "parse.y"
+               { printf("void param\n"); }
+#line 1171 "parse.tab.c"
+    break;
+
+  case 14: /* param-lista: param-lista COMMA param  */
+#line 47 "parse.y"
+                                       { printf("param-list, param\n"); }
+#line 1177 "parse.tab.c"
+    break;
+
+  case 15: /* param-lista: param  */
+#line 48 "parse.y"
+                    { printf("param\n"); }
+#line 1183 "parse.tab.c"
+    break;
+
+  case 16: /* param: tipo-especificador ID  */
+#line 51 "parse.y"
+                               { printf("tipo ID\n"); }
+#line 1189 "parse.tab.c"
+    break;
+
+  case 17: /* param: tipo-especificador ID LBRA RBRA  */
+#line 52 "parse.y"
+                                         { printf("tipo ID []\n"); }
+#line 1195 "parse.tab.c"
+    break;
+
+
+#line 1199 "parse.tab.c"
 
       default: break;
     }
@@ -1324,7 +1388,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 40 "parse.y"
+#line 54 "parse.y"
 
 
 static int yylex(){
@@ -1336,12 +1400,10 @@ static int yylex(){
     lex = curr_token->lexem;
     tok_num = tok_to_num(tok);
   }else{
-    printf("Last token received!\n");
+   // printf("Last token received!\n");
   }
-  if(lex)
-   printf("Current Token: %s Lexem: %s\n", tok, lex);
-  else
-   printf("Current Token: %s\n", tok);
+  //if(lex) printf("Current Token: %s Lexem: %s\n", tok, lex);
+  //else printf("Current Token: %s\n", tok);
    
   return tok_num;
 }
@@ -1355,6 +1417,9 @@ int tok_to_num(char* tok){
   if(!strcmp(tok, "WHILE"))return WHILE;
   if(!strcmp(tok, "["))return LBRA;
   if(!strcmp(tok, "]"))return RBRA;
+  if(!strcmp(tok, "("))return LPAREN;
+  if(!strcmp(tok, ")"))return RPAREN;
+  if(!strcmp(tok, ","))return COMMA;
   if(!strcmp(tok, ";"))return SEMICOLON;
   if(!strcmp(tok, "END"))return END;
   printf("Token not found: %s\n", tok);

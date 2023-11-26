@@ -69,9 +69,10 @@ extern int yydebug;
     RBRA = 270,                    /* RBRA  */
     LKEY = 271,                    /* LKEY  */
     RKEY = 272,                    /* RKEY  */
-    SEMICOLON = 273,               /* SEMICOLON  */
-    ERR = 274,                     /* ERR  */
-    END = 275                      /* END  */
+    COMMA = 273,                   /* COMMA  */
+    SEMICOLON = 274,               /* SEMICOLON  */
+    ERR = 275,                     /* ERR  */
+    END = 276                      /* END  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
