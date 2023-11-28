@@ -13,6 +13,6 @@ all: $(OBJ) $(MAIN)
 	$(CC) -o $@ -c $< $(CFLAGS)
 
 clean:
-	rm *.o
 	rm */*.o
-	rm main
+	rm *.o
+	rm parse
