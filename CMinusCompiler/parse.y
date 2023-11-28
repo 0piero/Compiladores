@@ -1,8 +1,13 @@
 %{
+  #define YYPARSER
+  #include "./parse.tab.h"
+  #define YYSTYPE syntax_tree *
+  
+  #include "./parser/syntax_tree.h"
   #include <stdio.h>
   #include <string.h>
   #include "./lexical_analyzer/get_token.h"
-  #include "./parse.tab.h"
+
 
   static int yylex(void);
   TokenNode* next_token();

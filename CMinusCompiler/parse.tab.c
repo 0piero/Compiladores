@@ -69,17 +69,27 @@
 /* First part of user prologue.  */
 #line 1 "parse.y"
 
+  #define YYPARSER
+  #include "./parse.tab.h"
+  #define YYSTYPE syntax_tree *
+  
+  #include "./parser/syntax_tree.h"
   #include <stdio.h>
   #include <string.h>
   #include "./lexical_analyzer/get_token.h"
-  #include "./parse.tab.h"
+
 
   static int yylex(void);
   TokenNode* next_token();
+  syntax_tree* tree;            /* raiz da syntax_tree*/
+  syntax_tree* R_mst_decl_node; /* (utilizado para as regras 2 e 3 da CFG) mantem um ponteiro pro nó declaracao
+                                   mais a direita corrente na arvore 
+                                */ 
+
   int tok_to_num(char *);
   void yyerror(char *);
 
-#line 83 "parse.tab.c"
+#line 93 "parse.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -557,13 +567,13 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    21,    21,    24,    25,    28,    29,    32,    33,    36,
-      37,    40,    43,    44,    47,    48,    51,    52,    55,    58,
-      59,    62,    63,    66,    67,    68,    69,    70,    73,    74,
-      77,    78,    81,    84,    85,    88,    89,    92,    93,    96,
-      97,   100,   101,   102,   103,   104,   105,   108,   109,   112,
-     113,   116,   117,   120,   121,   124,   125,   126,   127,   130,
-     133,   134,   137,   138
+       0,    31,    31,    34,    40,    47,    48,    51,    52,    55,
+      56,    59,    62,    63,    66,    67,    70,    71,    74,    77,
+      78,    81,    82,    85,    86,    87,    88,    89,    92,    93,
+      96,    97,   100,   103,   104,   107,   108,   111,   112,   115,
+     116,   119,   120,   121,   122,   123,   124,   127,   128,   131,
+     132,   135,   136,   139,   140,   143,   144,   145,   146,   149,
+     152,   153,   156,   157
 };
 #endif
 
@@ -1192,367 +1202,376 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* programa: decl-lista  */
-#line 21 "parse.y"
-                       {}
-#line 1198 "parse.tab.c"
+#line 31 "parse.y"
+                       {tree = yyvsp[0];}
+#line 1208 "parse.tab.c"
     break;
 
   case 3: /* decl-lista: decl-lista decl  */
-#line 24 "parse.y"
-                              {}
-#line 1204 "parse.tab.c"
+#line 34 "parse.y"
+                              {
+                yyval = yyvsp[-1];                
+                R_mst_decl_node->sibling = yyvsp[0];
+                yyvsp[0]->sibling = NULL;
+                R_mst_decl_node = yyvsp[0]; /* atualiza o novo nó decl mais a direita da arvore */
+              }
+#line 1219 "parse.tab.c"
     break;
 
   case 4: /* decl-lista: decl  */
-#line 25 "parse.y"
-                   { printf("decl\n"); }
-#line 1210 "parse.tab.c"
+#line 40 "parse.y"
+                   {
+                printf("decl\n");
+                yyval = yyvsp[0];
+                R_mst_decl_node = yyvsp[0]; /* seta o no mais a direita no caso base de decl-lista */
+              }
+#line 1229 "parse.tab.c"
     break;
 
   case 5: /* decl: var-decl  */
-#line 28 "parse.y"
+#line 47 "parse.y"
                  { printf("var-decl\n"); }
-#line 1216 "parse.tab.c"
+#line 1235 "parse.tab.c"
     break;
 
   case 6: /* decl: fun-decl  */
-#line 29 "parse.y"
+#line 48 "parse.y"
                  { printf("fun-decl\n"); }
-#line 1222 "parse.tab.c"
+#line 1241 "parse.tab.c"
     break;
 
   case 7: /* var-decl: tipo-especificador ID SEMICOLON  */
-#line 32 "parse.y"
+#line 51 "parse.y"
                                             {}
-#line 1228 "parse.tab.c"
+#line 1247 "parse.tab.c"
     break;
 
   case 8: /* var-decl: tipo-especificador ID LBRA NUMBER RBRA SEMICOLON  */
-#line 33 "parse.y"
+#line 52 "parse.y"
                                                              {}
-#line 1234 "parse.tab.c"
+#line 1253 "parse.tab.c"
     break;
 
   case 9: /* tipo-especificador: INT  */
-#line 36 "parse.y"
+#line 55 "parse.y"
                           { printf("int\n"); }
-#line 1240 "parse.tab.c"
+#line 1259 "parse.tab.c"
     break;
 
   case 10: /* tipo-especificador: VOID  */
-#line 37 "parse.y"
+#line 56 "parse.y"
                            { printf("void\n"); }
-#line 1246 "parse.tab.c"
+#line 1265 "parse.tab.c"
     break;
 
   case 11: /* fun-decl: tipo-especificador ID LPAREN params RPAREN composto-decl  */
-#line 40 "parse.y"
+#line 59 "parse.y"
                                                                      {}
-#line 1252 "parse.tab.c"
+#line 1271 "parse.tab.c"
     break;
 
   case 12: /* params: param-lista  */
-#line 43 "parse.y"
+#line 62 "parse.y"
                       {}
-#line 1258 "parse.tab.c"
+#line 1277 "parse.tab.c"
     break;
 
   case 13: /* params: VOID  */
-#line 44 "parse.y"
+#line 63 "parse.y"
                { printf("void param\n"); }
-#line 1264 "parse.tab.c"
+#line 1283 "parse.tab.c"
     break;
 
   case 14: /* param-lista: param-lista COMMA param  */
-#line 47 "parse.y"
+#line 66 "parse.y"
                                        { printf("param-list, param\n"); }
-#line 1270 "parse.tab.c"
+#line 1289 "parse.tab.c"
     break;
 
   case 15: /* param-lista: param  */
-#line 48 "parse.y"
+#line 67 "parse.y"
                     { printf("param\n"); }
-#line 1276 "parse.tab.c"
+#line 1295 "parse.tab.c"
     break;
 
   case 16: /* param: tipo-especificador ID  */
-#line 51 "parse.y"
+#line 70 "parse.y"
                                { printf("tipo ID\n"); }
-#line 1282 "parse.tab.c"
+#line 1301 "parse.tab.c"
     break;
 
   case 17: /* param: tipo-especificador ID LBRA RBRA  */
-#line 52 "parse.y"
+#line 71 "parse.y"
                                          { printf("tipo ID []\n"); }
-#line 1288 "parse.tab.c"
+#line 1307 "parse.tab.c"
     break;
 
   case 18: /* composto-decl: LKEY local-decls statement-lista RKEY  */
-#line 55 "parse.y"
+#line 74 "parse.y"
                                                        { printf("composto-decl\n"); }
-#line 1294 "parse.tab.c"
+#line 1313 "parse.tab.c"
     break;
 
   case 19: /* local-decls: local-decls var-decl  */
-#line 58 "parse.y"
+#line 77 "parse.y"
                                     {}
-#line 1300 "parse.tab.c"
+#line 1319 "parse.tab.c"
     break;
 
   case 20: /* local-decls: %empty  */
-#line 59 "parse.y"
+#line 78 "parse.y"
                {}
-#line 1306 "parse.tab.c"
+#line 1325 "parse.tab.c"
     break;
 
   case 21: /* statement-lista: statement-lista statement  */
-#line 62 "parse.y"
+#line 81 "parse.y"
                                              {}
-#line 1312 "parse.tab.c"
+#line 1331 "parse.tab.c"
     break;
 
   case 22: /* statement-lista: %empty  */
-#line 63 "parse.y"
+#line 82 "parse.y"
                    {}
-#line 1318 "parse.tab.c"
+#line 1337 "parse.tab.c"
     break;
 
   case 23: /* statement: expr-decl  */
-#line 66 "parse.y"
+#line 85 "parse.y"
                        {}
-#line 1324 "parse.tab.c"
+#line 1343 "parse.tab.c"
     break;
 
   case 24: /* statement: composto-decl  */
-#line 67 "parse.y"
+#line 86 "parse.y"
                            {}
-#line 1330 "parse.tab.c"
+#line 1349 "parse.tab.c"
     break;
 
   case 25: /* statement: selec-decl  */
-#line 68 "parse.y"
+#line 87 "parse.y"
                         {}
-#line 1336 "parse.tab.c"
+#line 1355 "parse.tab.c"
     break;
 
   case 26: /* statement: iter-decl  */
-#line 69 "parse.y"
+#line 88 "parse.y"
                        {}
-#line 1342 "parse.tab.c"
+#line 1361 "parse.tab.c"
     break;
 
   case 27: /* statement: retorno-decl  */
-#line 70 "parse.y"
+#line 89 "parse.y"
                           {}
-#line 1348 "parse.tab.c"
+#line 1367 "parse.tab.c"
     break;
 
   case 28: /* expr-decl: expr SEMICOLON  */
-#line 73 "parse.y"
+#line 92 "parse.y"
                             {}
-#line 1354 "parse.tab.c"
+#line 1373 "parse.tab.c"
     break;
 
   case 29: /* expr-decl: SEMICOLON  */
-#line 74 "parse.y"
+#line 93 "parse.y"
                        {}
-#line 1360 "parse.tab.c"
+#line 1379 "parse.tab.c"
     break;
 
   case 30: /* selec-decl: IF LPAREN expr RPAREN statement  */
-#line 77 "parse.y"
+#line 96 "parse.y"
                                               {}
-#line 1366 "parse.tab.c"
+#line 1385 "parse.tab.c"
     break;
 
   case 31: /* selec-decl: IF LPAREN expr RPAREN statement ELSE statement  */
-#line 78 "parse.y"
+#line 97 "parse.y"
                                                              {}
-#line 1372 "parse.tab.c"
+#line 1391 "parse.tab.c"
     break;
 
   case 32: /* iter-decl: WHILE LPAREN expr RPAREN statement  */
-#line 81 "parse.y"
+#line 100 "parse.y"
                                                 {}
-#line 1378 "parse.tab.c"
+#line 1397 "parse.tab.c"
     break;
 
   case 33: /* retorno-decl: RETURN SEMICOLON  */
-#line 84 "parse.y"
+#line 103 "parse.y"
                                  {}
-#line 1384 "parse.tab.c"
+#line 1403 "parse.tab.c"
     break;
 
   case 34: /* retorno-decl: RETURN expr SEMICOLON  */
-#line 85 "parse.y"
+#line 104 "parse.y"
                                       { printf("return expr;\n"); }
-#line 1390 "parse.tab.c"
+#line 1409 "parse.tab.c"
     break;
 
   case 35: /* expr: var ASS expr  */
-#line 88 "parse.y"
+#line 107 "parse.y"
                      {}
-#line 1396 "parse.tab.c"
+#line 1415 "parse.tab.c"
     break;
 
   case 36: /* expr: simples-expr  */
-#line 89 "parse.y"
+#line 108 "parse.y"
                      {}
-#line 1402 "parse.tab.c"
+#line 1421 "parse.tab.c"
     break;
 
   case 37: /* var: ID  */
-#line 92 "parse.y"
+#line 111 "parse.y"
           {}
-#line 1408 "parse.tab.c"
+#line 1427 "parse.tab.c"
     break;
 
   case 38: /* var: ID LBRA expr RBRA  */
-#line 93 "parse.y"
+#line 112 "parse.y"
                          {}
-#line 1414 "parse.tab.c"
+#line 1433 "parse.tab.c"
     break;
 
   case 39: /* simples-expr: soma-expr relacional soma-expr  */
-#line 96 "parse.y"
+#line 115 "parse.y"
                                                {}
-#line 1420 "parse.tab.c"
+#line 1439 "parse.tab.c"
     break;
 
   case 41: /* relacional: LET  */
-#line 100 "parse.y"
+#line 119 "parse.y"
                   {}
-#line 1426 "parse.tab.c"
+#line 1445 "parse.tab.c"
     break;
 
   case 42: /* relacional: LT  */
-#line 101 "parse.y"
+#line 120 "parse.y"
                  {}
-#line 1432 "parse.tab.c"
+#line 1451 "parse.tab.c"
     break;
 
   case 43: /* relacional: GT  */
-#line 102 "parse.y"
+#line 121 "parse.y"
                  {}
-#line 1438 "parse.tab.c"
+#line 1457 "parse.tab.c"
     break;
 
   case 44: /* relacional: GET  */
-#line 103 "parse.y"
+#line 122 "parse.y"
                   {}
-#line 1444 "parse.tab.c"
+#line 1463 "parse.tab.c"
     break;
 
   case 45: /* relacional: EQL  */
-#line 104 "parse.y"
+#line 123 "parse.y"
                   {}
-#line 1450 "parse.tab.c"
+#line 1469 "parse.tab.c"
     break;
 
   case 46: /* relacional: NEQL  */
-#line 105 "parse.y"
+#line 124 "parse.y"
                    {}
-#line 1456 "parse.tab.c"
+#line 1475 "parse.tab.c"
     break;
 
   case 47: /* soma-expr: soma-expr soma termo  */
-#line 108 "parse.y"
+#line 127 "parse.y"
                                   {}
-#line 1462 "parse.tab.c"
+#line 1481 "parse.tab.c"
     break;
 
   case 48: /* soma-expr: termo  */
-#line 109 "parse.y"
+#line 128 "parse.y"
                    {}
-#line 1468 "parse.tab.c"
+#line 1487 "parse.tab.c"
     break;
 
   case 49: /* soma: PLUS  */
-#line 112 "parse.y"
+#line 131 "parse.y"
              {}
-#line 1474 "parse.tab.c"
+#line 1493 "parse.tab.c"
     break;
 
   case 50: /* soma: MINUS  */
-#line 113 "parse.y"
+#line 132 "parse.y"
               {}
-#line 1480 "parse.tab.c"
+#line 1499 "parse.tab.c"
     break;
 
   case 51: /* termo: termo mult fator  */
-#line 116 "parse.y"
+#line 135 "parse.y"
                           {}
-#line 1486 "parse.tab.c"
+#line 1505 "parse.tab.c"
     break;
 
   case 52: /* termo: fator  */
-#line 117 "parse.y"
+#line 136 "parse.y"
                {}
-#line 1492 "parse.tab.c"
+#line 1511 "parse.tab.c"
     break;
 
   case 53: /* mult: TIMES  */
-#line 120 "parse.y"
+#line 139 "parse.y"
               {}
-#line 1498 "parse.tab.c"
+#line 1517 "parse.tab.c"
     break;
 
   case 54: /* mult: DIV  */
-#line 121 "parse.y"
+#line 140 "parse.y"
             {}
-#line 1504 "parse.tab.c"
+#line 1523 "parse.tab.c"
     break;
 
   case 55: /* fator: LPAREN expr RPAREN  */
-#line 124 "parse.y"
+#line 143 "parse.y"
                             {}
-#line 1510 "parse.tab.c"
+#line 1529 "parse.tab.c"
     break;
 
   case 56: /* fator: var  */
-#line 125 "parse.y"
+#line 144 "parse.y"
              {}
-#line 1516 "parse.tab.c"
+#line 1535 "parse.tab.c"
     break;
 
   case 57: /* fator: ativacao  */
-#line 126 "parse.y"
+#line 145 "parse.y"
                   {}
-#line 1522 "parse.tab.c"
+#line 1541 "parse.tab.c"
     break;
 
   case 58: /* fator: NUMBER  */
-#line 127 "parse.y"
+#line 146 "parse.y"
                 { printf("number\n"); }
-#line 1528 "parse.tab.c"
+#line 1547 "parse.tab.c"
     break;
 
   case 59: /* ativacao: ID LPAREN args RPAREN  */
-#line 130 "parse.y"
+#line 149 "parse.y"
                                   { printf("ativacao\n"); }
-#line 1534 "parse.tab.c"
+#line 1553 "parse.tab.c"
     break;
 
   case 60: /* args: arg-list  */
-#line 133 "parse.y"
+#line 152 "parse.y"
                  {}
-#line 1540 "parse.tab.c"
+#line 1559 "parse.tab.c"
     break;
 
   case 62: /* arg-list: arg-list COMMA expr  */
-#line 137 "parse.y"
+#line 156 "parse.y"
                                 {}
-#line 1546 "parse.tab.c"
+#line 1565 "parse.tab.c"
     break;
 
   case 63: /* arg-list: expr  */
-#line 138 "parse.y"
+#line 157 "parse.y"
                   {}
-#line 1552 "parse.tab.c"
+#line 1571 "parse.tab.c"
     break;
 
 
-#line 1556 "parse.tab.c"
+#line 1575 "parse.tab.c"
 
       default: break;
     }
@@ -1745,7 +1764,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 141 "parse.y"
+#line 160 "parse.y"
 
 
 static int yylex(){
