@@ -14,7 +14,11 @@
   syntax_tree* tree;            /* raiz da syntax_tree*/
   syntax_tree* R_mst_decl_node; /* (utilizado para as regras 2 e 3 da CFG) mantem um ponteiro pro nó declaracao
                                    mais a direita corrente na arvore 
-                                */ 
+                                */
+  syntax_tree* R_mst_param;     /* (utilizado para as regras 8 e 9 da CFG) mantem um ponteiro pro nó param
+                                   mais a direita corrente na arvore que se origina de param-list 
+                                */
+
 
   int tok_to_num(char *);
   void yyerror(char *);
@@ -38,33 +42,76 @@
                 R_mst_decl_node = $2; /* atualiza o novo nó decl mais a direita da arvore */
               }
             | decl {
-                printf("decl\n");
                 $$ = $1;
                 R_mst_decl_node = $1; /* seta o no mais a direita no caso base de decl-lista */
               }
             ;
 
-  decl: var-decl { printf("var-decl\n"); }
-      | fun-decl { printf("fun-decl\n"); }
+  decl: var-decl {$$ = $1;}
+      | fun-decl {$$ = $1;}
       ;
 
-  var-decl: tipo-especificador ID SEMICOLON {}
-          | tipo-especificador ID LBRA NUMBER RBRA SEMICOLON {}
+  var-decl: tipo-especificador ID SEMICOLON {
+              enum var_decl_enum {espc_type, id, skol};
+
+              $$ = syntax_tree_alloc_node(3);
+
+              $$->child[espc_type] = $1;
+              $$->child[id] = syntax_tree_alloc_node(0);
+              $$->child[skol] = syntax_tree_alloc_node(0);
+            }
+          | tipo-especificador ID LBRA NUMBER RBRA SEMICOLON {
+              enum var_decl_enum {espc_type, id, num};
+
+              $$ = syntax_tree_alloc_node(3);
+
+              $$->child[espc_type] = $1;
+              $$->child[id] = syntax_tree_alloc_node(0);
+              $$->child[num] = syntax_tree_alloc_node(0);
+            }
           ;
 
-  tipo-especificador: INT { printf("int\n"); }
-                    | VOID { printf("void\n"); }
+  tipo-especificador: INT {
+                        $1 = syntax_tree_alloc_node(0);
+                        $$ = $1;
+                      }
+                    | VOID {
+                        $1 = syntax_tree_alloc_node(0);
+                        $$ = $1;
+                      }
                     ;
   
-  fun-decl: tipo-especificador ID LPAREN params RPAREN composto-decl {}
+  fun-decl: tipo-especificador ID LPAREN params RPAREN composto-decl {
+              enum fun_decl_enum {espc_type, id, params, comp_decl};
+
+              $$ = syntax_tree_alloc_node(4);
+              
+              $$->child[espc_type] = $1;
+              $$->child[id] = syntax_tree_alloc_node(0);
+              $$->child[params] = syntax_tree_alloc_node(0);
+              $$->child[comp_decl] = $6;
+            }
           ;
 
-  params: param-lista {}
-        | VOID { printf("void param\n"); }
+  params: param-lista {
+            $$ = $1;
+          }
+        | VOID {
+            $1 = syntax_tree_alloc_node(0);
+            $$ = $1;
+          }
         ;
 
-  param-lista: param-lista COMMA param { printf("param-list, param\n"); }
-            | param { printf("param\n"); }
+  param-lista:  param-lista COMMA param {
+                  $$ = $1;
+                  R_mst_param->sibling = $3;
+                  $3->sibling = NULL;
+                  R_mst_param = $3; /* atualiza o novo nó param mais a direita da arvore */
+                }
+            | param {
+                $$ = $1;
+                R_mst_param = $1; /* seta o no mais a direita no caso base de param-lista */
+              }
             ;
 
   param: tipo-especificador ID { printf("tipo ID\n"); }
