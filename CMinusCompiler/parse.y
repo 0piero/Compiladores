@@ -9,6 +9,8 @@
   #include <string.h>
   #include "./lexical_analyzer/get_token.h"
 
+  int lineno = 0;
+
   static int yylex(void);
   TokenNode* next_token();
   syntax_tree* tree;            /* raiz da syntax_tree*/
@@ -48,7 +50,7 @@
             ;
 
   decl: var-decl {$$ = $1;}
-      | fun-decl {$$ = $1;}
+      | fun-decl {$$ = $1; printf("fun-decl\n");}
       ;
 
   var-decl: tipo-especificador ID SEMICOLON {
@@ -211,6 +213,7 @@ static int yylex(){
   int tok_num = END;
   char *tok, *lex;
   if(curr_token){
+    lineno = curr_token->line;
     tok = curr_token->token;
     lex = curr_token->lexem;
     tok_num = tok_to_num(tok);
@@ -255,8 +258,8 @@ int tok_to_num(char* tok){
   if(!strcmp(tok, "NUMBER"))return NUMBER;
   
   if(!strcmp(tok, "END"))return END;
-  printf("Token not found: %s\n", tok);
-  return -1;
+  //printf("Token not found: %s\n", tok);
+  return ERR;
 }
 
 int main(int argv, char **argc){
@@ -264,5 +267,8 @@ int main(int argv, char **argc){
 }
 
 void yyerror(char *c){
-  printf("ERRO SINTATICO: %s\n", c);
+  if(yychar != ERR && yychar != END){
+    printf("ERRO SINTATICO: %s LINHA: %d\n", c, lineno);
+    exit(1);
+  }
 }

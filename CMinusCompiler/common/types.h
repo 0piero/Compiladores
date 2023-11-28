@@ -4,9 +4,12 @@
 #include <stdlib.h>
 
 struct TokenNode {
-    char * token;
-    char * lexem;
-    int line;
+    char * token;   // ID, INT, ...
+    char * lexem;   // Lexema puro, ex: int ABC;
+    char* scope;    // global, funcao, ...
+    char* nodetype; // VARIAVEL ou FUNCAO
+    char* datatype; // INT, CHAR, etc...
+    int line;       // Linha em que aparece
 };
 typedef struct TokenNode TokenNode;
 
