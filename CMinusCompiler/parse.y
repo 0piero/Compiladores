@@ -39,13 +39,12 @@
 
   decl-lista: decl-lista decl {
                 $$ = $1;                
-                R_mst_decl_node->sibling = $2;
-                $2->sibling = NULL;
-                R_mst_decl_node = $2; /* atualiza o novo nó decl mais a direita da arvore */
+                $2->sibling = R_mst_decl_node;
+                R_mst_decl_node = $2; /* atualiza o novo nó decl mais a esquerda da arvore */
               }
             | decl {
                 $$ = $1;
-                R_mst_decl_node = $1; /* seta o no mais a direita no caso base de decl-lista */
+                R_mst_decl_node = $1; /* seta o no mais a esquerda no caso base de decl-lista */
               }
             ;
 
@@ -105,14 +104,14 @@
         ;
 
   param-lista:  param-lista COMMA param {
-                  $$ = $1;
-                  R_mst_param->sibling = $3;
-                  $3->sibling = NULL;
-                  R_mst_param = $3; /* atualiza o novo nó param mais a direita da arvore */
+
+                  $$ = $1;                
+                  $3->sibling = R_mst_param;
+                  R_mst_param = $3; /* atualiza o novo nó decl mais a esquerda da arvore */
                 }
             | param {
                 $$ = $1;
-                R_mst_param = $1; /* seta o no mais a direita no caso base de param-lista */
+                R_mst_param = $1; /* seta o no mais a esquerda no caso base de param-lista */
               }
             ;
 
