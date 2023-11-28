@@ -6,6 +6,11 @@
 
   static int yylex(void);
   TokenNode* next_token();
+  syntax_tree* tree;            /* raiz da syntax_tree*/
+  syntax_tree* R_mst_decl_node; /* (utilizado para as regras 2 e 3 da CFG) mantem um ponteiro pro nó declaracao
+                                   mais a direita corrente na arvore 
+                                */ 
+
   int tok_to_num(char *);
   void yyerror(char *);
 %}
@@ -18,11 +23,20 @@
 %token ERR END
 
 %%
-  programa: decl-lista {}
+  programa: decl-lista {tree = $1;}
             ;
 
-  decl-lista: decl-lista decl {}
-            | decl { printf("decl\n"); }
+  decl-lista: decl-lista decl {
+                $$ = $1;                
+                R_mst_decl_node->sibling = $2;
+                $2->sibling = NULL;
+                R_mst_decl_node = $2; /* atualiza o novo nó decl mais a direita da arvore */
+              }
+            | decl {
+                printf("decl\n");
+                $$ = $1;
+                R_mst_decl_node = $1; /* seta o no mais a direita no caso base de decl-lista */
+              }
             ;
 
   decl: var-decl { printf("var-decl\n"); }
