@@ -1,4 +1,4 @@
-int gcd (int u, int v))
+int gcd (int u, int v)
 {
   return 3*gcd();
 }
