@@ -113,10 +113,31 @@
       | MINUS {}
       ;
 
-  termo: NUMBER {}
-       | ID {}
+  termo: termo mult fator {}
+       | fator {}
+       ;
+
+  mult: TIMES {}
+      | DIV {}
+      ;
+  
+  fator: LPAREN expr RPAREN {}
+       | var {}
+       | ativacao {}
+       | NUMBER { printf("number\n"); }
        ;
   
+  ativacao: ID LPAREN args RPAREN { printf("ativacao\n"); }
+          ;
+
+  args: arg-list {}
+      |
+      ;
+
+  arg-list: arg-list COMMA expr {}
+           | expr {}
+           ;
+
 %%
 
 static int yylex(){
@@ -128,7 +149,7 @@ static int yylex(){
     lex = curr_token->lexem;
     tok_num = tok_to_num(tok);
   }else{
-   // printf("Last token received!\n");
+   //printf("Last token received!\n");
   }
   //if(lex) printf("Current Token: %s Lexem: %s Num: %d\n", tok, lex, tok_num);
   //else printf("Current Token: %s\n", tok);
@@ -161,9 +182,12 @@ int tok_to_num(char* tok){
   if(!strcmp(tok, "("))return LPAREN;
   if(!strcmp(tok, ")"))return RPAREN;
   if(!strcmp(tok, "{"))return LKEY;
-  if(!strcmp(tok, "}"))return RKEY;
+  if(!strcmp(tok, "}")) return RKEY;
   if(!strcmp(tok, ","))return COMMA;
   if(!strcmp(tok, ";"))return SEMICOLON;
+
+  if(!strcmp(tok, "NUMBER"))return NUMBER;
+  
   if(!strcmp(tok, "END"))return END;
   printf("Token not found: %s\n", tok);
   return -1;

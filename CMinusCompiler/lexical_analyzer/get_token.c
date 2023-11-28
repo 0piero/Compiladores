@@ -14,6 +14,21 @@ int isBufferWhitespace(char *buffer) {
     return 1;
 }
 
+
+int isSubBufferWhitespace(char *buffer, int start) {
+    if (buffer == NULL) {
+        return 0;
+    }
+
+    for (int i = start; buffer[i] != '\0'; ++i) {
+        if (buffer[i] != ' ' && buffer[i] != '\n' && buffer[i] != '\0') {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
 TokenNode* next_token() {
     if(flag){
         TokenNode *node = allocate_token_node();
@@ -34,7 +49,7 @@ TokenNode* next_token() {
     boolean update_char_num = TRUE, update_line_num = TRUE;
 
     TokenNode *node = allocate_token_node();
-
+    
     if (input_buff.curr_char_pos == BUFFER_SIZE - 1 || curr_char == '\n') {
         input_buff.curr_char_pos = 0;
         clear_input_buffer(input_buff);
@@ -66,7 +81,7 @@ TokenNode* next_token() {
         }
 
         state = dfa_table[state][curr_char_idx];
-
+        
         if(state == SA) {
             node->token = strdup(lxm_to_token((&lexem_buff)->word_buffer));
             node->lexem = strdup((&lexem_buff)->word_buffer);
@@ -75,6 +90,9 @@ TokenNode* next_token() {
             input_buff.curr_char_pos--; 
             lexem_buff.curr_char_pos = 0;
             clear_lexem_buffer(lexem_buff);
+            if(isSubBufferWhitespace(input_buff.word_buffer, input_buff.curr_char_pos)) {
+                input_buff.curr_char_pos = BUFFER_SIZE -1;
+            }
             if(curr_char == '\0') {
                 flag = 1;
                 free(lexem_buff.word_buffer);

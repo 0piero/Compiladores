@@ -19,8 +19,8 @@ static int curr_char_idx = -1;
 static char *p_str;
 static char curr_char;
 
-
-int is_full_white(char*);
+int isBufferWhitespace(char *buffer);
+int isSubBufferWhitespace(char *buffer, int start);
 TokenNode* next_token();
 void clean_buffers();
 #endif
