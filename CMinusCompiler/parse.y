@@ -40,15 +40,14 @@
   programa: decl-lista {tree = $1;}
             ;
 
-  decl-lista: decl-lista decl {
-                $$ = $1;                
-                $2->sibling = R_mst_decl_node;
-                R_mst_decl_node = $2; /* atualiza o novo nó decl mais a esquerda da arvore */
+  decl-lista: decl-lista decl { /* corrigido com o esquema de reducao do bison */
+                $$ = $1;
+                R_mst_decl_node->sibling = $2;
+                R_mst_decl_node = $2;               
               }
             | decl {
                 $$ = $1;
-                $1->sibling = R_mst_decl_node;
-                R_mst_decl_node = $1; /* seta o no mais a esquerda no caso base de decl-lista */
+                R_mst_decl_node = $1; /* seta o no mais a direita da lista no caso base de decl-lista */
               }
             ;
 
@@ -133,15 +132,13 @@
         ;
 
   param-lista:  param-lista COMMA param {
-
-                  $$ = $1;                
-                  $3->sibling = R_mst_param;
-                  R_mst_param = $3; /* atualiza o novo nó decl mais a esquerda da arvore */
+                  $$ = $1;
+                  R_mst_param->sibling = $3;
+                  R_mst_param = $3;         
                 }
             | param {
                 $$ = $1;
-                $1->sibling = R_mst_param;
-                R_mst_param = $1; /* seta o no mais a esquerda no caso base de param-lista */
+                R_mst_param = $1;
               }
             ;
 
@@ -179,12 +176,13 @@
                ;
 
   local-decls:  local-decls var-decl {
-                  $$ = $1;              
-                  $2->sibling = L_var_decl;
-                  L_var_decl = $2; /* atualiza o novo nó var_decl mais a esquerda da arvore */
+
+                  $$ = $1;
+                  L_var_decl->sibling = $2;
+                  L_var_decl = $2;
                 }
-             |  {
-                  $$ = L_var_decl; /* ver se isso faz sentido */
+             |  { /* ver o comportamento disso */
+                  $$ = 
                 }
              ;
 
