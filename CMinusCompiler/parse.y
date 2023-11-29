@@ -13,15 +13,16 @@
 
   static int yylex(void);
   TokenNode* next_token();
-  syntax_tree* tree;            /* raiz da syntax_tree/
+  syntax_tree* tree;            /* raiz da syntax_tree */
   syntax_tree* R_mst_decl_node; /* (utilizado para as regras 2 e 3 da CFG) mantem um ponteiro pro nó declaracao
-                                   mais a direita corrente na arvore 
+                                   mais a esquerda corrente na arvore 
                                 */
   syntax_tree* R_mst_param;     /* (utilizado para as regras 8 e 9 da CFG) mantem um ponteiro pro nó param
-                                   mais a direita corrente na arvore que se origina de param-list 
+                                   mais a esquerda corrente na arvore que se origina de param-list 
                                 */
   syntax_tree* L_var_decl;                                
   syntax_tree* L_stmt;
+  syntax_tree* L_mst_expr;
 
 
   int tok_to_num(char *);
@@ -77,10 +78,12 @@
   tipo-especificador: INT {
                         $1 = syntax_tree_alloc_node(0);
                         $$ = $1;
+                        $$->child = NULL;
                       }
                     | VOID {
                         $1 = syntax_tree_alloc_node(0);
                         $$ = $1;
+                        $$->child = NULL;
                       }
                     ;
   
@@ -102,6 +105,7 @@
         | VOID {
             $1 = syntax_tree_alloc_node(0);
             $$ = $1;
+            $$->child = NULL;
           }
         ;
 
@@ -143,8 +147,7 @@
                ;
 
   local-decls:  local-decls var-decl {
-                  $$ = $1;
-                  $1->sibling = $2;              
+                  $$ = $1;              
                   $2->sibling = L_var_decl;
                   L_var_decl = $2; /* atualiza o novo nó var_decl mais a esquerda da arvore */
                 }
@@ -154,8 +157,7 @@
              ;
 
   statement-lista:  statement-lista statement {
-                      $$ = $1;
-                      $1->sibling = $2;              
+                      $$ = $1;              
                       $2->sibling = L_stmt;
                       L_stmt = $2; /* atualiza o novo nó var_decl mais a esquerda da arvore */
                     }
@@ -266,22 +268,22 @@
               ;
 
   relacional: LET {
-                $$=$1;
+                $$=syntax_tree_alloc_node(0);
               }
             | LT {
-                $$=$1;
+                $$=syntax_tree_alloc_node(0);
               }
             | GT {
-                $$=$1;
+                $$=syntax_tree_alloc_node(0);
               }
             | GET {
-                $$=$1;
+                $$=syntax_tree_alloc_node(0);
               }
             | EQL {
-                $$=$1;
+                $$=syntax_tree_alloc_node(0);
               }
             | NEQL {
-                $$=$1;
+                $$=syntax_tree_alloc_node(0);
               }
             ;
 
@@ -297,8 +299,8 @@
               }
            ;
 
-  soma: PLUS {$$ = $1;}
-      | MINUS {$$ = $1;}
+  soma: PLUS {$$ = syntax_tree_alloc_node(0);}
+      | MINUS {$$ = syntax_tree_alloc_node(0);}
       ;
 
   termo:  termo mult fator {
@@ -309,12 +311,11 @@
             $2->child[mult_fator] = $3;
   }
        |  fator {
-            $$ = $1;
-          }
+            $$ = $1;}
        ;
 
-  mult: TIMES {$$ = $1;}
-      | DIV {$$ = $1;}
+  mult: TIMES {$$ = syntax_tree_alloc_node(0);}
+      | DIV {$$ = syntax_tree_alloc_node(0);}
       ;
   
   fator: LPAREN expr RPAREN {$$ = $2;}
@@ -339,12 +340,15 @@
       ;
 
   arg-list: arg-list COMMA expr {
-              $$ = L_mst_expr;
               $$ = $1;                
               $3->sibling = L_mst_expr;
               L_mst_expr = $3; /* atualiza o novo nó decl mais a esquerda da arvore */
             }
-           | expr {}
+           |  expr {
+                $$ = $1;
+                $1->sibling = L_mst_expr;
+                L_mst_expr = $1;
+              }
            ;
 
 %%
