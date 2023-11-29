@@ -244,48 +244,92 @@
 
   var:  ID {
           $$ = syntax_tree_alloc_node(0);
+          $$->child = NULL;
         }
      |  ID LBRA expr RBRA {
           enum var_enum {asgn_var, asgn_expr};
-          $$ = syntax_tree_alloc_node(0);
+          $$ = syntax_tree_alloc_node(1); /* ID node */
+          $$->child[0] = expr; /* ID->child[0] = expr */
         }
      ;
 
-  simples-expr: soma-expr relacional soma-expr {}
-              | soma-expr
+  simples-expr: soma-expr relacional soma-expr {
+                  $$ = $2;
+
+                  enum simpl_expr_enum {soma_expr1, soma_expr2};
+                  $2->child[soma_expr1] = $1;
+                  $2->child[soma_expr2] = $3;
+                }
+              | soma-expr {
+                  $$ = $1;
+                }
               ;
 
-  relacional: LET {}
-            | LT {}
-            | GT {}
-            | GET {}
-            | EQL {}
-            | NEQL {}
+  relacional: LET {
+                $$=$1;
+              }
+            | LT {
+                $$=$1;
+              }
+            | GT {
+                $$=$1;
+              }
+            | GET {
+                $$=$1;
+              }
+            | EQL {
+                $$=$1;
+              }
+            | NEQL {
+                $$=$1;
+              }
             ;
 
-  soma-expr: soma-expr soma termo {}
-           | termo {}
+  soma-expr: soma-expr soma termo {
+                $$ = $2;
+
+                enum soma_expr_enum {soma_expr, soma_termo};
+                $2->child[soma_expr1] = $1;
+                $2->child[soma_expr2] = $3;
+              }
+           |  termo {
+                $$ = $1;
+              }
            ;
 
-  soma: PLUS {}
-      | MINUS {}
+  soma: PLUS {$$ = $1;}
+      | MINUS {$$ = $1;}
       ;
 
-  termo: termo mult fator {}
-       | fator {}
+  termo:  termo mult fator {
+            $$ = $2;
+
+            enum mult_enum {mult_termo, mult_fator};
+            $2->child[mult_termo] = $1;
+            $2->child[mult_fator] = $3;
+  }
+       |  fator {
+            $$ = $1;
+          }
        ;
 
-  mult: TIMES {}
-      | DIV {}
+  mult: TIMES {$$ = $1;}
+      | DIV {$$ = $1;}
       ;
   
-  fator: LPAREN expr RPAREN {}
-       | var {}
-       | ativacao {}
-       | NUMBER { printf("number\n"); }
+  fator: LPAREN expr RPAREN {$$ = $2;}
+       | var {$$ = $1;}
+       | ativacao {$$ = $1;}
+       | NUMBER { $$ = $1;}
        ;
   
-  ativacao: ID LPAREN args RPAREN { printf("ativacao\n"); }
+  ativacao: ID LPAREN args RPAREN {
+
+              $$ = syntax_tree_alloc_node(2);
+              enum ativacao_enum {ativacao_id, ativacao_args};
+              $$->child[ativacao_id] = syntax_tree_alloc_node(0);
+              $$->child[ativacao_args] = $3;
+            }
           ;
 
   args: arg-list {}
