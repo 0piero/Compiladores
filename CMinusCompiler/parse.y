@@ -13,7 +13,7 @@
 
   static int yylex(void);
   TokenNode* next_token();
-  syntax_tree* tree;            /* raiz da syntax_tree*/
+  syntax_tree* tree;            /* raiz da syntax_tree/
   syntax_tree* R_mst_decl_node; /* (utilizado para as regras 2 e 3 da CFG) mantem um ponteiro pro nó declaracao
                                    mais a direita corrente na arvore 
                                 */
@@ -41,7 +41,7 @@
 
   decl-lista: decl-lista decl {
                 $$ = $1;                
-                $2->sibling = R_mst_decl_node;
+                $$->sibling = R_mst_decl_node;
                 R_mst_decl_node = $2; /* atualiza o novo nó decl mais a esquerda da arvore */
               }
             | decl {
@@ -220,13 +220,13 @@
                   enum retorno_decl_enum {ret_expr};
                   syntax_tree* ret_node = syntax_tree_alloc_node(1);
                   $$ = ret_node;
-                  $$->child[ret_node] = NULL;
+                  $$->child[ret_expr] = NULL;
                 }
               | RETURN expr SEMICOLON {
                   enum retorno_decl_enum {ret_expr};
                   syntax_tree* ret_node = syntax_tree_alloc_node(1);
                   $$ = ret_node;
-                  $$->child[ret_node] = $1;
+                  $$->child[ret_expr] = $1;
                 }
               ;
 
@@ -332,11 +332,18 @@
             }
           ;
 
-  args: arg-list {}
+  args: arg-list {
+          $$ = $1;
+        }
       |
       ;
 
-  arg-list: arg-list COMMA expr {}
+  arg-list: arg-list COMMA expr {
+              $$ = L_mst_expr;
+              $$ = $1;                
+              $3->sibling = L_mst_expr;
+              L_mst_expr = $3; /* atualiza o novo nó decl mais a esquerda da arvore */
+            }
            | expr {}
            ;
 
