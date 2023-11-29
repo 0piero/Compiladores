@@ -251,7 +251,7 @@
      |  ID LBRA expr RBRA {
           enum var_enum {asgn_var, asgn_expr};
           $$ = syntax_tree_alloc_node(1); /* ID node */
-          $$->child[0] = expr; /* ID->child[0] = expr */
+          $$->child[0] = $3; /* ID->child[0] = expr */
         }
      ;
 
@@ -291,8 +291,8 @@
                 $$ = $2;
 
                 enum soma_expr_enum {soma_expr, soma_termo};
-                $2->child[soma_expr1] = $1;
-                $2->child[soma_expr2] = $3;
+                $2->child[soma_expr] = $1;
+                $2->child[soma_termo] = $3;
               }
            |  termo {
                 $$ = $1;
