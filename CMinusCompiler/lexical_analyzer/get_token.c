@@ -75,13 +75,32 @@ TokenNode* next_token() {
         curr_char_idx = get_current_char_idx(curr_char, state);
         
         if(curr_char_idx == INVALID_CHAR){
-            printf("ERRO LÉXICO: %c", curr_char);
+            printf("ERRO LÉXICO: %c - %d", curr_char, input_buff.curr_char_pos);
             printf("LINHA: %d\n", input_buff.curr_line);
             exit(1);                
         }
 
+        if(curr_char_idx == UNFINISHED_COOMENT){
+            input_buff.curr_char_pos = 0;
+            clear_input_buffer(input_buff);
+            p_str = fgets(input_buff.word_buffer, BUFFER_SIZE, fp);
+            if (!p_str){
+                printf("EOF\n");
+                return NULL;
+            }
+            // printf("State: %d\n", state);
+            // printf("%s\n", input_buff.word_buffer);
+            continue;
+        }
+
         state = dfa_table[state][curr_char_idx];
-        
+
+        // if(curr_char ==  '\0'){
+        //     printf("Char: \\0 State: %d\n", state);
+        // }
+        // printf("Char: %c State: %d\n", curr_char, state);
+
+
         if(state == SA) {
             node->token = strdup(lxm_to_token((&lexem_buff)->word_buffer));
             node->lexem = strdup((&lexem_buff)->word_buffer);
@@ -110,6 +129,18 @@ TokenNode* next_token() {
         if (state == 0){
             lexem_buff.curr_char_pos = 0;
             clear_lexem_buffer(lexem_buff);
+
+            if(curr_char ==  '\0'){
+                input_buff.curr_char_pos = 0;
+                clear_input_buffer(input_buff);
+                p_str = fgets(input_buff.word_buffer, BUFFER_SIZE, fp);
+                if (!p_str){
+                    printf("EOF\n");
+                    return NULL;
+                }
+                continue;
+            }
+
             continue;
         }
 

@@ -1,8 +1,8 @@
 CC = gcc
-TARGET = main
+TARGET = parse
 SRC = $(wildcard */*.c)
 OBJ = $(SRC:.c=.o)
-SRC_MAIN = $(wildcard *.c)
+SRC_MAIN = $(wildcard *.tab.c)
 MAIN = $(SRC_MAIN:.c=.o)
 CFLAGS = -Wall
 
@@ -13,6 +13,6 @@ all: $(OBJ) $(MAIN)
 	$(CC) -o $@ -c $< $(CFLAGS)
 
 clean:
-	rm *.o
 	rm */*.o
-	rm main
+	rm *.o
+	rm parse

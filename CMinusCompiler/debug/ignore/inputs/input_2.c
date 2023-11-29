@@ -1,5 +1,5 @@
 /* Um programa para calcular o mdc
-segundo o algoritmo de Euclides */
+segundo o algoritmo de Euclides. */
 
 int gcd (int u, int v)
 {
