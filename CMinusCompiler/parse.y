@@ -41,7 +41,7 @@
 
   decl-lista: decl-lista decl {
                 $$ = $1;                
-                $$->sibling = R_mst_decl_node;
+                $2->sibling = R_mst_decl_node;
                 R_mst_decl_node = $2; /* atualiza o novo nó decl mais a esquerda da arvore */
               }
             | decl {
