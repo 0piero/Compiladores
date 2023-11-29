@@ -20,6 +20,8 @@
   syntax_tree* R_mst_param;     /* (utilizado para as regras 8 e 9 da CFG) mantem um ponteiro pro nó param
                                    mais a direita corrente na arvore que se origina de param-list 
                                 */
+  syntax_tree* L_var_decl;                                
+  syntax_tree* L_stmt;
 
 
   int tok_to_num(char *);
@@ -44,6 +46,7 @@
               }
             | decl {
                 $$ = $1;
+                $1->sibling = R_mst_decl_node;
                 R_mst_decl_node = $1; /* seta o no mais a esquerda no caso base de decl-lista */
               }
             ;
@@ -53,13 +56,12 @@
       ;
 
   var-decl: tipo-especificador ID SEMICOLON {
-              enum var_decl_enum {espc_type, id, skol};
+              enum var_decl_enum {espc_type, id};
 
-              $$ = syntax_tree_alloc_node(3);
+              $$ = syntax_tree_alloc_node(2);
 
               $$->child[espc_type] = $1;
               $$->child[id] = syntax_tree_alloc_node(0);
-              $$->child[skol] = syntax_tree_alloc_node(0);
             }
           | tipo-especificador ID LBRA NUMBER RBRA SEMICOLON {
               enum var_decl_enum {espc_type, id, num};
@@ -89,7 +91,7 @@
               
               $$->child[espc_type] = $1;
               $$->child[id] = syntax_tree_alloc_node(0);
-              $$->child[params] = syntax_tree_alloc_node(0);
+              $$->child[params] = $4;
               $$->child[comp_decl] = $6;
             }
           ;
@@ -111,53 +113,142 @@
                 }
             | param {
                 $$ = $1;
+                $1->sibling = R_mst_param;
                 R_mst_param = $1; /* seta o no mais a esquerda no caso base de param-lista */
               }
             ;
 
-  param: tipo-especificador ID { printf("tipo ID\n"); }
-       | tipo-especificador ID LBRA RBRA { printf("tipo ID []\n"); }
+  param:  tipo-especificador ID {
+            enum param_enum {espc_type, id};
+            $$ = syntax_tree_alloc_node(2);
+            $$->child[espc_type] = $1;
+            $$->child[id] = syntax_tree_alloc_node(0);
+          }
+       |  tipo-especificador ID LBRA RBRA {
+            enum param_enum {espc_type, id, lbra, rbra};
+            $$ = syntax_tree_alloc_node(4);
+            $$->child[espc_type] = $1;
+            $$->child[id] = syntax_tree_alloc_node(0);
+            $$->child[lbra] = syntax_tree_alloc_node(0);
+            $$->child[rbra] = syntax_tree_alloc_node(0);
+          }
        ;
 
-  composto-decl: LKEY local-decls statement-lista RKEY { printf("composto-decl\n"); }
+  composto-decl:  LKEY local-decls statement-lista RKEY {
+                    enum composto_decl_enum {lcl_dcls, stmnt_lst};
+                    $$ = syntax_tree_alloc_node(2);
+                    $$->child[lcl_dcls] = $2;
+                    $$->child[stmnt_lst] = $3;
+                  }
                ;
 
-  local-decls: local-decls var-decl {}
-             | {}
+  local-decls:  local-decls var-decl {
+                  $$ = $1;
+                  $1->sibling = $2;              
+                  $2->sibling = L_var_decl;
+                  L_var_decl = $2; /* atualiza o novo nó var_decl mais a esquerda da arvore */
+                }
+             |  {
+                  $$ = L_var_decl; /* ver se isso faz sentido */
+                }
              ;
 
-  statement-lista: statement-lista statement {}
-                 | {}
+  statement-lista:  statement-lista statement {
+                      $$ = $1;
+                      $1->sibling = $2;              
+                      $2->sibling = L_stmt;
+                      L_stmt = $2; /* atualiza o novo nó var_decl mais a esquerda da arvore */
+                    }
+                 |  {
+                      $$ = L_stmt;
+                    }
                  ;
 
-  statement: expr-decl {}
-           | composto-decl {}
-           | selec-decl {}
-           | iter-decl {}
-           | retorno-decl {}
+  statement:  expr-decl {
+                $$ = $1;
+              }
+           |  composto-decl {
+                $$ = $1;
+              }
+           |  selec-decl {
+                $$ = $1;
+              }
+           |  iter-decl {
+                $$ = $1;
+              }
+           |  retorno-decl {
+                $$ = $1;
+              }
            ;
 
-  expr-decl: expr SEMICOLON {}
-           | SEMICOLON {}
+  expr-decl:  expr SEMICOLON {
+                $$ = $1;
+              }
+           |  SEMICOLON {
+                $$ = NULL;
+              }
            ;
 
-  selec-decl: IF LPAREN expr RPAREN statement {}
-            | IF LPAREN expr RPAREN statement ELSE statement {}
+  selec-decl: IF LPAREN expr RPAREN statement { /* ver se é desse jeito a arvore pra declaracoes if*/
+                enum selec_decl_enum {if_expr, if_stmt, else_stmt};
+                syntax_tree* if_node = syntax_tree_alloc_node(3);
+                $$ = if_node;
+                $$->child[if_expr] = $3;
+                $$->child[if_stmt] = $5;
+                $$->child[else_stmt] = NULL;
+              }
+            | IF LPAREN expr RPAREN statement ELSE statement {
+                enum selec_decl_enum {if_expr, if_stmt, else_stmt};
+                syntax_tree* if_node = syntax_tree_alloc_node(3);
+                $$ = if_node;
+                $$->child[if_expr] = $3;
+                $$->child[if_stmt] = $5;
+                $$->child[else_stmt] = $7;
+              }
             ;
 
-  iter-decl: WHILE LPAREN expr RPAREN statement {}
+  iter-decl:  WHILE LPAREN expr RPAREN statement {
+                enum iter_decl_enum {while_expr, while_stmt};
+                syntax_tree* while_node = syntax_tree_alloc_node(2);
+                $$ = while_node;
+                $$->child[while_expr] = $3;
+                $$->child[while_stmt] = $5;
+              }
            ;
 
-  retorno-decl: RETURN SEMICOLON {}
-              | RETURN expr SEMICOLON { printf("return expr;\n"); }
+  retorno-decl: RETURN SEMICOLON {
+                  enum retorno_decl_enum {ret_expr};
+                  syntax_tree* ret_node = syntax_tree_alloc_node(1);
+                  $$ = ret_node;
+                  $$->child[ret_node] = NULL;
+                }
+              | RETURN expr SEMICOLON {
+                  enum retorno_decl_enum {ret_expr};
+                  syntax_tree* ret_node = syntax_tree_alloc_node(1);
+                  $$ = ret_node;
+                  $$->child[ret_node] = $1;
+                }
               ;
 
-  expr: var ASS expr {}
-      | simples-expr {}
+  expr: var ASS expr {
+          enum ass_expr_enum {asgn_var, asgn_expr};
+          syntax_tree* asgn_node = syntax_tree_alloc_node(2);
+          $$ = asgn_node;
+          $$->child[asgn_var] = $1;
+          $$->child[asgn_expr] = $3;
+        }
+      | simples-expr {
+          $$ = $1;
+        }
       ;
 
-  var: ID {}
-     | ID LBRA expr RBRA {}
+  var:  ID {
+          $$ = syntax_tree_alloc_node(0);
+        }
+     |  ID LBRA expr RBRA {
+          enum var_enum {asgn_var, asgn_expr};
+          $$ = syntax_tree_alloc_node(0);
+        }
      ;
 
   simples-expr: soma-expr relacional soma-expr {}
