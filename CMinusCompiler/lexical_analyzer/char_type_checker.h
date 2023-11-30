@@ -7,6 +7,7 @@
 #include "table.h"
 #define INVALID_CHAR -1
 #define WHITE_SPACE_CHAR -2
+#define UNFINISHED_COOMENT -3
 
 boolean is_digit(char curr_char);
 boolean is_alpha(char curr_char);

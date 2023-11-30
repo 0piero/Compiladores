@@ -231,7 +231,7 @@ int get_current_char_idx(char c, int state){
             return DIGIT_COL; // aceita
         case 6:
             if(is_star(c)) return STAR_COL; //vai pra S7
-            if(c == '\0') return INVALID_CHAR;
+            if(c == '\0') return UNFINISHED_COOMENT;
             return DIGIT_COL; // vai pra S6
         case 7:
             if(is_right_bar(c)) return BAR_COL; //vai pra S0

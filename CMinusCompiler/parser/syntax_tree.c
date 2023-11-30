@@ -13,7 +13,7 @@ syntax_tree* syntax_tree_alloc_node(int n_child){
 }
 
 void syntax_tree_display(syntax_tree* root){
-	root
+	root;
 
 
 
