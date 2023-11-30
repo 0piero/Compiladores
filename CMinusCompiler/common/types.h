@@ -3,12 +3,20 @@
 
 #include <stdlib.h>
 
+#define INTEGER_T 0
+#define VOID_T 1
+
+#define FUNCAO 2
+#define VARIAVEL 3
+
+
 struct TokenNode {
     char * token;   // ID, INT, ...
     char * lexem;   // Lexema puro, ex: int ABC;
     char* scope;    // global, funcao, ...
     char* nodetype; // VARIAVEL ou FUNCAO
     char* datatype; // INT, CHAR, etc...
+    char* len;        // Array size
     int line;       // Linha em que aparece
 };
 typedef struct TokenNode TokenNode;
