@@ -14,6 +14,7 @@
   static int yylex(void);
   TokenNode* next_token();
   syntax_tree* tree;            /* raiz da syntax_tree */
+  TokenNode* _curr_token;       /* struct do token atual retornado pela yylex contendo os metadados */
   syntax_tree* R_mst_decl_node; /* (utilizado para as regras 2 e 3 da CFG) mantem um ponteiro pro nó declaracao
                                    mais a esquerda corrente na arvore 
                                 */
@@ -26,6 +27,7 @@
 
 
   int tok_to_num(char *);
+  char* deepCopy(char *);
   void yyerror(char *);
 %}
 
@@ -54,6 +56,14 @@
   decl: var-decl {$$ = $1;}
       | fun-decl {$$ = $1;}
       ;
+
+  id: ID {
+        $$ = syntax_tree_alloc_node(0);
+        $$->node_data->token = "ID";
+        $$->node_data->lexem = _curr_token->lexem;
+        $$->node_data->line = lineno;
+
+      }
 
   var-decl: tipo-especificador ID SEMICOLON {
               enum var_decl_enum {espc_type};
@@ -483,11 +493,13 @@
 static int yylex(){
   TokenNode* curr_token = next_token();
   int tok_num = END;
-  char *tok, *lex;
+  char *tok;
   if(curr_token){
     lineno = curr_token->line;
     tok = curr_token->token;
-    lex = curr_token->lexem;
+    /* strcpy(lex, curr_token->lexem); */
+    /* salvando todo o struct do token ao inves de copiar so o lexema */
+    _curr_token = curr_token; /* tomar cuidado pra nao dar free depois em curr_token */
     tok_num = tok_to_num(tok);
   }else{
    //printf("Last token received!\n");
