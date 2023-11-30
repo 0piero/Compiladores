@@ -61,7 +61,7 @@
   num: NUMBER {
     $$ = syntax_tree_alloc_node(3);
     $$->node_data->token = "NUMBER";
-    $$->node_data->lexem = lex;
+    $$->node_data->lexem = deepCopy(lex);
     $$->node_data->datatype = INTEGER_T;
   }
   ;
@@ -227,16 +227,18 @@
 
   selec-decl: IF LPAREN expr RPAREN statement { 
                 $$ = syntax_tree_alloc_node(2);
+                $$->node_data->token = "IF";
                 $$->n_child = 2;
                 $$->child[0] = $3;
                 $$->child[1] = $5;
               }
             | IF LPAREN expr RPAREN statement ELSE statement {
                 $$ = syntax_tree_alloc_node(3);
+                $$->node_data->token = "IF-ELSE";
                 $$->n_child = 3;
                 $$->child[0] = $3;
                 $$->child[1] = $5;
-                $$->child[1] = $7;
+                $$->child[2] = $7;
               }
             ;
 
@@ -250,18 +252,21 @@
 
   retorno-decl: RETURN SEMICOLON {
                  $$ = syntax_tree_alloc_node(0);
+                 $$->node_data->token = "RETURN";
                  $$->n_child = 0;
                  $$->node_data->datatype = VOID_T;
               }
               | RETURN expr SEMICOLON {
                 $$ = syntax_tree_alloc_node(1);
+                $$->node_data->token = "RETURN";
                 $$->n_child = 1;
                 $$->child[0] = $2;
               }
               ;
 
   expr: var ASS expr {
-          syntax_tree* asgn_node = syntax_tree_alloc_node(2);
+          $$ = syntax_tree_alloc_node(2);
+          $$->node_data->token = "ASSIGN";
           $$->child[0] = $1;
           $$->child[1] = $3;
           $$->n_child = 2;
@@ -353,8 +358,9 @@
             $2->child[0] = $1;
             $2->child[1] = $3;
   }
-       |  fator {
-            $$ = $1;}
+        |  fator {
+          $$ = $1;
+       }
        ;
 
   mult: TIMES {
@@ -385,7 +391,7 @@
   args: arg-list {
           $$ = $1;
         }
-      |
+      | { $$ = NULL; }
       ;
 
   arg-list: arg-list COMMA expr {
@@ -469,11 +475,16 @@ char * deepCopy(char * source){
 int main(int argv, char **argc){
   yyparse();
   syntax_tree *t = tree;
+  
+  syntax_tree_display(tree);
+
+  /*
   printTokenNode(t->node_data);
   printTokenNode(t->child[0]->child[0]->child[0]->node_data);
   t = t->sibling;
   if(!t) printf("NULL\n");
   printTokenNode(t->node_data);
+  */
 
   return 0;
 }

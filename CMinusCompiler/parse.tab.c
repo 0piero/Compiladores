@@ -573,10 +573,10 @@ static const yytype_int16 yyrline[] =
        0,    33,    33,    36,    46,    49,    50,    53,    61,    69,
       78,    90,   104,   118,   121,   128,   137,   142,   152,   165,
      174,   175,   176,   179,   188,   191,   200,   203,   206,   209,
-     212,   215,   220,   223,   228,   234,   243,   251,   256,   263,
-     269,   274,   275,   284,   290,   295,   300,   305,   310,   315,
-     320,   327,   333,   338,   343,   350,   356,   360,   365,   372,
-     373,   374,   375,   378,   385,   388,   391,   400
+     212,   215,   220,   223,   228,   235,   245,   253,   259,   267,
+     274,   279,   280,   289,   295,   300,   305,   310,   315,   320,
+     325,   332,   338,   343,   348,   355,   361,   366,   371,   378,
+     379,   380,   381,   384,   391,   394,   397,   406
 };
 #endif
 
@@ -1272,7 +1272,7 @@ yyreduce:
               {
     yyval = syntax_tree_alloc_node(3);
     yyval->node_data->token = "NUMBER";
-    yyval->node_data->lexem = lex;
+    yyval->node_data->lexem = deepCopy(lex);
     yyval->node_data->datatype = INTEGER_T;
   }
 #line 1279 "parse.tab.c"
@@ -1545,83 +1545,88 @@ yyreduce:
 #line 228 "parse.y"
                                               { 
                 yyval = syntax_tree_alloc_node(2);
+                yyval->node_data->token = "IF";
                 yyval->n_child = 2;
                 yyval->child[0] = yyvsp[-2];
                 yyval->child[1] = yyvsp[0];
               }
-#line 1553 "parse.tab.c"
+#line 1554 "parse.tab.c"
     break;
 
   case 35: /* selec-decl: IF LPAREN expr RPAREN statement ELSE statement  */
-#line 234 "parse.y"
+#line 235 "parse.y"
                                                              {
                 yyval = syntax_tree_alloc_node(3);
+                yyval->node_data->token = "IF-ELSE";
                 yyval->n_child = 3;
                 yyval->child[0] = yyvsp[-4];
                 yyval->child[1] = yyvsp[-2];
-                yyval->child[1] = yyvsp[0];
+                yyval->child[2] = yyvsp[0];
               }
-#line 1565 "parse.tab.c"
+#line 1567 "parse.tab.c"
     break;
 
   case 36: /* iter-decl: WHILE LPAREN expr RPAREN statement  */
-#line 243 "parse.y"
+#line 245 "parse.y"
                                                  {
                 yyval = syntax_tree_alloc_node(2);
                 yyval->n_child = 2;
                 yyval->child[0] = yyvsp[-2];
                 yyval->child[1] = yyvsp[0];
               }
-#line 1576 "parse.tab.c"
+#line 1578 "parse.tab.c"
     break;
 
   case 37: /* retorno-decl: RETURN SEMICOLON  */
-#line 251 "parse.y"
+#line 253 "parse.y"
                                  {
                  yyval = syntax_tree_alloc_node(0);
+                 yyval->node_data->token = "RETURN";
                  yyval->n_child = 0;
                  yyval->node_data->datatype = VOID_T;
               }
-#line 1586 "parse.tab.c"
+#line 1589 "parse.tab.c"
     break;
 
   case 38: /* retorno-decl: RETURN expr SEMICOLON  */
-#line 256 "parse.y"
+#line 259 "parse.y"
                                       {
                 yyval = syntax_tree_alloc_node(1);
+                yyval->node_data->token = "RETURN";
                 yyval->n_child = 1;
                 yyval->child[0] = yyvsp[-1];
               }
-#line 1596 "parse.tab.c"
+#line 1600 "parse.tab.c"
     break;
 
   case 39: /* expr: var ASS expr  */
-#line 263 "parse.y"
+#line 267 "parse.y"
                      {
-          syntax_tree* asgn_node = syntax_tree_alloc_node(2);
+          yyval = syntax_tree_alloc_node(2);
+          yyval->node_data->token = "ASSIGN";
           yyval->child[0] = yyvsp[-2];
           yyval->child[1] = yyvsp[0];
           yyval->n_child = 2;
         }
-#line 1607 "parse.tab.c"
+#line 1612 "parse.tab.c"
     break;
 
   case 40: /* expr: simples-expr  */
-#line 269 "parse.y"
+#line 274 "parse.y"
                      {
           yyval = yyvsp[0];
         }
-#line 1615 "parse.tab.c"
+#line 1620 "parse.tab.c"
     break;
 
   case 41: /* var: id  */
-#line 274 "parse.y"
+#line 279 "parse.y"
            { yyval = yyvsp[0]; }
-#line 1621 "parse.tab.c"
+#line 1626 "parse.tab.c"
     break;
 
   case 42: /* var: id LBRA expr RBRA  */
-#line 275 "parse.y"
+#line 280 "parse.y"
                           {
           yyval = yyvsp[-3];
           yyval->n_child = 1;
@@ -1629,209 +1634,216 @@ yyreduce:
           yyval->node_data->datatype = INTEGER_T;
           yyval->child[0] = yyvsp[-1];
         }
-#line 1633 "parse.tab.c"
+#line 1638 "parse.tab.c"
     break;
 
   case 43: /* simples-expr: soma-expr relacional soma-expr  */
-#line 284 "parse.y"
+#line 289 "parse.y"
                                                {
                   yyval = yyvsp[-1];
                   yyval->n_child = 2;
                   yyvsp[-1]->child[0] = yyvsp[-2];
                   yyvsp[-1]->child[1] = yyvsp[0];
               }
-#line 1644 "parse.tab.c"
+#line 1649 "parse.tab.c"
     break;
 
   case 44: /* simples-expr: soma-expr  */
-#line 290 "parse.y"
+#line 295 "parse.y"
                           {
                   yyval = yyvsp[0];
               }
-#line 1652 "parse.tab.c"
+#line 1657 "parse.tab.c"
     break;
 
   case 45: /* relacional: LET  */
-#line 295 "parse.y"
+#line 300 "parse.y"
                   {
                 yyval=syntax_tree_alloc_node(0);
                 yyval->node_data->token = "<=";
                 yyval->node_data->lexem = "<=";
               }
-#line 1662 "parse.tab.c"
+#line 1667 "parse.tab.c"
     break;
 
   case 46: /* relacional: LT  */
-#line 300 "parse.y"
+#line 305 "parse.y"
                  {
                 yyval=syntax_tree_alloc_node(0);
                 yyval->node_data->token = "<";
                 yyval->node_data->lexem = "<";
               }
-#line 1672 "parse.tab.c"
+#line 1677 "parse.tab.c"
     break;
 
   case 47: /* relacional: GT  */
-#line 305 "parse.y"
+#line 310 "parse.y"
                  {
                 yyval=syntax_tree_alloc_node(0);
                 yyval->node_data->token = ">";
                 yyval->node_data->lexem = ">";
               }
-#line 1682 "parse.tab.c"
+#line 1687 "parse.tab.c"
     break;
 
   case 48: /* relacional: GET  */
-#line 310 "parse.y"
+#line 315 "parse.y"
                   {
                 yyval=syntax_tree_alloc_node(0);
                 yyval->node_data->token = ">=";
                 yyval->node_data->lexem = ">=";
               }
-#line 1692 "parse.tab.c"
+#line 1697 "parse.tab.c"
     break;
 
   case 49: /* relacional: EQL  */
-#line 315 "parse.y"
+#line 320 "parse.y"
                   {
                 yyval=syntax_tree_alloc_node(0);
                 yyval->node_data->token = "==";
                 yyval->node_data->lexem = "==";
               }
-#line 1702 "parse.tab.c"
+#line 1707 "parse.tab.c"
     break;
 
   case 50: /* relacional: NEQL  */
-#line 320 "parse.y"
+#line 325 "parse.y"
                    {
                 yyval=syntax_tree_alloc_node(0);
                 yyval->node_data->token = "!=";
                 yyval->node_data->lexem = "!=";
               }
-#line 1712 "parse.tab.c"
+#line 1717 "parse.tab.c"
     break;
 
   case 51: /* soma-expr: soma-expr soma termo  */
-#line 327 "parse.y"
+#line 332 "parse.y"
                                   {
                 yyval = yyvsp[-1];
                 yyval->n_child = 2;
                 yyvsp[-1]->child[0] = yyvsp[-2];
                 yyvsp[-1]->child[1] = yyvsp[0];
               }
-#line 1723 "parse.tab.c"
+#line 1728 "parse.tab.c"
     break;
 
   case 52: /* soma-expr: termo  */
-#line 333 "parse.y"
+#line 338 "parse.y"
                     {
                 yyval = yyvsp[0];
               }
-#line 1731 "parse.tab.c"
+#line 1736 "parse.tab.c"
     break;
 
   case 53: /* soma: PLUS  */
-#line 338 "parse.y"
+#line 343 "parse.y"
              {
           yyval = syntax_tree_alloc_node(0);
           yyval->node_data->token = "+";
           yyval->node_data->lexem = "+";
         }
-#line 1741 "parse.tab.c"
+#line 1746 "parse.tab.c"
     break;
 
   case 54: /* soma: MINUS  */
-#line 343 "parse.y"
+#line 348 "parse.y"
               {
           yyval = syntax_tree_alloc_node(0);
           yyval->node_data->token = "-";
           yyval->node_data->lexem = "-";
       }
-#line 1751 "parse.tab.c"
+#line 1756 "parse.tab.c"
     break;
 
   case 55: /* termo: termo mult fator  */
-#line 350 "parse.y"
+#line 355 "parse.y"
                            {
             yyval = yyvsp[-1];
             yyval->n_child = 2;
             yyvsp[-1]->child[0] = yyvsp[-2];
             yyvsp[-1]->child[1] = yyvsp[0];
   }
-#line 1762 "parse.tab.c"
+#line 1767 "parse.tab.c"
     break;
 
   case 56: /* termo: fator  */
-#line 356 "parse.y"
-                {
-            yyval = yyvsp[0];}
-#line 1769 "parse.tab.c"
+#line 361 "parse.y"
+                 {
+          yyval = yyvsp[0];
+       }
+#line 1775 "parse.tab.c"
     break;
 
   case 57: /* mult: TIMES  */
-#line 360 "parse.y"
+#line 366 "parse.y"
               {
           yyval = syntax_tree_alloc_node(0);
           yyval->node_data->token = "*";
           yyval->node_data->lexem = "*";
         }
-#line 1779 "parse.tab.c"
+#line 1785 "parse.tab.c"
     break;
 
   case 58: /* mult: DIV  */
-#line 365 "parse.y"
+#line 371 "parse.y"
             {
           yyval = syntax_tree_alloc_node(0);
           yyval->node_data->token = "/";
           yyval->node_data->lexem = "/";
       }
-#line 1789 "parse.tab.c"
-    break;
-
-  case 59: /* fator: LPAREN expr RPAREN  */
-#line 372 "parse.y"
-                             {yyval = yyvsp[-1];}
 #line 1795 "parse.tab.c"
     break;
 
-  case 60: /* fator: var  */
-#line 373 "parse.y"
-              {yyval = yyvsp[0];}
+  case 59: /* fator: LPAREN expr RPAREN  */
+#line 378 "parse.y"
+                             {yyval = yyvsp[-1];}
 #line 1801 "parse.tab.c"
     break;
 
-  case 61: /* fator: ativacao  */
-#line 374 "parse.y"
-                   {yyval = yyvsp[0];}
+  case 60: /* fator: var  */
+#line 379 "parse.y"
+              {yyval = yyvsp[0];}
 #line 1807 "parse.tab.c"
     break;
 
-  case 62: /* fator: num  */
-#line 375 "parse.y"
-              {yyval = yyvsp[0]; }
+  case 61: /* fator: ativacao  */
+#line 380 "parse.y"
+                   {yyval = yyvsp[0];}
 #line 1813 "parse.tab.c"
     break;
 
+  case 62: /* fator: num  */
+#line 381 "parse.y"
+              {yyval = yyvsp[0]; }
+#line 1819 "parse.tab.c"
+    break;
+
   case 63: /* ativacao: id LPAREN args RPAREN  */
-#line 378 "parse.y"
+#line 384 "parse.y"
                                   {
             yyval = yyvsp[-3];
             yyval->n_child = 1;
             yyval->child[0] = yyvsp[-1];
           }
-#line 1823 "parse.tab.c"
+#line 1829 "parse.tab.c"
     break;
 
   case 64: /* args: arg-list  */
-#line 385 "parse.y"
+#line 391 "parse.y"
                  {
           yyval = yyvsp[0];
         }
-#line 1831 "parse.tab.c"
+#line 1837 "parse.tab.c"
+    break;
+
+  case 65: /* args: %empty  */
+#line 394 "parse.y"
+        { yyval = NULL; }
+#line 1843 "parse.tab.c"
     break;
 
   case 66: /* arg-list: arg-list COMMA expr  */
-#line 391 "parse.y"
+#line 397 "parse.y"
                                 {
             yyval = yyvsp[-2];
             if(yyval != NULL){
@@ -1841,17 +1853,17 @@ yyreduce:
             }
             else yyval = yyvsp[0];
            }
-#line 1845 "parse.tab.c"
+#line 1857 "parse.tab.c"
     break;
 
   case 67: /* arg-list: expr  */
-#line 400 "parse.y"
+#line 406 "parse.y"
                    { yyval = yyvsp[0];}
-#line 1851 "parse.tab.c"
+#line 1863 "parse.tab.c"
     break;
 
 
-#line 1855 "parse.tab.c"
+#line 1867 "parse.tab.c"
 
       default: break;
     }
@@ -2044,7 +2056,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 403 "parse.y"
+#line 409 "parse.y"
 
 
 static int yylex(){
@@ -2114,11 +2126,16 @@ char * deepCopy(char * source){
 int main(int argv, char **argc){
   yyparse();
   syntax_tree *t = tree;
+  
+  syntax_tree_display(tree);
+
+  /*
   printTokenNode(t->node_data);
   printTokenNode(t->child[0]->child[0]->child[0]->node_data);
   t = t->sibling;
   if(!t) printf("NULL\n");
   printTokenNode(t->node_data);
+  */
 
   return 0;
 }
