@@ -171,7 +171,8 @@ boolean is_white(char curr_char){
     return FALSE;
 }
 
-boolean is_valid(char curr_char){
+boolean is_valid(char curr_char, int curr_state){
+    if (curr_state == 6) return TRUE;
     if (is_white(curr_char)) return TRUE;
     if (is_alpha(curr_char)) return TRUE;
     if (is_digit(curr_char)) return TRUE;
@@ -205,7 +206,7 @@ boolean is_close_comment(char first_char, char second_char){
 }
 
 int get_current_char_idx(char c, int state){
-    if (!is_valid(c)) return INVALID_CHAR;
+    if (!is_valid(c, state)) return INVALID_CHAR;
     switch (state){
         case 0:
             if(is_white(c)) return WHITE_SPACE_COL;

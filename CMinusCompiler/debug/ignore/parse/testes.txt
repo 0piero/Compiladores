@@ -3,3 +3,4 @@
 3: ID ID (ex: retur a;)
 4: comentarios
 5: operacao sem um dos operandos
+6: dois pontos e virgula seguidos

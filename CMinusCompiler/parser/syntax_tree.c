@@ -15,7 +15,6 @@ syntax_tree* syntax_tree_alloc_node(int n_child){
 
 void syntax_tree_display(syntax_tree* root){
 	ident += 1;
-	if(ident>11) return;
 	while(root != NULL){
 		for(int i = 0; i < ident; i++){
 			printf(" ");

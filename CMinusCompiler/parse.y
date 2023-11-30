@@ -1,6 +1,5 @@
 %{
   #define YYPARSER
-
   #include "./parser/syntax_tree.h"
   #define YYSTYPE syntax_tree *
   
@@ -10,13 +9,32 @@
   #include <string.h>
   #include "./lexical_analyzer/get_token.h"
 
+  /*
+    Variaveis Globais
+  */
+
   int lineno = 0;
   char lex[40];
+  int last_token = -1;
+  int tok_num = END;
+
+
+  syntax_tree* tree;            /* raiz da syntax_tree */
+  syntax_tree* R_mst_decl_node; /* (utilizado para as regras 2 e 3 da CFG) mantem um ponteiro pro nó declaracao
+                                   mais a esquerda corrente na arvore 
+                                */
+  syntax_tree* R_mst_param;     /* (utilizado para as regras 8 e 9 da CFG) mantem um ponteiro pro nó param
+                                   mais a esquerda corrente na arvore que se origina de param-list 
+                                */
+  syntax_tree* L_var_decl;                                
+  syntax_tree* L_mst_expr;
+
+  /*
+    Funcoes
+  */
 
   static int yylex(void);
   TokenNode* next_token();
-  syntax_tree* tree;
-
   int tok_to_num(char *);
   char* deepCopy(char *);
   void yyerror(char *);
@@ -34,37 +52,19 @@
             ;
 
   decl-lista: decl-lista decl {
-                $$ = $1;            
-                if($$ != NULL){
-                   while ($$->sibling != NULL) $$ = $$->sibling; 
-                   $$->sibling = $2;
-                   $$ = $1;
-                }else{
-                  $$ = $2;
-                }
+                $$ = $1;
+                R_mst_decl_node->sibling = $2;
+                R_mst_decl_node = $2;               
               }
-            | decl { $$ = $1; }
+            | decl {
+                $$ = $1;
+                R_mst_decl_node = $1;
+              }
             ;
 
   decl: var-decl {$$ = $1;}
       | fun-decl {$$ = $1;}
       ;
-
-  id: ID {
-      $$ = syntax_tree_alloc_node(3);
-      $$->node_data->token = "ID";
-      $$->node_data->lexem = deepCopy(lex);
-      $$->node_data->line = lineno;
-    }
-    ;
-
-  num: NUMBER {
-    $$ = syntax_tree_alloc_node(3);
-    $$->node_data->token = "NUMBER";
-    $$->node_data->lexem = deepCopy(lex);
-    $$->node_data->datatype = INTEGER_T;
-  }
-  ;
 
   var-decl: INT id SEMICOLON {
               $$ = syntax_tree_alloc_node(1);
@@ -76,11 +76,12 @@
               $2->node_data->datatype = INTEGER_T;
             }
             | INT id LBRA num RBRA SEMICOLON {
-              $$ = syntax_tree_alloc_node(1);
+              $$ = syntax_tree_alloc_node(2);
               $$->node_data->token = "INT";
               $$->node_data->lexem = "int";
-              $$->n_child = 1;
+              $$->n_child = 2;
               $$->child[0] = $2;
+              $$->child[1] = $4;
               $2->node_data->nodetype = VARIAVEL;
               $2->node_data->datatype = INTEGER_T;
               $2->node_data->len = $4->node_data->lexem;
@@ -127,17 +128,14 @@
 
   param-lista:  param-lista COMMA param {
                   $$ = $1;
-                  if($$ != NULL){
-                    while($$->sibling != NULL) $$ = $$->sibling;
-                    $$->sibling = $3;
-                    $$ = $1;
-                  }
-                  else $$ = $3;
-              }
-              | param {
+                  R_mst_param->sibling = $3;
+                  R_mst_param = $3;         
+                }
+            | param {
                 $$ = $1;
+                R_mst_param = $1;
               }
-             ;
+            ;
 
   param:  INT id {
             $$ = syntax_tree_alloc_node(1);
@@ -164,6 +162,10 @@
 
   composto-decl:  LKEY local-decls statement-lista RKEY {
                   $$ = $2;
+                  /* 
+                  Neste caso, precisamos percorrer a lista, por
+                  nao termos um "caso base".
+                  */
                   if($$ != NULL){
                     while($$->sibling != NULL) $$ = $$->sibling;
                     $$->sibling = $3;
@@ -177,19 +179,24 @@
                 ;
 
   local-decls:  local-decls var-decl {
-                  $$ = $1;      
-                  if($$ != NULL){
-                    while($$->sibling != NULL) $$ = $$->sibling;
-                    $$->sibling = $2;
-                    $$ = $1;
-                  }   
-                  else $$ = $2;     
+                  $$ = $1;
+                  L_var_decl->sibling = $2;
+                  L_var_decl = $2; 
                 }
-             |  var-decl { $$ = $1; }
+             |  var-decl { 
+                $$ = $1;
+                L_var_decl = $1; 
+              }
              ;
 
   statement-lista:  statement-lista statement {
                     $$ = $1;      
+                    /*
+                      Neste caso, tambem nao podemos usar o ponteiro
+                      pois statements podem conter outros statements.
+                      Ou seja, precisariamos de N niveis de statement
+                      para nao ter conflito na variavel global.
+                    */
                     if($$ != NULL){
                       while($$->sibling != NULL) $$ = $$->sibling;
                       $$->sibling = $2;
@@ -242,8 +249,9 @@
               }
             ;
 
-  iter-decl:  WHILE LPAREN expr RPAREN statement {
+  iter-decl:  WHILE LPAREN expr RPAREN statement-lista {
                 $$ = syntax_tree_alloc_node(2);
+                $$->node_data->token = "WHILE";
                 $$->n_child = 2;
                 $$->child[0] = $3;
                 $$->child[1] = $5;
@@ -395,22 +403,38 @@
       ;
 
   arg-list: arg-list COMMA expr {
-            $$ = $1;
-            if($$ != NULL){
-              while($$->sibling != NULL) $$ = $$->sibling;
-              $$->sibling = $3;
-              $$ = $1;
-            }
-            else $$ = $3;
-           }
-           |  expr { $$ = $1;}
-           ;
+                  $$ = $1;
+                  L_mst_expr->sibling = $3;
+                  L_mst_expr = $3; 
+                }
+             |  expr { 
+                $$ = $1;
+                L_mst_expr = $1; 
+              }
+             ;
+
+  id: ID {
+      $$ = syntax_tree_alloc_node(3);
+      $$->node_data->token = "ID";
+      $$->node_data->lexem = deepCopy(lex);
+      $$->node_data->line = lineno;
+    }
+    ;
+
+  num: NUMBER {
+    $$ = syntax_tree_alloc_node(3);
+    $$->node_data->token = "NUMBER";
+    $$->node_data->lexem = deepCopy(lex);
+    $$->node_data->datatype = INTEGER_T;
+  }
+  ;
 
 %%
 
 static int yylex(){
   TokenNode* curr_token = next_token();
-  int tok_num = END;
+  last_token = tok_num;
+  tok_num = END;
   char *tok;
   if(curr_token){
     lineno = curr_token->line;
@@ -420,8 +444,13 @@ static int yylex(){
   }else{
    //printf("Last token received!\n");
   }
-  //if(lex) printf("Current Token: %s Lexem: %s Num: %d\n", tok, lex, tok_num);
+  //if(lex) printf("Current Token: %d - %d Lexem: %s Num: %d\n", tok_num, last_token, lex, tok_num);
   //else printf("Current Token: %s\n", tok);
+
+  if(last_token == SEMICOLON && tok_num == SEMICOLON){
+    printf("ERRO SINTATICO: syntax error LINHA: %d\n", lineno);
+    exit(1);
+  }
    
   return tok_num;
 }
@@ -438,8 +467,8 @@ int tok_to_num(char* tok){
   if(!strcmp(tok, "="))return ASS;
   if(!strcmp(tok, "=="))return EQL;
   if(!strcmp(tok, "!="))return NEQL;
-  if(!strcmp(tok, ">"))return GT;
-  if(!strcmp(tok, "<"))return LT;
+  if(!strcmp(tok, ">")) return GT;
+  if(!strcmp(tok, "<")) return LT;
   if(!strcmp(tok, "<="))return LET;
   if(!strcmp(tok, ">="))return GET;
   if(!strcmp(tok, "+"))return PLUS;
