@@ -57,74 +57,68 @@
       | fun-decl {$$ = $1;}
       ;
 
+  /*
+    chamando a alloc_node pra malocar com 0 filhos,
+    precisa dar o malloc pro numero certo de filhos na regra que ela foi chamada depois
+  */
   id: ID {
         $$ = syntax_tree_alloc_node(0);
         $$->node_data->token = "ID";
         $$->node_data->lexem = _curr_token->lexem;
-        $$->node_data->line = lineno;
-
+        $$->node_data->line = _curr_token->line;
       }
+    ;
 
-  var-decl: tipo-especificador ID SEMICOLON {
+  num:  NUMBER {
+          $$ = syntax_tree_alloc_node(0);
+          $$->node_data->token = "NUMBER";
+          $$->node_data->lexem = _curr_token->lexem;
+          $$->node_data->datatype = INTEGER_T; /* ver de onde saiu esse INTEGER_T */
+        }
+      ;
+
+
+  var-decl: tipo-especificador id SEMICOLON {
               enum var_decl_enum {espc_type};
 
-              $$ = syntax_tree_alloc_node(1);
-
+              $$ = $2; /* passando o token node do terminal id*/
+              $$->child = (syntax_tree**) malloc(sizeof(syntax_tree*));
               $$->child[espc_type] = $1;
               $$->n_child = 1;
-              /* node_data */
-              char tkn[3] = {'I', 'D', '\0'};
-              $$->node_data->token = tkn;
-              /* node_data */
             }
-          | tipo-especificador ID LBRA NUMBER RBRA SEMICOLON {
+          | tipo-especificador id LBRA num RBRA SEMICOLON {
               enum var_decl_enum {espc_type, num};
 
-              $$ = syntax_tree_alloc_node(2);
+              $$ = $2;
+              $$->child = (syntax_tree**) malloc(2 * sizeof(syntax_tree*));
 
               $$->child[espc_type] = $1;
-              $$->child[num] = syntax_tree_alloc_node(0);
-              /* node_data */
-              char tkn_num[7] = {'N', 'U', 'M', 'B', 'E', 'R', '\0'};
-              $$->child[num]->node_data->token = tkn_num;
-              char tkn[3] = {'I', 'D', '\0'};
-              $$->node_data->token = tkn;
-              /* node_data */
+              $$->child[num] = $4
               $$->n_child = 2;
             }
           ;
 
   tipo-especificador: INT {
-                        $1 = syntax_tree_alloc_node(0);
-                        $$ = $1;
-                        /* node_data */
-                        char tkn[4] = {'I', 'N', 'T', '\0'};
-                        $$->node_data->token = tkn;
-                        /* node_data */
+                        $$ = syntax_tree_alloc_node(0);
+                        $$->node_data->token = "INT";
+                        $$->node_data->line = _curr_token->line;
                       }
                     | VOID {
-                        $1 = syntax_tree_alloc_node(0);
-                        $$ = $1;
-                        /* node_data */
-                        char tkn[5] = {'V', 'O', 'I', 'D', '\0'};
-                        $$->node_data->token = tkn;
-                        /* node_data */
+                        $$ = syntax_tree_alloc_node(0);
+                        $$->node_data->token = "VOID";
+                        $$->node_data->line = _curr_token->line;
                       }
                     ;
   
-  fun-decl: tipo-especificador ID LPAREN params RPAREN composto-decl {
+  fun-decl: tipo-especificador id LPAREN params RPAREN composto-decl {
               enum fun_decl_enum {espc_type, params, comp_decl};
 
-              $$ = syntax_tree_alloc_node(3);
-              
+              $$ = $2;
+              $$->child = (syntax_tree**) malloc(3 * sizeof(syntax_tree*));              
               $$->child[espc_type] = $1;
               $$->child[params] = $4;
               $$->child[comp_decl] = $6;
               $$->n_child = 3;
-              /* node_data */
-              char tkn[3] = {'I', 'D', '\0'};
-              $$->node_data->token = tkn;
-              /* node_data */
             }
           ;
 
@@ -132,12 +126,9 @@
             $$ = $1;
           }
         | VOID {
-            $1 = syntax_tree_alloc_node(0);
-            $$ = $1;
-            /* node_data */
-            char tkn[5] = {'V', 'O', 'I', 'D', '\0'};
-            $$->node_data->token = tkn;
-            /* node_data */
+            $$ = syntax_tree_alloc_node(0);
+            $$->node_data->token = "VOID";
+            $$->node_data->lexem = "void";
           }
         ;
 
@@ -152,30 +143,23 @@
               }
             ;
 
-  param:  tipo-especificador ID {
+  param:  tipo-especificador id {
             enum param_enum {espc_type};
-            $$ = syntax_tree_alloc_node(1);
+            $$ = $2;
+            $$->child = (syntax_tree**) malloc(sizeof(syntax_tree*));
             $$->child[espc_type] = $1;
             $$->n_child = 1;
-            /* node_data */
-            char tkn[3] = {'I', 'D', '\0'};
-            $$->node_data->token = tkn;
-            /* node_data */
           }
-       |  tipo-especificador ID LBRA RBRA {
-            enum param_enum {espc_type, lbra, rbra};
-            $$ = syntax_tree_alloc_node(3);
+        | tipo-especificador id LBRA RBRA {
+            enum param_enum {espc_type};
+            $$ = $2;
+            $$->child = (syntax_tree**) malloc(sizeof(syntax_tree*));
             $$->child[espc_type] = $1;
-            $$->child[lbra] = syntax_tree_alloc_node(0);
-            $$->child[rbra] = syntax_tree_alloc_node(0);
-            $$->n_child = 3;
-            /* node_data */
-            char tkn[3] = {'I', 'D', '\0'};
-            $$->node_data->token = tkn;
-            /* node_data */
+            $$->n_child = 1;
           }
        ;
 
+  /* parei aqui */
   composto-decl:  LKEY local-decls statement-lista RKEY {
                     enum composto_decl_enum {lcl_dcls, stmnt_lst};
                     $$ = syntax_tree_alloc_node(2);
@@ -186,7 +170,6 @@
                ;
 
   local-decls:  local-decls var-decl {
-
                   $$ = $1;
                   L_var_decl->sibling = $2;
                   L_var_decl = $2;
