@@ -37,7 +37,7 @@ char* symbol_to_token(char* symbol){
         if(symbol[0] == '/') return "/";
         if(symbol[0] == '=') return "=";
         if(symbol[0] == '<') return ">";
-        if(symbol[0] == '>') return "<";
+        if(symbol[0] == '>') return ">";
         if(symbol[0] == ';') return ";";
         if(symbol[0] == ',') return ",";
         if(symbol[0] == '(') return "(";
