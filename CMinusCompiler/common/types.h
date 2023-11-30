@@ -14,13 +14,14 @@ struct TokenNode {
     char * token;   // ID, INT, ...
     char * lexem;   // Lexema puro, ex: int ABC;
     char* scope;    // global, funcao, ...
-    char* nodetype; // VARIAVEL ou FUNCAO
-    char* datatype; // INT, CHAR, etc...
     char* len;        // Array size
+    int nodetype; // VARIAVEL ou FUNCAO
+    int datatype; // INT ou VOID
     int line;       // Linha em que aparece
 };
 typedef struct TokenNode TokenNode;
 
 TokenNode* allocate_token_node();
+void printTokenNode(TokenNode*);
 
 #endif
