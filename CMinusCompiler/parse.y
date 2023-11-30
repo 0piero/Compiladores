@@ -182,17 +182,19 @@
                   L_var_decl = $2;
                 }
              |  { /* ver o comportamento disso */
-                  $$ = 
+                  $$ = syntax_tree_alloc_node(0); // nó vazio
+                  L_var_decl = $$;
                 }
              ;
 
   statement-lista:  statement-lista statement {
                       $$ = $1;              
-                      $2->sibling = L_stmt;
+                      L_stmt->sibling = $2;
                       L_stmt = $2; /* atualiza o novo nó var_decl mais a esquerda da arvore */
                     }
                  |  {
-                      $$ = L_stmt;
+                      $$ = syntax_tree_alloc_node(0); // nó vazio
+                      L_stmt = $$;
                     }
                  ;
 
@@ -294,7 +296,7 @@
           $$->child[asgn_expr] = $3;
           $$->n_child = 2;
           /* node_data */
-          char tkn[7] = {'=', '\0'};
+          char tkn[2] = {'=', '\0'};
           $$->node_data->token = tkn;
           /* node_data */
         }
@@ -467,12 +469,11 @@
 
   arg-list: arg-list COMMA expr {
               $$ = $1;                
-              $3->sibling = L_mst_expr;
+              L_mst_expr->sibling = $3;
               L_mst_expr = $3; /* atualiza o novo nó decl mais a esquerda da arvore */
             }
            |  expr {
                 $$ = $1;
-                $1->sibling = L_mst_expr;
                 L_mst_expr = $1;
               }
            ;
