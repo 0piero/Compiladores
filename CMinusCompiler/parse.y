@@ -9,7 +9,6 @@
   #include <string.h>
   #include "./lexical_analyzer/get_token.h"
 
-  int lineno = 0;
 
   static int yylex(void);
   TokenNode* next_token();
@@ -27,7 +26,6 @@
 
 
   int tok_to_num(char *);
-  char* deepCopy(char *);
   void yyerror(char *);
 %}
 
@@ -46,10 +44,12 @@
                 $$ = $1;
                 R_mst_decl_node->sibling = $2;
                 R_mst_decl_node = $2;               
+                $2->sibling = NULL;
               }
             | decl {
                 $$ = $1;
                 R_mst_decl_node = $1; /* seta o no mais a direita da lista no caso base de decl-lista */
+                $1->sibling = NULL;
               }
             ;
 
@@ -93,7 +93,7 @@
               $$->child = (syntax_tree**) malloc(2 * sizeof(syntax_tree*));
 
               $$->child[espc_type] = $1;
-              $$->child[num] = $4
+              $$->child[num] = $4;
               $$->n_child = 2;
             }
           ;
@@ -135,11 +135,13 @@
   param-lista:  param-lista COMMA param {
                   $$ = $1;
                   R_mst_param->sibling = $3;
-                  R_mst_param = $3;         
+                  R_mst_param = $3;
+                  $3->sibling = NULL;         
                 }
             | param {
                 $$ = $1;
                 R_mst_param = $1;
+                $$->sibling = NULL;
               }
             ;
 
@@ -159,7 +161,6 @@
           }
        ;
 
-  /* parei aqui */
   composto-decl:  LKEY local-decls statement-lista RKEY {
                     enum composto_decl_enum {lcl_dcls, stmnt_lst};
                     $$ = syntax_tree_alloc_node(2);
@@ -173,21 +174,26 @@
                   $$ = $1;
                   L_var_decl->sibling = $2;
                   L_var_decl = $2;
+                  $2->sibling = NULL;
                 }
              |  { /* ver o comportamento disso */
                   $$ = syntax_tree_alloc_node(0); // nó vazio
                   L_var_decl = $$;
+                  $$->sibling = NULL;
                 }
              ;
 
   statement-lista:  statement-lista statement {
-                      $$ = $1;              
+                      $$ = $1;
                       L_stmt->sibling = $2;
-                      L_stmt = $2; /* atualiza o novo nó var_decl mais a esquerda da arvore */
+                      L_stmt = $2;
+                      $2->sibling = NULL;
                     }
                  |  {
+
                       $$ = syntax_tree_alloc_node(0); // nó vazio
                       L_stmt = $$;
+                      $$->sibling = NULL;
                     }
                  ;
 
@@ -216,103 +222,77 @@
               }
            ;
 
-  selec-decl: IF LPAREN expr RPAREN statement { /* ver se é desse jeito a arvore pra declaracoes if*/
+  selec-decl: IF LPAREN expr RPAREN statement { /* ver se é desse jeito a arvore pra declaracoes if */
                 enum selec_decl_enum {if_expr, if_stmt};
-                syntax_tree* if_node = syntax_tree_alloc_node(2);
-                $$ = if_node;
+
+                $$ = syntax_tree_alloc_node(2);
+                $$->node_data->token = "IF";
+                $$->n_child = 2;
                 $$->child[if_expr] = $3;
                 $$->child[if_stmt] = $5;
-                $$->n_child = 2;
-                /* node_data */
-                char tkn[3] = {'I', 'F', '\0'};
-                $$->node_data->token = tkn;
-                /* node_data */
               }
             | IF LPAREN expr RPAREN statement ELSE statement {
-                enum selec_decl_enum_if_else {if_expr, if_stmt, else_stmt};
-                syntax_tree* if_node = syntax_tree_alloc_node(3);
-                $$ = if_node;
-                $$->child[if_expr] = $3;
-                $$->child[if_stmt] = $5;
-                $$->child[else_stmt] = $7;
+                
+                $$ = syntax_tree_alloc_node(3);
+                $$->node_data->token = "IF-ELSE";
                 $$->n_child = 3;
-                /* node_data */
-                char tkn[3] = {'I', 'F', '\0'};
-                $$->node_data->token = tkn;
-                /* node_data */
+                $$->child[0] = $3;
+                $$->child[1] = $5;
+                $$->child[2] = $7;
               }
             ;
 
   iter-decl:  WHILE LPAREN expr RPAREN statement {
                 enum iter_decl_enum {while_expr, while_stmt};
-                syntax_tree* while_node = syntax_tree_alloc_node(2);
-                $$ = while_node;
+
+                $$ = syntax_tree_alloc_node(2);
+                $$->node_data->token = "WHILE";
+                $$->n_child = 2;
                 $$->child[while_expr] = $3;
                 $$->child[while_stmt] = $5;
-                $$->n_child = 2;
-                /* node_data */
-                char tkn[6] = {'W', 'H', 'I', 'L', 'E', '\0'};
-                $$->node_data->token = tkn;
-                /* node_data */
               }
            ;
 
   retorno-decl: RETURN SEMICOLON {
-                  enum retorno_decl_enum {ret_expr};
-                  syntax_tree* ret_node = syntax_tree_alloc_node(1);
-                  $$ = ret_node;
-                  $$->child[ret_expr] = NULL;
-                  $$->n_child = 1;
-                  /* node_data */
-                  char tkn[7] = {'R', 'E', 'T', 'U', 'R', 'N', '\0'};
-                  $$->node_data->token = tkn;
-                  /* node_data */
+                  $$ = syntax_tree_alloc_node(0);
+                  $$->node_data->token = "RETURN";
+                  $$->n_child = 0;
+                  $$->node_data->datatype = VOID_T;
                 }
               | RETURN expr SEMICOLON {
                   enum retorno_decl_enum {ret_expr};
-                  syntax_tree* ret_node = syntax_tree_alloc_node(1);
-                  $$ = ret_node;
-                  $$->child[ret_expr] = $1;
+                  
+                  $$ = syntax_tree_alloc_node(1);
+                  $$->node_data->token = "RETURN";
+                  $$->child[ret_expr] = $2;
                   $$->n_child = 1;
-                  /* node_data */
-                  char tkn[7] = {'R', 'E', 'T', 'U', 'R', 'N', '\0'};
-                  $$->node_data->token = tkn;
-                  /* node_data */
                 }
               ;
 
   expr: var ASS expr {
           enum ass_expr_enum {asgn_var, asgn_expr};
-          syntax_tree* asgn_node = syntax_tree_alloc_node(2);
-          $$ = asgn_node;
+          
+          $$ = syntax_tree_alloc_node(2);
+          $$->node_data->token = "ASSIGN";
           $$->child[asgn_var] = $1;
           $$->child[asgn_expr] = $3;
           $$->n_child = 2;
-          /* node_data */
-          char tkn[2] = {'=', '\0'};
-          $$->node_data->token = tkn;
-          /* node_data */
         }
       | simples-expr {
           $$ = $1;
         }
       ;
 
-  var:  ID {
-          $$ = syntax_tree_alloc_node(0);
-          /* node_data */
-          char tkn[7] = {'R', 'E', 'T', 'U', 'R', 'N', '\0'};
-          $$->node_data->token = tkn;
-          /* node_data */
+  var:  id {
+          $$ = $1;
         }
-     |  ID LBRA expr RBRA {
-          $$ = syntax_tree_alloc_node(1); /* ID node */
+     |  id LBRA expr RBRA {
+          $$ = $1; /* ID node */
+          $$->child = (syntax_tree**) malloc(sizeof(syntax_tree*));
           $$->child[0] = $3; /* ID->child[0] = expr */
           $$->n_child = 1;
-          /* node_data */
-          char tkn[3] = {'I', 'D', '\0'};
-          $$->node_data->token = tkn;
-          /* node_data */
+          $$->node_data->datatype = VARIAVEL;
+          $$->node_data->datatype = INTEGER_T;
         }
      ;
 
@@ -331,45 +311,33 @@
 
   relacional: LET {
                 $$=syntax_tree_alloc_node(0);
-                /* node_data */
-                char tkn[4] = {'L', 'E', 'T', '\0'};
-                $$->node_data->token = tkn;
-                /* node_data */
+                $$->node_data->token = "<=";
+                $$->node_data->lexem = "<=";
               }
             | LT {
                 $$=syntax_tree_alloc_node(0);
-                /* node_data */
-                char tkn[3] = {'L', 'T', '\0'};
-                $$->node_data->token = tkn;
-                /* node_data */
+                $$->node_data->token = "<";
+                $$->node_data->lexem = "<";
               }
             | GT {
                 $$=syntax_tree_alloc_node(0);
-                /* node_data */
-                char tkn[3] = {'G', 'T', '\0'};
-                $$->node_data->token = tkn;
-                /* node_data */
+                $$->node_data->token = ">";
+                $$->node_data->lexem = ">";
               }
             | GET {
                 $$=syntax_tree_alloc_node(0);
-                /* node_data */
-                char tkn[4] = {'G', 'E', 'T', '\0'};
-                $$->node_data->token = tkn;
-                /* node_data */
+                $$->node_data->token = ">=";
+                $$->node_data->lexem = ">=";
               }
             | EQL {
                 $$=syntax_tree_alloc_node(0);
-                /* node_data */
-                char tkn[4] = {'E', 'Q', 'L', '\0'};
-                $$->node_data->token = tkn;
-                /* node_data */
+                $$->node_data->token = "==";
+                $$->node_data->lexem = "==";
               }
             | NEQL {
                 $$=syntax_tree_alloc_node(0);
-                /* node_data */
-                char tkn[5] = {'N', 'E', 'Q', 'L', '\0'};
-                $$->node_data->token = tkn;
-                /* node_data */
+                $$->node_data->token = "!=";
+                $$->node_data->lexem = "!=";
               }
             ;
 
@@ -388,17 +356,13 @@
 
   soma: PLUS {
           $$ = syntax_tree_alloc_node(0);
-          /* node_data */
-          char tkn[2] = {'+', '\0'};
-          $$->node_data->token = tkn;
-          /* node_data */
+          $$->node_data->token = "+";
+          $$->node_data->lexem = "+";
         }
       | MINUS {
           $$ = syntax_tree_alloc_node(0);
-          /* node_data */
-          char tkn[2] = {'-', '\0'};
-          $$->node_data->token = tkn;
-          /* node_data */
+          $$->node_data->token = "-";
+          $$->node_data->lexem = "-";
         }
       ;
 
@@ -416,58 +380,49 @@
 
   mult: TIMES {
           $$ = syntax_tree_alloc_node(0);
-          /* node_data */
-          char tkn[2] = {'*', '\0'};
-          $$->node_data->token = tkn;
-          /* node_data */
+          $$->node_data->token = "*";
+          $$->node_data->lexem = "*";
         }
       | DIV {
           $$ = syntax_tree_alloc_node(0);
-          /* node_data */
-          char tkn[2] = {'/', '\0'};
-          $$->node_data->token = tkn;
-          /* node_data */
+          $$->node_data->token = "/";
+          $$->node_data->lexem = "/";
         }
       ;
   
   fator:  LPAREN expr RPAREN {$$ = $2;}
        |  var {$$ = $1;}
        |  ativacao {$$ = $1;}
-       |  NUMBER {
-          $$ = syntax_tree_alloc_node(0);
-          /* node_data */
-          char tkn[7] = {'N', 'U', 'M', 'B', 'E', 'R', '\0'};
-          $$->node_data->token = tkn;
-          /* node_data */
+       |  num {
+          $$ = $1;
           }
        ;
   
-  ativacao: ID LPAREN args RPAREN {
-              $$ = syntax_tree_alloc_node(1);
+  ativacao: id LPAREN args RPAREN {
+              $$ = $1;
               enum ativacao_enum {ativacao_args};
+              $$->child = (syntax_tree**) malloc(sizeof(syntax_tree*));
               $$->child[ativacao_args] = $3;
               $$->n_child = 1;
-              /* node_data */
-              char tkn[3] = {'I', 'D', '\0'};
-              $$->node_data->token = tkn;
-              /* node_data */
             }
           ;
 
   args: arg-list {
           $$ = $1;
         }
-      |
+      | {$$ = NULL;}
       ;
 
   arg-list: arg-list COMMA expr {
               $$ = $1;                
               L_mst_expr->sibling = $3;
               L_mst_expr = $3; /* atualiza o novo nó decl mais a esquerda da arvore */
+              $3->sibling = NULL;
             }
            |  expr {
                 $$ = $1;
                 L_mst_expr = $1;
+                $$->sibling = NULL;
               }
            ;
 
@@ -478,7 +433,6 @@ static int yylex(){
   int tok_num = END;
   char *tok;
   if(curr_token){
-    lineno = curr_token->line;
     tok = curr_token->token;
     /* strcpy(lex, curr_token->lexem); */
     /* salvando todo o struct do token ao inves de copiar so o lexema */
@@ -530,12 +484,32 @@ int tok_to_num(char* tok){
 }
 
 int main(int argv, char **argc){
-  return yyparse();
+  tree = (syntax_tree*) malloc(sizeof(syntax_tree));
+  R_mst_decl_node = syntax_tree_alloc_node(0);
+  R_mst_param = syntax_tree_alloc_node(0);
+  L_var_decl = syntax_tree_alloc_node(0);
+  L_stmt = syntax_tree_alloc_node(0);
+  L_mst_expr = syntax_tree_alloc_node(0);
+  yyparse();
+  //syntax_tree_display(tree);
+  printTokenNode(tree->node_data);
+  printTokenNode(tree->child[0]->node_data);
+  printTokenNode(tree->child[1]->node_data);
+  printTokenNode(tree->child[1]->child[0]->node_data);
+  printTokenNode(tree->child[1]->sibling->node_data);
+  printTokenNode(tree->child[1]->sibling->child[0]->node_data);
+  printTokenNode(tree->child[2]->node_data);
+  printTokenNode(tree->child[2]->child[1]->node_data);
+  printTokenNode(tree->child[2]->child[1]->sibling->node_data);
+  
+  //printTokenNode(tree->child[2]->node_data);
+
+
 }
 
 void yyerror(char *c){
   if(yychar != ERR && yychar != END){
-    printf("ERRO SINTATICO: %s LINHA: %d\n", c, lineno);
+    printf("ERRO SINTATICO: %s LINHA: %d\n", c, _curr_token->line);
     exit(1);
   }
 }
