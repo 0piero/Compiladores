@@ -16,6 +16,7 @@ struct LinkedList{
 };
 
 LinkedList* allocate_linked_list();
+void insert_linked_list(LinkedList* l, int data);
 
 struct TokenNode {
     char * token;   // ID, INT, ...

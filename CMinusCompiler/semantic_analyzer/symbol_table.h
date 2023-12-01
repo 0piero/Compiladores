@@ -18,4 +18,7 @@ struct symbol_table {
 symbol_table* allocate_symbol_table();
 void print_symbol_table(symbol_table* st);
 
+void insert_symbol_table(symbol_table* st, char* nome, char* escopo,
+                          int datatype, int nodetype, int line);
+
 #endif

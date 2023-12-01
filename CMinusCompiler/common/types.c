@@ -9,6 +9,19 @@ LinkedList* allocate_linked_list(){
     return l;
 }
 
+void insert_linked_list(LinkedList* l, int data){
+    LinkedList* head = l;
+    LinkedList* aux = allocate_linked_list();
+    if(l->next == NULL && l->data == -1){
+        l->data = data;
+        return;
+    }
+    while(l->next != NULL)  l = l->next;
+    aux->data = data;
+    l->next = aux;
+    l = head;
+}
+
 TokenNode* allocate_token_node(){
     TokenNode *t;
     t = malloc(sizeof(TokenNode));
