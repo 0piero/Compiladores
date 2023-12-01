@@ -492,6 +492,7 @@ int main(int argv, char **argc){
   L_mst_expr = syntax_tree_alloc_node(0);
   yyparse();
   //syntax_tree_display(tree);
+  
   printTokenNode(tree->node_data);
   printTokenNode(tree->child[0]->node_data);
   printTokenNode(tree->child[1]->node_data);
@@ -501,6 +502,21 @@ int main(int argv, char **argc){
   printTokenNode(tree->child[2]->node_data);
   printTokenNode(tree->child[2]->child[1]->node_data);
   printTokenNode(tree->child[2]->child[1]->sibling->node_data);
+  printTokenNode(tree->child[2]->child[1]->sibling->child[0]->node_data);
+  printTokenNode(tree->child[2]->child[1]->sibling->child[0]->child[0]->node_data);
+  printTokenNode(tree->child[2]->child[1]->sibling->child[0]->child[1]->node_data);
+  printTokenNode(tree->child[2]->child[1]->sibling->child[1]->node_data);
+  printTokenNode(tree->child[2]->child[1]->sibling->child[1]->child[0]->node_data);
+  printTokenNode(tree->child[2]->child[1]->sibling->child[2]->node_data);
+  printTokenNode(tree->child[2]->child[1]->sibling->child[2]->child[0]->node_data);
+  printTokenNode(tree->child[2]->child[1]->sibling->child[2]->child[0]->child[0]->node_data);
+  printTokenNode(tree->child[2]->child[1]->sibling->child[2]->child[0]->child[0]->sibling->node_data);
+  printTokenNode(tree->child[2]->child[1]->sibling->child[2]->child[0]->child[0]->sibling->child[0]->node_data);
+  printTokenNode(tree->child[2]->child[1]->sibling->child[2]->child[0]->child[0]->sibling->child[1]->node_data);
+  printTokenNode(tree->child[2]->child[1]->sibling->child[2]->child[0]->child[0]->sibling->child[1]->child[0]->node_data);
+  printTokenNode(tree->child[2]->child[1]->sibling->child[2]->child[0]->child[0]->sibling->child[1]->child[1]->node_data);
+  printTokenNode(tree->child[2]->child[1]->sibling->child[2]->child[0]->child[0]->sibling->child[1]->child[0]->child[0]->node_data);
+  printTokenNode(tree->child[2]->child[1]->sibling->child[2]->child[0]->child[0]->sibling->child[1]->child[0]->child[1]->node_data);
   
   //printTokenNode(tree->child[2]->node_data);
 
