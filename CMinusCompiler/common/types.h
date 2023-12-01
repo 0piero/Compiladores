@@ -9,6 +9,13 @@
 #define FUNCAO 2
 #define VARIAVEL 3
 
+typedef struct LinkedList LinkedList;
+struct LinkedList{
+    int data;
+    LinkedList *next;
+};
+
+LinkedList* allocate_linked_list();
 
 struct TokenNode {
     char * token;   // ID, INT, ...

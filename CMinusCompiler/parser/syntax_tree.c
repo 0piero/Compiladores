@@ -1,5 +1,6 @@
 #include "./syntax_tree.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 int ident = 0;
 
@@ -19,7 +20,7 @@ void syntax_tree_display(syntax_tree* root){
 		for(int i = 0; i < ident; i++){
 			printf(" ");
 		}
-		if(root->node_data->token != '\0')
+		if(root->node_data->token[0] != '\0')
 			printf("[%d]%s: %s\n", ident, root->node_data->token, root->node_data->lexem);
 		//Filhos
 		for(int i = 0; i < 3; i++){

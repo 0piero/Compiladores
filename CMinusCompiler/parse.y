@@ -4,6 +4,7 @@
   #define YYSTYPE syntax_tree *
   
   #include "./parse.tab.h"
+  #include "./parse_tree.h"
   #include <stdio.h>
   #include <stdlib.h>
   #include <string.h>
@@ -19,7 +20,7 @@
   int tok_num = END;
 
 
-  syntax_tree* tree;            /* raiz da syntax_tree */
+  static syntax_tree* tree;            /* raiz da syntax_tree */
   syntax_tree* R_mst_decl_node; /* (utilizado para as regras 2 e 3 da CFG) mantem um ponteiro pro nó declaracao
                                    mais a esquerda corrente na arvore 
                                 */
@@ -501,21 +502,10 @@ char * deepCopy(char * source){
     return target;
 }
 
-int main(int argv, char **argc){
+syntax_tree* parseTree(){
   yyparse();
-  syntax_tree *t = tree;
-  
-  syntax_tree_display(tree);
-
-  /*
-  printTokenNode(t->node_data);
-  printTokenNode(t->child[0]->child[0]->child[0]->node_data);
-  t = t->sibling;
-  if(!t) printf("NULL\n");
-  printTokenNode(t->node_data);
-  */
-
-  return 0;
+  printf("tree add: %p\n", tree);
+  return tree;
 }
 
 void yyerror(char *c){

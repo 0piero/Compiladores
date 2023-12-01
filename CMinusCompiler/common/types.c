@@ -1,4 +1,13 @@
 #include "types.h"
+#include <stdio.h>
+
+LinkedList* allocate_linked_list(){
+    LinkedList* l;
+    l = malloc(sizeof(LinkedList));
+    l->data = -1;
+    l->next = NULL;
+    return l;
+}
 
 TokenNode* allocate_token_node(){
     TokenNode *t;
