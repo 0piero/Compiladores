@@ -176,7 +176,9 @@
                 }
                 | LKEY local-decls RKEY { $$ = $2; }
                 | LKEY statement-lista RKEY { $$ = $2; }
-                | LKEY RKEY { $$ = NULL; }
+                | LKEY RKEY { 
+                  $$ = syntax_tree_alloc_node(0);
+                 }
                 ;
 
   local-decls:  local-decls var-decl {
