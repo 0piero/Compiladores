@@ -236,7 +236,7 @@
                 $$->node_data->token = "IF";
                 $$->n_child = 2;
                 $$->child[if_expr] = $3;
-                $$->child[if_stmt] = $5;
+                $$->child[if_stmt] = $5; /* isso pode ser NULL */
               }
             | IF LPAREN expr RPAREN statement ELSE statement {
                 
@@ -244,8 +244,8 @@
                 $$->node_data->token = "IF-ELSE";
                 $$->n_child = 3;
                 $$->child[0] = $3;
-                $$->child[1] = $5;
-                $$->child[2] = $7;
+                $$->child[1] = $5; /* isso pode ser NULL */
+                $$->child[2] = $7; /* isso pode ser NULL */
               }
             ;
 
@@ -256,7 +256,7 @@
                 $$->node_data->token = "WHILE";
                 $$->n_child = 2;
                 $$->child[while_expr] = $3;
-                $$->child[while_stmt] = $5;
+                $$->child[while_stmt] = $5; /* isso pode ser NULL */
               }
            ;
 
@@ -409,7 +409,7 @@
               $$ = $1;
               enum ativacao_enum {ativacao_args};
               $$->child = (syntax_tree**) malloc(sizeof(syntax_tree*));
-              $$->child[ativacao_args] = $3;
+              $$->child[ativacao_args] = $3; /* isso pode ser NULL */
               $$->n_child = 1;
             }
           ;
@@ -498,8 +498,8 @@ int main(int argv, char **argc){
   L_stmt = syntax_tree_alloc_node(0);
   L_mst_expr = syntax_tree_alloc_node(0);
   yyparse();
-  //syntax_tree_display(tree);
-  
+  syntax_tree_display(tree);
+  /*
   printTokenNode(tree->node_data);
   printTokenNode(tree->child[0]->node_data);
   printTokenNode(tree->child[1]->node_data);
@@ -532,7 +532,7 @@ int main(int argv, char **argc){
 
   printTokenNode(tree->child[2]->child[1]->child[2]->child[0]->child[0]->sibling->child[1]->child[0]->child[0]->node_data);
   printTokenNode(tree->child[2]->child[1]->child[2]->child[0]->child[0]->sibling->child[1]->child[0]->child[1]->node_data);
-  
+  */
   //printTokenNode(tree->child[2]->node_data);
 
 
