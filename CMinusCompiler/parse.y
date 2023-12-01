@@ -164,8 +164,15 @@
   composto-decl:  LKEY local-decls statement-lista RKEY {
                     enum composto_decl_enum {lcl_dcls, stmnt_lst};
                     $$ = syntax_tree_alloc_node(2);
-                    $$->child[lcl_dcls] = $2;
-                    $$->child[stmnt_lst] = $3;
+                    /* resolvendo o esquema de tirar o primeiro no vazio da lista*/
+                    syntax_tree* head_local_decls = $2->sibling;
+                    free($2);
+
+                    syntax_tree* head_statement_list = $3->sibling;
+                    free($3);
+                    /* */
+                    $$->child[lcl_dcls] = head_local_decls;
+                    $$->child[stmnt_lst] = head_statement_list;
                     $$->n_child = 2;
                   }
                ;
@@ -176,7 +183,7 @@
                   L_var_decl = $2;
                   $2->sibling = NULL;
                 }
-             |  { /* ver o comportamento disso */
+             |  {
                   $$ = syntax_tree_alloc_node(0); // nó vazio
                   L_var_decl = $$;
                   $$->sibling = NULL;
@@ -499,24 +506,32 @@ int main(int argv, char **argc){
   printTokenNode(tree->child[1]->child[0]->node_data);
   printTokenNode(tree->child[1]->sibling->node_data);
   printTokenNode(tree->child[1]->sibling->child[0]->node_data);
-  printTokenNode(tree->child[2]->node_data);
+  if(tree->child[2]->child[0] != NULL){
+    printTokenNode(tree->child[2]->child[0]->node_data);
+  }
+  
   printTokenNode(tree->child[2]->child[1]->node_data);
-  printTokenNode(tree->child[2]->child[1]->sibling->node_data);
-  printTokenNode(tree->child[2]->child[1]->sibling->child[0]->node_data);
-  printTokenNode(tree->child[2]->child[1]->sibling->child[0]->child[0]->node_data);
-  printTokenNode(tree->child[2]->child[1]->sibling->child[0]->child[1]->node_data);
-  printTokenNode(tree->child[2]->child[1]->sibling->child[1]->node_data);
-  printTokenNode(tree->child[2]->child[1]->sibling->child[1]->child[0]->node_data);
-  printTokenNode(tree->child[2]->child[1]->sibling->child[2]->node_data);
-  printTokenNode(tree->child[2]->child[1]->sibling->child[2]->child[0]->node_data);
-  printTokenNode(tree->child[2]->child[1]->sibling->child[2]->child[0]->child[0]->node_data);
-  printTokenNode(tree->child[2]->child[1]->sibling->child[2]->child[0]->child[0]->sibling->node_data);
-  printTokenNode(tree->child[2]->child[1]->sibling->child[2]->child[0]->child[0]->sibling->child[0]->node_data);
-  printTokenNode(tree->child[2]->child[1]->sibling->child[2]->child[0]->child[0]->sibling->child[1]->node_data);
-  printTokenNode(tree->child[2]->child[1]->sibling->child[2]->child[0]->child[0]->sibling->child[1]->child[0]->node_data);
-  printTokenNode(tree->child[2]->child[1]->sibling->child[2]->child[0]->child[0]->sibling->child[1]->child[1]->node_data);
-  printTokenNode(tree->child[2]->child[1]->sibling->child[2]->child[0]->child[0]->sibling->child[1]->child[0]->child[0]->node_data);
-  printTokenNode(tree->child[2]->child[1]->sibling->child[2]->child[0]->child[0]->sibling->child[1]->child[0]->child[1]->node_data);
+
+  printTokenNode(tree->child[2]->child[1]->child[0]->node_data);
+  printTokenNode(tree->child[2]->child[1]->child[0]->child[0]->node_data);
+  printTokenNode(tree->child[2]->child[1]->child[0]->child[1]->node_data);
+
+  printTokenNode(tree->child[2]->child[1]->child[1]->node_data);
+  printTokenNode(tree->child[2]->child[1]->child[1]->child[0]->node_data);
+
+  printTokenNode(tree->child[2]->child[1]->child[2]->node_data);
+  printTokenNode(tree->child[2]->child[1]->child[2]->child[0]->node_data);
+  printTokenNode(tree->child[2]->child[1]->child[2]->child[0]->child[0]->node_data);
+  printTokenNode(tree->child[2]->child[1]->child[2]->child[0]->child[0]->sibling->node_data);
+
+  printTokenNode(tree->child[2]->child[1]->child[2]->child[0]->child[0]->sibling->child[0]->node_data);
+  printTokenNode(tree->child[2]->child[1]->child[2]->child[0]->child[0]->sibling->child[1]->node_data);
+
+  printTokenNode(tree->child[2]->child[1]->child[2]->child[0]->child[0]->sibling->child[1]->child[0]->node_data);
+  printTokenNode(tree->child[2]->child[1]->child[2]->child[0]->child[0]->sibling->child[1]->child[1]->node_data);
+
+  printTokenNode(tree->child[2]->child[1]->child[2]->child[0]->child[0]->sibling->child[1]->child[0]->child[0]->node_data);
+  printTokenNode(tree->child[2]->child[1]->child[2]->child[0]->child[0]->sibling->child[1]->child[0]->child[1]->node_data);
   
   //printTokenNode(tree->child[2]->node_data);
 
