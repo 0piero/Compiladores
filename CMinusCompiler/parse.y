@@ -55,7 +55,7 @@
   decl-lista: decl-lista decl {
                 $$ = $1;
                 R_mst_decl_node->sibling = $2;
-                R_mst_decl_node = $2;               
+                R_mst_decl_node = $2;         
               }
             | decl {
                 $$ = $1;
@@ -85,6 +85,26 @@
               $$->child[1] = $4;
               $2->node_data->nodetype = VARIAVEL;
               $2->node_data->datatype = INTEGER_T;
+              $2->node_data->len = $4->node_data->lexem;
+            }
+            | VOID id SEMICOLON {
+              $$ = syntax_tree_alloc_node(1);
+              $$->node_data->token = "VOID";
+              $$->node_data->lexem = "void";
+              $$->n_child = 1;
+              $$->child[0] = $2;
+              $2->node_data->nodetype = VARIAVEL;
+              $2->node_data->datatype = VOID_T;
+            }
+            | VOID id LBRA num RBRA SEMICOLON {
+              $$ = syntax_tree_alloc_node(2);
+              $$->node_data->token = "VOID";
+              $$->node_data->lexem = "void";
+              $$->n_child = 2;
+              $$->child[0] = $2;
+              $$->child[1] = $4;
+              $2->node_data->nodetype = VARIAVEL;
+              $2->node_data->datatype = VOID_T;
               $2->node_data->len = $4->node_data->lexem;
             }
             ;
