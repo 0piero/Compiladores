@@ -9,6 +9,15 @@
 #define FUNCAO 2
 #define VARIAVEL 3
 
+typedef struct LinkedList LinkedList;
+struct LinkedList{
+    int data;
+    LinkedList *next;
+};
+
+LinkedList* allocate_linked_list();
+void insert_linked_list(LinkedList* l, int data);
+
 struct TokenNode {
     char * token;   // ID, INT, ...
     char * lexem;   // Lexema puro, ex: int ABC;

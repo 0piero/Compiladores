@@ -1,5 +1,0 @@
-1: Ponto e Virgula
-2: () e [] e {}
-3: ID ID (ex: retur a;)
-4: comentarios
-5: operacao sem um dos operandos

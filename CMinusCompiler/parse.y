@@ -4,6 +4,7 @@
   #include "./parser/syntax_tree.h"
   #define YYSTYPE syntax_tree *
   
+  #include "./parse_tree.h"
   #include "./parse.tab.h"
   #include <stdio.h>
   #include <string.h>
@@ -12,7 +13,7 @@
 
   static int yylex(void);
   TokenNode* next_token();
-  syntax_tree* tree;            /* raiz da syntax_tree */
+  static syntax_tree* tree;            /* raiz da syntax_tree */
   TokenNode* _curr_token;       /* struct do token atual retornado pela yylex contendo os metadados */
   syntax_tree* R_mst_decl_node; /* (utilizado para as regras 2 e 3 da CFG) mantem um ponteiro pro nó declaracao
                                    mais a esquerda corrente na arvore 
@@ -584,28 +585,16 @@ int tok_to_num(char* tok){
   return ERR;
 }
 
-int main(int argv, char **argc){
-  //yydebug = 1;
+syntax_tree*  parseTree(){
   tree = (syntax_tree*) malloc(sizeof(syntax_tree));
-  //R_mst_decl_node = syntax_tree_alloc_node(0);
-  //R_mst_param = syntax_tree_alloc_node(0);
-  //L_var_decl = syntax_tree_alloc_node(0);
-  //L_stmt = syntax_tree_alloc_node(0);
-  //L_mst_expr = syntax_tree_alloc_node(0);
   pseudo_stack_R_mst_decl_node = stack_alloc();                                
   pseudo_stack_R_mst_param = stack_alloc();
   pseudo_stack_L_var_decl = stack_alloc();                                
   pseudo_stack_L_stmt = stack_alloc();
   pseudo_stack_L_mst_expr = stack_alloc();
   yyparse();
-  syntax_tree_display(tree);
-  //printTokenNode(tree->node_data);
-  //
-  //printTokenNode(tree->child[2]->child[1]->node_data);
-  //printf("%p\n", tree->child[2]->child[1]->sibling);
-  //printTokenNode(tree->child[2]->child[1]->sibling->node_data);
 
-
+  return tree;
 }
 
 void yyerror(char *c){
