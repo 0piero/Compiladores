@@ -8,7 +8,7 @@
   #include <stdio.h>
   #include <string.h>
   #include "./lexical_analyzer/get_token.h"
-
+  #include "./parser/stack.h"
 
   static int yylex(void);
   TokenNode* next_token();
@@ -17,12 +17,18 @@
   syntax_tree* R_mst_decl_node; /* (utilizado para as regras 2 e 3 da CFG) mantem um ponteiro pro nó declaracao
                                    mais a esquerda corrente na arvore 
                                 */
-  syntax_tree* R_mst_param;     /* (utilizado para as regras 8 e 9 da CFG) mantem um ponteiro pro nó param
+  stack* pseudo_stack_R_mst_decl_node;                                
+  //syntax_tree* R_mst_param;     
+                                /* (utilizado para as regras 8 e 9 da CFG) mantem um ponteiro pro nó param
                                    mais a esquerda corrente na arvore que se origina de param-list 
                                 */
-  syntax_tree* L_var_decl;                                
-  syntax_tree* L_stmt;
-  syntax_tree* L_mst_expr;
+  stack* pseudo_stack_R_mst_param;
+  //syntax_tree* L_var_decl;
+  stack* pseudo_stack_L_var_decl;                                
+  //syntax_tree* L_stmt;
+  stack* pseudo_stack_L_stmt;
+  //syntax_tree* L_mst_expr;
+  stack* pseudo_stack_L_mst_expr;
 
 
   int tok_to_num(char *);
@@ -37,19 +43,31 @@
 %token ERR END
 
 %%
-  programa: decl-lista {tree = $1;}
+  programa: decl-lista {
+              printf("programa <- decl-lista\n");
+              tree = $1;
+              stack_pop(pseudo_stack_R_mst_decl_node);
+            }
             ;
 
-  decl-lista: decl-lista decl { /* corrigido com o esquema de reducao do bison */
+  decl-lista: decl-lista decl {
+                printf("decl-lista <- decl-lista decl\n");
                 $$ = $1;
-                R_mst_decl_node->sibling = $2;
-                R_mst_decl_node = $2;               
+                stack_node* nod_R_mst = stack_pop(pseudo_stack_R_mst_decl_node);
+                nod_R_mst->ptr->sibling = $2;
+                nod_R_mst->ptr = $2;               
                 $2->sibling = NULL;
+                stack_push(pseudo_stack_R_mst_decl_node, nod_R_mst);
+
               }
             | decl {
+                printf("decl-lista <- decl\n");
                 $$ = $1;
-                R_mst_decl_node = $1; /* seta o no mais a direita da lista no caso base de decl-lista */
                 $1->sibling = NULL;
+                //R_mst_decl_node = $1;
+                stack_node* nod = stack_alloc_node();
+                nod->ptr = $1;
+                stack_push(pseudo_stack_R_mst_decl_node, nod);
               }
             ;
 
@@ -79,6 +97,7 @@
 
 
   var-decl: tipo-especificador id SEMICOLON {
+              printf("var-decl <- tipo-especificador id SEMICOLON\n");
               enum var_decl_enum {espc_type};
 
               $$ = $2; /* passando o token node do terminal id*/
@@ -87,6 +106,7 @@
               $$->n_child = 1;
             }
           | tipo-especificador id LBRA num RBRA SEMICOLON {
+              printf("var-decl <- tipo-especificador id LBRA num RBRA SEMICOLON\n");
               enum var_decl_enum {espc_type, num};
 
               $$ = $2;
@@ -99,11 +119,13 @@
           ;
 
   tipo-especificador: INT {
+                        printf("tipo-especificador <- INT\n");
                         $$ = syntax_tree_alloc_node(0);
                         $$->node_data->token = "INT";
                         $$->node_data->line = _curr_token->line;
                       }
                     | VOID {
+                        printf("tipo-especificador <- VOID\n");
                         $$ = syntax_tree_alloc_node(0);
                         $$->node_data->token = "VOID";
                         $$->node_data->line = _curr_token->line;
@@ -111,6 +133,7 @@
                     ;
   
   fun-decl: tipo-especificador id LPAREN params RPAREN composto-decl {
+              printf("fun-decl <- tipo-especificador id LPAREN params RPAREN composto-decl\n");
               enum fun_decl_enum {espc_type, params, comp_decl};
 
               $$ = $2;
@@ -123,9 +146,12 @@
           ;
 
   params: param-lista {
+            printf("params <- param-lista\n");
             $$ = $1;
+            stack_pop(pseudo_stack_R_mst_param);
           }
         | VOID {
+            printf("params <- VOID\n");
             $$ = syntax_tree_alloc_node(0);
             $$->node_data->token = "VOID";
             $$->node_data->lexem = "void";
@@ -133,19 +159,28 @@
         ;
 
   param-lista:  param-lista COMMA param {
+                  printf("param-lista <- param-lista COMMA param\n");
                   $$ = $1;
-                  R_mst_param->sibling = $3;
-                  R_mst_param = $3;
+                  stack_node* nod_R_mst_param = stack_pop(pseudo_stack_R_mst_param);
+                  nod_R_mst_param->ptr->sibling = $3;
+                  nod_R_mst_param->ptr = $3;
                   $3->sibling = NULL;         
+                  stack_push(pseudo_stack_R_mst_param, nod_R_mst_param);
                 }
             | param {
+                printf("param-lista <- param\n");
                 $$ = $1;
-                R_mst_param = $1;
+                //R_mst_param = $1;
                 $$->sibling = NULL;
+
+                stack_node* nod = stack_alloc_node();
+                nod->ptr = $1;
+                stack_push(pseudo_stack_R_mst_param, nod);
               }
             ;
 
   param:  tipo-especificador id {
+            printf("param <- tipo-especificador id\n");
             enum param_enum {espc_type};
             $$ = $2;
             $$->child = (syntax_tree**) malloc(sizeof(syntax_tree*));
@@ -153,6 +188,7 @@
             $$->n_child = 1;
           }
         | tipo-especificador id LBRA RBRA {
+            printf("param <- id LBRA RBRA\n");
             enum param_enum {espc_type};
             $$ = $2;
             $$->child = (syntax_tree**) malloc(sizeof(syntax_tree*));
@@ -162,15 +198,21 @@
        ;
 
   composto-decl:  LKEY local-decls statement-lista RKEY {
+                    printf("composto-decl <- LKEY local-decls statement-lista RKEY\n");
                     enum composto_decl_enum {lcl_dcls, stmnt_lst};
                     $$ = syntax_tree_alloc_node(2);
-                    /* resolvendo o esquema de tirar o primeiro no vazio da lista*/
+                    /* resolvendo o esquema de tirar o primeiro no vazio da lista */
                     syntax_tree* head_local_decls = $2->sibling;
-                    free($2);
 
                     syntax_tree* head_statement_list = $3->sibling;
-                    free($3);
                     /* */
+                    
+                    /* os callers esvaziam a pilha */
+                    stack_pop(pseudo_stack_L_var_decl);
+                    stack_pop(pseudo_stack_L_stmt);
+                  
+                    /* */
+
                     $$->child[lcl_dcls] = head_local_decls;
                     $$->child[stmnt_lst] = head_statement_list;
                     $$->n_child = 2;
@@ -178,29 +220,45 @@
                ;
 
   local-decls:  local-decls var-decl {
+                  printf("local-decls <- local-decls var-decl\n");
                   $$ = $1;
-                  L_var_decl->sibling = $2;
-                  L_var_decl = $2;
+                  stack_node* nod_L_var_decl = stack_pop(pseudo_stack_L_var_decl);
+                  nod_L_var_decl->ptr->sibling = $2;
+                  nod_L_var_decl->ptr = $2;
                   $2->sibling = NULL;
+                  stack_push(pseudo_stack_L_var_decl, nod_L_var_decl);
                 }
              |  {
+                  printf("local-decls <- vazio\n");
                   $$ = syntax_tree_alloc_node(0); // nó vazio
-                  L_var_decl = $$;
+                  //L_var_decl = $$;
                   $$->sibling = NULL;
+
+                  stack_node* nod = stack_alloc_node();
+                  nod->ptr = $$;
+                  stack_push(pseudo_stack_L_var_decl, nod);
                 }
              ;
 
   statement-lista:  statement-lista statement {
+                      printf("statement-lista <- statement-lista statement\n");
                       $$ = $1;
-                      L_stmt->sibling = $2;
-                      L_stmt = $2;
+                      stack_node* nod_L_stmt = stack_pop(pseudo_stack_L_stmt);
+                      nod_L_stmt->ptr->sibling = $2;
+                      nod_L_stmt->ptr = $2;
                       $2->sibling = NULL;
+                      stack_push(pseudo_stack_L_stmt, nod_L_stmt);
+                      
                     }
                  |  {
-
+                      printf("statement-lista <- vazio\n");
                       $$ = syntax_tree_alloc_node(0); // nó vazio
-                      L_stmt = $$;
+                      //L_stmt = $$;
                       $$->sibling = NULL;
+
+                      stack_node* nod = stack_alloc_node();
+                      nod->ptr = $$;
+                      stack_push(pseudo_stack_L_stmt, nod);
                     }
                  ;
 
@@ -222,15 +280,18 @@
            ;
 
   expr-decl:  expr SEMICOLON {
+                printf("expr-decl <- expr SEMICOLON\n");
                 $$ = $1;
               }
            |  SEMICOLON {
+                printf("expr-decl <- SEMICOLON\n");
                 $$ = NULL;
               }
            ;
 
   selec-decl: IF LPAREN expr RPAREN statement { /* ver se é desse jeito a arvore pra declaracoes if */
                 enum selec_decl_enum {if_expr, if_stmt};
+                printf("selec-decl <- IF LPAREN expr RPAREN statement\n");
 
                 $$ = syntax_tree_alloc_node(2);
                 $$->node_data->token = "IF";
@@ -239,7 +300,7 @@
                 $$->child[if_stmt] = $5; /* isso pode ser NULL */
               }
             | IF LPAREN expr RPAREN statement ELSE statement {
-                
+                printf("selec-decl <- IF LPAREN expr RPAREN statement ELSE statement\n");
                 $$ = syntax_tree_alloc_node(3);
                 $$->node_data->token = "IF-ELSE";
                 $$->n_child = 3;
@@ -250,23 +311,25 @@
             ;
 
   iter-decl:  WHILE LPAREN expr RPAREN statement {
-                enum iter_decl_enum {while_expr, while_stmt};
-
+                printf("iter-decl <- WHILE LPAREN expr RPAREN statement\n");
                 $$ = syntax_tree_alloc_node(2);
                 $$->node_data->token = "WHILE";
                 $$->n_child = 2;
-                $$->child[while_expr] = $3;
-                $$->child[while_stmt] = $5; /* isso pode ser NULL */
+                $$->child[0] = $3;
+                $$->child[1] = $5; /* isso pode ser NULL */
+                $$->sibling = NULL;
               }
            ;
 
   retorno-decl: RETURN SEMICOLON {
+                  printf("retorno-decl <- RETURN SEMICOLON\n");
                   $$ = syntax_tree_alloc_node(0);
                   $$->node_data->token = "RETURN";
                   $$->n_child = 0;
                   $$->node_data->datatype = VOID_T;
                 }
               | RETURN expr SEMICOLON {
+                  printf("retorno-decl <- RETURN expr SEMICOLON\n");
                   enum retorno_decl_enum {ret_expr};
                   
                   $$ = syntax_tree_alloc_node(1);
@@ -277,6 +340,7 @@
               ;
 
   expr: var ASS expr {
+          printf("expr <- var ASS expr\n");
           enum ass_expr_enum {asgn_var, asgn_expr};
           
           $$ = syntax_tree_alloc_node(2);
@@ -286,14 +350,17 @@
           $$->n_child = 2;
         }
       | simples-expr {
+          printf("expr <- simples-expr\n");
           $$ = $1;
         }
       ;
 
   var:  id {
+          printf("var <- id\n");
           $$ = $1;
         }
      |  id LBRA expr RBRA {
+          printf("var <- id LBRA expr RBRA\n");
           $$ = $1; /* ID node */
           $$->child = (syntax_tree**) malloc(sizeof(syntax_tree*));
           $$->child[0] = $3; /* ID->child[0] = expr */
@@ -304,6 +371,7 @@
      ;
 
   simples-expr: soma-expr relacional soma-expr {
+                  printf("simples-expr <- soma-expr relacional soma-expr\n");
                   $$ = $2;
 
                   enum simpl_expr_enum {soma_expr1, soma_expr2};
@@ -312,6 +380,7 @@
                   $$->n_child = 2;
                 }
               | soma-expr {
+                  printf("simples-expr <- soma-expr\n");
                   $$ = $1;
                 }
               ;
@@ -349,6 +418,7 @@
             ;
 
   soma-expr: soma-expr soma termo {
+                printf("soma-expr <- soma-expr soma termo\n");
                 $$ = $2;
 
                 enum soma_expr_enum {soma_expr, soma_termo};
@@ -357,6 +427,7 @@
                 $$->n_child = 2;
               }
            |  termo {
+                printf("soma-expr <- termo\n");
                 $$ = $1;
               }
            ;
@@ -374,6 +445,7 @@
       ;
 
   termo:  termo mult fator {
+            printf("termo <- termo mult fator\n");
             $$ = $2;
 
             enum mult_enum {mult_termo, mult_fator};
@@ -382,6 +454,7 @@
             $$->n_child = 2;
   }
        |  fator {
+            printf("termo <- fator\n");
             $$ = $1;}
        ;
 
@@ -397,15 +470,26 @@
         }
       ;
   
-  fator:  LPAREN expr RPAREN {$$ = $2;}
-       |  var {$$ = $1;}
-       |  ativacao {$$ = $1;}
+  fator:  LPAREN expr RPAREN {
+            printf("fator <- LPAREN expr RPAREN\n");
+            $$ = $2;
+          }
+       |  var {
+            printf("fator <- var\n");
+            $$ = $1;
+          }
+       |  ativacao {
+            printf("fator <- ativacao\n");
+            $$ = $1;
+          }
        |  num {
-          $$ = $1;
+            printf("fator <- num\n");
+            $$ = $1;
           }
        ;
   
   ativacao: id LPAREN args RPAREN {
+              printf("ativacao <- id LPAREN args RPAREN\n");
               $$ = $1;
               enum ativacao_enum {ativacao_args};
               $$->child = (syntax_tree**) malloc(sizeof(syntax_tree*));
@@ -415,21 +499,33 @@
           ;
 
   args: arg-list {
+          printf("args <- arg-list\n");
           $$ = $1;
         }
-      | {$$ = NULL;}
+      | {
+          printf("args <- vazio\n");
+          $$ = NULL;
+        }
       ;
 
   arg-list: arg-list COMMA expr {
+              printf("arg-list <- arg-list COMMA expr\n");
               $$ = $1;                
-              L_mst_expr->sibling = $3;
-              L_mst_expr = $3; /* atualiza o novo nó decl mais a esquerda da arvore */
+              stack_node* nod_L_mst_expr = stack_pop(pseudo_stack_L_mst_expr);
+              nod_L_mst_expr->ptr->sibling = $3;
+              nod_L_mst_expr->ptr = $3; /* atualiza o novo nó decl mais a esquerda da arvore */
               $3->sibling = NULL;
+              stack_push(pseudo_stack_L_mst_expr, nod_L_mst_expr);
             }
            |  expr {
+                printf("arg-list <- expr\n");
                 $$ = $1;
-                L_mst_expr = $1;
+                //L_mst_expr = $1;
                 $$->sibling = NULL;
+
+                stack_node* nod = stack_alloc_node();
+                nod->ptr = $$;
+                stack_push(pseudo_stack_L_mst_expr, nod);
               }
            ;
 
@@ -441,8 +537,6 @@ static int yylex(){
   char *tok;
   if(curr_token){
     tok = curr_token->token;
-    /* strcpy(lex, curr_token->lexem); */
-    /* salvando todo o struct do token ao inves de copiar so o lexema */
     _curr_token = curr_token; /* tomar cuidado pra nao dar free depois em curr_token */
     tok_num = tok_to_num(tok);
   }else{
@@ -491,49 +585,25 @@ int tok_to_num(char* tok){
 }
 
 int main(int argv, char **argc){
+  //yydebug = 1;
   tree = (syntax_tree*) malloc(sizeof(syntax_tree));
-  R_mst_decl_node = syntax_tree_alloc_node(0);
-  R_mst_param = syntax_tree_alloc_node(0);
-  L_var_decl = syntax_tree_alloc_node(0);
-  L_stmt = syntax_tree_alloc_node(0);
-  L_mst_expr = syntax_tree_alloc_node(0);
+  //R_mst_decl_node = syntax_tree_alloc_node(0);
+  //R_mst_param = syntax_tree_alloc_node(0);
+  //L_var_decl = syntax_tree_alloc_node(0);
+  //L_stmt = syntax_tree_alloc_node(0);
+  //L_mst_expr = syntax_tree_alloc_node(0);
+  pseudo_stack_R_mst_decl_node = stack_alloc();                                
+  pseudo_stack_R_mst_param = stack_alloc();
+  pseudo_stack_L_var_decl = stack_alloc();                                
+  pseudo_stack_L_stmt = stack_alloc();
+  pseudo_stack_L_mst_expr = stack_alloc();
   yyparse();
   syntax_tree_display(tree);
-  /*
-  printTokenNode(tree->node_data);
-  printTokenNode(tree->child[0]->node_data);
-  printTokenNode(tree->child[1]->node_data);
-  printTokenNode(tree->child[1]->child[0]->node_data);
-  printTokenNode(tree->child[1]->sibling->node_data);
-  printTokenNode(tree->child[1]->sibling->child[0]->node_data);
-  if(tree->child[2]->child[0] != NULL){
-    printTokenNode(tree->child[2]->child[0]->node_data);
-  }
-  
-  printTokenNode(tree->child[2]->child[1]->node_data);
-
-  printTokenNode(tree->child[2]->child[1]->child[0]->node_data);
-  printTokenNode(tree->child[2]->child[1]->child[0]->child[0]->node_data);
-  printTokenNode(tree->child[2]->child[1]->child[0]->child[1]->node_data);
-
-  printTokenNode(tree->child[2]->child[1]->child[1]->node_data);
-  printTokenNode(tree->child[2]->child[1]->child[1]->child[0]->node_data);
-
-  printTokenNode(tree->child[2]->child[1]->child[2]->node_data);
-  printTokenNode(tree->child[2]->child[1]->child[2]->child[0]->node_data);
-  printTokenNode(tree->child[2]->child[1]->child[2]->child[0]->child[0]->node_data);
-  printTokenNode(tree->child[2]->child[1]->child[2]->child[0]->child[0]->sibling->node_data);
-
-  printTokenNode(tree->child[2]->child[1]->child[2]->child[0]->child[0]->sibling->child[0]->node_data);
-  printTokenNode(tree->child[2]->child[1]->child[2]->child[0]->child[0]->sibling->child[1]->node_data);
-
-  printTokenNode(tree->child[2]->child[1]->child[2]->child[0]->child[0]->sibling->child[1]->child[0]->node_data);
-  printTokenNode(tree->child[2]->child[1]->child[2]->child[0]->child[0]->sibling->child[1]->child[1]->node_data);
-
-  printTokenNode(tree->child[2]->child[1]->child[2]->child[0]->child[0]->sibling->child[1]->child[0]->child[0]->node_data);
-  printTokenNode(tree->child[2]->child[1]->child[2]->child[0]->child[0]->sibling->child[1]->child[0]->child[1]->node_data);
-  */
-  //printTokenNode(tree->child[2]->node_data);
+  //printTokenNode(tree->node_data);
+  //
+  //printTokenNode(tree->child[2]->child[1]->node_data);
+  //printf("%p\n", tree->child[2]->child[1]->sibling);
+  //printTokenNode(tree->child[2]->child[1]->sibling->node_data);
 
 
 }
