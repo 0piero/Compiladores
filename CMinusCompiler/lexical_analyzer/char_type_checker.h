@@ -35,7 +35,7 @@ boolean is_special_char_grp2(char curr_char);
 boolean is_right_bar(char curr_char);
 boolean is_star(char curr_char);
 boolean is_equal_sgn(char curr_char);
-boolean is_valid(char curr_char);
+boolean is_valid(char curr_char, int curr_state);
 boolean is_white(char curr_char);
 int get_current_char_idx(char c, int state);
 

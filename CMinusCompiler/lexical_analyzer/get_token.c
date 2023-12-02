@@ -73,9 +73,9 @@ TokenNode* next_token() {
     while(input_buff.curr_char_pos != BUFFER_SIZE - 1){
         curr_char = get_next_char(&input_buff, update_char_num, update_line_num);
         curr_char_idx = get_current_char_idx(curr_char, state);
-        
-        if(curr_char_idx == INVALID_CHAR){
-            printf("ERRO LÉXICO: %c - %d", curr_char, input_buff.curr_char_pos);
+
+        if(curr_char_idx == INVALID_CHAR && state != 6){
+            printf("ERRO LÉXICO: %c - %d ", curr_char, input_buff.curr_char_pos);
             printf("LINHA: %d\n", input_buff.curr_line);
             exit(1);                
         }
@@ -85,7 +85,7 @@ TokenNode* next_token() {
             clear_input_buffer(input_buff);
             p_str = fgets(input_buff.word_buffer, BUFFER_SIZE, fp);
             if (!p_str){
-                printf("EOF\n");
+                //printf("EOF\n");
                 return NULL;
             }
             // printf("State: %d\n", state);
