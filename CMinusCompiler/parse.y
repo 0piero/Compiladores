@@ -109,7 +109,7 @@
               $$->node_data->datatype = $1->node_data->datatype;
               $$->isVarDecl = 1;
 
-              if($1->node_data->datatype == VOID_T) yyerror("syntax error");
+              if($1->node_data->datatype == VOID_T) yyerror($1->node_data->token);
             }
           | tipo-especificador id LBRA num RBRA SEMICOLON {
               //printf("var-decl <- tipo-especificador id LBRA num RBRA SEMICOLON\n");
@@ -123,8 +123,7 @@
               $$->n_child = 2;
               $$->node_data->nodetype = VARIAVEL;
               $$->isVarDecl = 1;
-
-              if($1->node_data->datatype == VOID_T) yyerror("syntax error");
+              if($1->node_data->datatype == VOID_T) yyerror($1->node_data->token);
             }
           ;
 
@@ -629,7 +628,7 @@ syntax_tree*  parseTree(){
 
 void yyerror(char *c){
   if(yychar != ERR && yychar != END){
-    printf("ERRO SINTATICO: %s LINHA: %d\n", c, _curr_token->line);
+    printf("ERRO SINTATICO: %s LINHA: %d\n", _curr_token->token, _curr_token->line);
     exit(1);
   }
 }

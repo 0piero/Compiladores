@@ -1,9 +1,8 @@
 /* Um programa para calcular o mdc
 segundo o algoritmo de Euclides. */
 int x;
-void a[10];
 
-void a(void){
+int a(void){
     return;
 }
 
