@@ -500,6 +500,7 @@
             //printf("fator <- ativacao\n");
             $$ = $1;
             $$->node_data->datatype = VOID_T;
+            if(!strcmp($1->node_data->lexem, "input")) $$->node_data->datatype = INTEGER_T;
           }
        |  num {
             //printf("fator <- num\n");

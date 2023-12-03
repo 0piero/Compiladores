@@ -1,5 +1,7 @@
 {
   "files.associations": {
-    "get_token.h": "c"
+    "get_token.h": "c",
+    "analyze.h": "c",
+    "symbol_table_node.h": "c"
   }
 }
