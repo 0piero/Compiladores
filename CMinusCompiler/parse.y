@@ -107,6 +107,7 @@
               $$->n_child = 1;
               $$->node_data->nodetype = VARIAVEL;
               $$->node_data->datatype = $1->node_data->datatype;
+              $$->node_data->isVarDecl = 1;
             }
           | tipo-especificador id LBRA num RBRA SEMICOLON {
               //printf("var-decl <- tipo-especificador id LBRA num RBRA SEMICOLON\n");
@@ -119,6 +120,7 @@
               $$->child[num] = $4;
               $$->n_child = 2;
               $$->node_data->nodetype = VARIAVEL;
+              $$->node_data->isVarDecl = 1;
             }
           ;
 

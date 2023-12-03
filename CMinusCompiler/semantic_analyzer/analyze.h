@@ -4,7 +4,7 @@
 #include "./symbol_table_node.h"
 #include "../parser/syntax_tree.h"
 
-void semanticAnalyze(syntax_tree* tree, symbol_table_node* table);
+void semanticAnalyze(syntax_tree *root, syntax_tree* tree, symbol_table_node* table);
 
 
 #endif

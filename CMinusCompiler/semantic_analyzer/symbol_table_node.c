@@ -19,7 +19,7 @@ void print_line(symbol_table_node *st){
   char *nodeTypeString = malloc(20);
   char *dataTypeString = malloc(20);
 
-  printf("%d ", st->id);
+  printf("%3d ", st->id);
   printf("%10s ", st->nome);
   printf("%10s    ", st->escopo);
 
