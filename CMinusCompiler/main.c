@@ -23,7 +23,7 @@ int main(){
   print_symbol_table_node(st);
   printf("\n");
   
-  semanticAnalyze(t, st);
+  semanticAnalyze(t, t, st);
 }
 
 void tree_to_table(syntax_tree *t, symbol_table_node *st){
@@ -58,10 +58,13 @@ void fixDataTypes(syntax_tree* t, symbol_table_node *st){
       funcTokNode->lexem = t->node_data->lexem;
       strcpy(funcTokNode->scope, "global");
       symbol_table_node *funcNode = findTable(st, funcTokNode);
-
+      if(funcNode == NULL){
+        printf("ERRO SEMÂNTICO: funcao não declarada. LINHA: %d\n", t->node_data->line);
+        exit(1);
+      }
       activationNode->datatype = funcNode->datatype;
     }
-		
+
     //Filhos
 		for(int i = 0; i < t->n_child; i++){
       fixDataTypes(t->child[i], st);   

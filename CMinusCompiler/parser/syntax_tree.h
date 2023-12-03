@@ -11,6 +11,7 @@ struct syntax_tree {
 	int n_child;
 	TokenNode* node_data;
 	int isActivation;
+	int isVarDecl;
 };
 
 syntax_tree* syntax_tree_alloc_node(int n_child);
