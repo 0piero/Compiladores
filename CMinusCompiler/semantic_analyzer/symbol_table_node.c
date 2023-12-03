@@ -15,7 +15,7 @@ symbol_table_node* allocate_symbol_table_node(){
   return st;
 }
 
-void print_line(symbol_table_node *st){
+void print_node_data(symbol_table_node *st){
   char *nodeTypeString = malloc(20);
   char *dataTypeString = malloc(20);
 
@@ -42,59 +42,61 @@ void print_line(symbol_table_node *st){
   printf("\n");
 }
 
-void print_symbol_table_node(symbol_table_node* st){
+void print_symbol_table_line(symbol_table_node* st){
   symbol_table_node *aux = st;
   if(aux->next == NULL && aux->id == -1){
     printf("Tabela vazia.\n");
     return;
   }
   while(aux){
-    print_line(aux);
+    print_node_data(aux);
     aux = aux->next;
   }
 
 }
 
-void insert_symbol_table_node(symbol_table_node* st, char* nome, char* escopo, int datatype, int nodetype, int line){
-  symbol_table_node *head = st;
-  symbol_table_node *aux = allocate_symbol_table_node();
-  int id = 1;
+void insert_symbol_table_node(symbol_table* st, char* nome, char* escopo, int datatype, int nodetype, int line){
+  char* key_str = strcat(strcat(escopo, "_"), nome);
+  long int hash_key = symbol_table_hash(key_str);
+
+  symbol_table_node* head = st->tbl[hash_key];
+  symbol_table_node* aux;
+  aux = head;
+
   // Primeiro elemento
-  if(st->next == NULL && st->id == -1){
-    st->id = id;
-    st->nome = nome;
-    st->escopo = escopo;
-    st->datatype = datatype;
-    st->nodetype = nodetype;
-    insert_linked_list(st->lines, line); 
+  if (head == NULL){
+    head = allocate_symbol_table_node();
+    head->nome = nome;
+    head->escopo = escopo;
+    head->datatype = datatype;
+    head->nodetype = nodetype;
+    insert_linked_list(head->lines, line);
     return;
   }
-  id = 2;
 
-  while(1){
-    if(!strcmp(st->nome, nome) && !strcmp(st->escopo, escopo)){
-      insert_linked_list(st->lines, line);
+  while(aux != NULL){
+    if(!strcmp(aux->nome, nome) && !strcmp(aux->escopo, escopo)){
+      insert_linked_list(aux->lines, line);
       return;
     }
-    if(st->next == NULL) break;
-    st = st->next;
-    id++;
+    head = aux;
+    aux = aux->next;
   }
 
-  st->next = aux;
-
-  aux->id = id;
-  aux->nome = nome;
-  aux->escopo = escopo;
-  aux->datatype = datatype;
-  aux->nodetype = nodetype;
-  insert_linked_list(aux->lines, line);
-
-  st = head;
+  /* novo simbolo a ser inserido */
+  head->next = allocate_symbol_table_node();
+  head->next->nome = nome;
+  head->next->escopo = escopo;
+  head->next->datatype = datatype;
+  head->next->nodetype = nodetype;
+  insert_linked_list(head->next->lines, line);
 }
 
-symbol_table_node* findTable(symbol_table_node* table, TokenNode* tkNode){
-  symbol_table_node *head = table;
+symbol_table_node* findTable(symbol_table* table, TokenNode* tkNode){
+  char* key_str = strcat(strcat(tkNode->scope, "_"), tkNode->lexem);
+  long int hash_key = symbol_table_hash(key_str);
+
+  symbol_table_node *head = table->tbl[hash_key];
   while(head != NULL){
     if(
         !strcmp(head->nome, tkNode->lexem) &&
@@ -109,3 +111,24 @@ symbol_table_node* findTable(symbol_table_node* table, TokenNode* tkNode){
   // Simbolo nao encontrado.
   return NULL;  
 }
+
+
+long int symbol_table_hash(char* key){
+  int size_str = strlen(key), i;
+  long int key_int_value = 0;
+  int p = 509;
+  long int alpha = 1;
+  long int hash;
+  for (i=0;i<size_str;i++){
+    key_int_value += ((long int) key[i]) * alpha;
+    alpha = alpha * 2;
+  }
+  hash = ((3*key_int_value + 7) % p) % SYMBOL_TABLE_SIZE;
+  return hash;
+}
+
+
+
+
+
+
