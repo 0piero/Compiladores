@@ -1,5 +1,6 @@
 #include "types.h"
 #include <stdio.h>
+#include <string.h>
 
 LinkedList* allocate_linked_list(){
     LinkedList* l;
@@ -32,8 +33,8 @@ TokenNode* allocate_token_node(){
 
     t->token = "\0";
     t->lexem = "\0";
-    t->scope = "global";
     t->len = "\0";
+    strcpy(t->scope, "global");
 
     t->nodetype = -1;
     t->datatype = -1;

@@ -1,5 +1,6 @@
 #include "./syntax_tree.h"
 #include <stdlib.h>
+#include <string.h>
 
 int ident = 0;
 
@@ -34,6 +35,16 @@ void syntax_tree_display(syntax_tree* root){
 	}
 }
 
+void update_scope(syntax_tree* root, char* scope){
+	while(root != NULL){
+		// printf("%s %s n: %d\n", root->node_data->token, root->node_data->lexem, root->n_child);
+		strcpy(root->node_data->scope, scope);
+		for(int i = 0; i < root->n_child; i++){
+			update_scope(root->child[i], scope);
+		}
+		root = root->sibling;
+	}
+}
 
 
 
