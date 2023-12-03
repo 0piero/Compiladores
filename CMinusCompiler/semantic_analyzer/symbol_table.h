@@ -21,4 +21,6 @@ void print_symbol_table(symbol_table* st);
 void insert_symbol_table(symbol_table* st, char* nome, char* escopo,
                           int datatype, int nodetype, int line);
 
+symbol_table* findTable(symbol_table* st, TokenNode* tkNode);
+
 #endif
