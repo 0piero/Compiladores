@@ -107,7 +107,9 @@
               $$->n_child = 1;
               $$->node_data->nodetype = VARIAVEL;
               $$->node_data->datatype = $1->node_data->datatype;
-              $$->node_data->isVarDecl = 1;
+              $$->isVarDecl = 1;
+
+              if($1->node_data->datatype == VOID_T) yyerror("syntax error");
             }
           | tipo-especificador id LBRA num RBRA SEMICOLON {
               //printf("var-decl <- tipo-especificador id LBRA num RBRA SEMICOLON\n");
@@ -120,7 +122,9 @@
               $$->child[num] = $4;
               $$->n_child = 2;
               $$->node_data->nodetype = VARIAVEL;
-              $$->node_data->isVarDecl = 1;
+              $$->isVarDecl = 1;
+
+              if($1->node_data->datatype == VOID_T) yyerror("syntax error");
             }
           ;
 
