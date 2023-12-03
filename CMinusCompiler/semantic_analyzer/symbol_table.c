@@ -55,8 +55,6 @@ void print_symbol_table(symbol_table* st){
 
 }
 
-
-
 void insert_symbol_table(symbol_table* st, char* nome, char* escopo, int datatype, int nodetype, int line){
   symbol_table *head = st;
   symbol_table *aux = allocate_symbol_table();
@@ -92,4 +90,21 @@ void insert_symbol_table(symbol_table* st, char* nome, char* escopo, int datatyp
   insert_linked_list(aux->lines, line);
 
   st = head;
+}
+
+symbol_table* findTable(symbol_table* table, TokenNode* tkNode){
+  symbol_table *head = table;
+  while(head != NULL){
+    if(
+        !strcmp(head->nome, tkNode->lexem) &&
+        !strcmp(head->escopo, tkNode->scope)
+      ){
+        return head;
+      }
+
+    head = head->next;
+  }
+
+  // Simbolo nao encontrado.
+  return NULL;  
 }

@@ -3,6 +3,7 @@
 #include "./parser/syntax_tree.h"
 #include "./parse_tree.h"
 #include "./semantic_analyzer/symbol_table.h"
+#include "./semantic_analyzer/analyze.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -14,10 +15,13 @@ int main(){
   syntax_tree_display(t);
 
   symbol_table *st = allocate_symbol_table();
-  printf("Allocating Symbols table...\n");
-  tree_to_table(t, st);
 
+  printf("\nAllocating Symbols table...\n");
+  tree_to_table(t, st);
   print_symbol_table(st);
+  printf("\n");
+  
+  semanticAnalyze(t, st);
 }
 
 void tree_to_table(syntax_tree *t, symbol_table *st){

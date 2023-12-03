@@ -198,6 +198,7 @@
             $$->child[espc_type] = $1;
             $$->n_child = 1;
             $$->node_data->nodetype = VARIAVEL;
+            $$->node_data->datatype = $1->node_data->datatype;
           }
         | tipo-especificador id LBRA RBRA {
             //printf("param <- id LBRA RBRA\n");
@@ -207,6 +208,7 @@
             $$->child[espc_type] = $1;
             $$->n_child = 1;
             $$->node_data->nodetype = VARIAVEL;
+            $$->node_data->datatype = $1->node_data->datatype;
           }
        ;
 
@@ -438,6 +440,7 @@
                 $2->child[soma_expr] = $1;
                 $2->child[soma_termo] = $3;
                 $$->n_child = 2;
+                $$->node_data->datatype = $3->node_data->datatype;
               }
            |  termo {
                 //printf("soma-expr <- termo\n");
@@ -465,6 +468,7 @@
             $2->child[mult_termo] = $1;
             $2->child[mult_fator] = $3;
             $$->n_child = 2;
+            $$->node_data->datatype = $3->node_data->datatype;
   }
        |  fator {
             //printf("termo <- fator\n");
@@ -490,14 +494,17 @@
        |  var {
             //printf("fator <- var\n");
             $$ = $1;
+            $$->node_data->datatype = INTEGER_T;
           }
        |  ativacao {
             //printf("fator <- ativacao\n");
             $$ = $1;
+            $$->node_data->datatype = VOID_T;
           }
        |  num {
             //printf("fator <- num\n");
             $$ = $1;
+            $$->node_data->datatype = INTEGER_T;
           }
        ;
   
@@ -508,6 +515,7 @@
               $$->child = syntax_tree_alloc_node(1);
               $$->child[ativacao_args] = $3; /* isso pode ser NULL */
               $$->n_child = 1;
+              $$->node_data->nodetype = FUNCAO;
             }
           ;
 
