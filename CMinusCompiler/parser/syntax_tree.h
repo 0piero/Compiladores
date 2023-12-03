@@ -10,6 +10,7 @@ struct syntax_tree {
 	syntax_tree* sibling;
 	int n_child;
 	TokenNode* node_data;
+	int isActivation;
 };
 
 syntax_tree* syntax_tree_alloc_node(int n_child);

@@ -517,6 +517,9 @@
               $$->child[ativacao_args] = $3; /* isso pode ser NULL */
               $$->n_child = 1;
               $$->node_data->nodetype = FUNCAO;
+              $$->isActivation = 1;
+              if(!strcmp($1->node_data->lexem, "input")) $$->isActivation = 0;
+              if(!strcmp($1->node_data->lexem, "output")) $$->isActivation = 0;
             }
           ;
 

@@ -591,7 +591,7 @@ static const yytype_int16 yyrline[] =
      297,   301,   307,   317,   328,   339,   346,   357,   367,   373,
      378,   388,   397,   403,   408,   413,   418,   423,   428,   435,
      445,   451,   456,   463,   473,   478,   483,   490,   494,   499,
-     505,   512,   523,   527,   533,   542
+     505,   512,   526,   530,   536,   545
 };
 #endif
 
@@ -1930,30 +1930,33 @@ yyreduce:
               yyval->child[ativacao_args] = yyvsp[-1]; /* isso pode ser NULL */
               yyval->n_child = 1;
               yyval->node_data->nodetype = FUNCAO;
+              yyval->isActivation = 1;
+              if(!strcmp(yyvsp[-3]->node_data->lexem, "input")) yyval->isActivation = 0;
+              if(!strcmp(yyvsp[-3]->node_data->lexem, "output")) yyval->isActivation = 0;
             }
-#line 1935 "parse.tab.c"
+#line 1938 "parse.tab.c"
     break;
 
   case 62: /* args: arg-list  */
-#line 523 "parse.y"
+#line 526 "parse.y"
                  {
           //printf("args <- arg-list\n");
           yyval = yyvsp[0];
         }
-#line 1944 "parse.tab.c"
+#line 1947 "parse.tab.c"
     break;
 
   case 63: /* args: %empty  */
-#line 527 "parse.y"
+#line 530 "parse.y"
         {
           //printf("args <- vazio\n");
           yyval = NULL;
         }
-#line 1953 "parse.tab.c"
+#line 1956 "parse.tab.c"
     break;
 
   case 64: /* arg-list: arg-list COMMA expr  */
-#line 533 "parse.y"
+#line 536 "parse.y"
                                 {
               //printf("arg-list <- arg-list COMMA expr\n");
               yyval = yyvsp[-2];                
@@ -1963,11 +1966,11 @@ yyreduce:
               yyvsp[0]->sibling = NULL;
               stack_push(pseudo_stack_L_mst_expr, nod_L_mst_expr);
             }
-#line 1967 "parse.tab.c"
+#line 1970 "parse.tab.c"
     break;
 
   case 65: /* arg-list: expr  */
-#line 542 "parse.y"
+#line 545 "parse.y"
                    {
                 //printf("arg-list <- expr\n");
                 yyval = yyvsp[0];
@@ -1978,11 +1981,11 @@ yyreduce:
                 nod->ptr = yyval;
                 stack_push(pseudo_stack_L_mst_expr, nod);
               }
-#line 1982 "parse.tab.c"
+#line 1985 "parse.tab.c"
     break;
 
 
-#line 1986 "parse.tab.c"
+#line 1989 "parse.tab.c"
 
       default: break;
     }
@@ -2175,7 +2178,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 554 "parse.y"
+#line 557 "parse.y"
 
 
 static int yylex(){

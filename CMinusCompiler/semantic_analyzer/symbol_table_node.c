@@ -70,8 +70,9 @@ void insert_symbol_table_node(symbol_table_node* st, char* nome, char* escopo, i
     return;
   }
   id = 2;
+
   while(1){
-    if(st->nodetype == VARIAVEL && !strcmp(st->nome, nome) && !strcmp(st->escopo, escopo)){
+    if(!strcmp(st->nome, nome) && !strcmp(st->escopo, escopo)){
       insert_linked_list(st->lines, line);
       return;
     }

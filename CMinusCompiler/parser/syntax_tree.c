@@ -11,6 +11,7 @@ syntax_tree* syntax_tree_alloc_node(int n_child){
 	t->sibling = NULL;
 	t->node_data = allocate_token_node();
 	t->n_child = n_child;
+	t->isActivation = 0;
 	return t;
 }
 

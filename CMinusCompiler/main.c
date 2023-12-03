@@ -9,6 +9,7 @@
 #include <string.h>
 
 void tree_to_table(syntax_tree *t, symbol_table_node *st);
+void fixDataTypes(syntax_tree *t, symbol_table_node *st);
 
 int main(){
   syntax_tree *t = parseTree();
@@ -18,6 +19,7 @@ int main(){
 
   printf("\nAllocating Symbols table...\n");
   tree_to_table(t, st);
+  fixDataTypes(t, st);
   print_symbol_table_node(st);
   printf("\n");
   
@@ -38,6 +40,31 @@ void tree_to_table(syntax_tree *t, symbol_table_node *st){
     //Filhos
 		for(int i = 0; i < t->n_child; i++){
      tree_to_table(t->child[i], st);   
+		}
+
+    t = t->sibling;
+	}
+}
+
+void fixDataTypes(syntax_tree* t, symbol_table_node *st){
+    while(t != NULL){
+		if(t->isActivation){
+      TokenNode *actTokNode = allocate_token_node();
+      actTokNode->lexem = t->node_data->lexem;
+      actTokNode->scope = t->node_data->scope;
+      symbol_table_node *activationNode = findTable(st, actTokNode);
+
+      TokenNode *funcTokNode = allocate_token_node();
+      funcTokNode->lexem = t->node_data->lexem;
+      strcpy(funcTokNode->scope, "global");
+      symbol_table_node *funcNode = findTable(st, funcTokNode);
+
+      activationNode->datatype = funcNode->datatype;
+    }
+		
+    //Filhos
+		for(int i = 0; i < t->n_child; i++){
+      fixDataTypes(t->child[i], st);   
 		}
 
     t = t->sibling;
