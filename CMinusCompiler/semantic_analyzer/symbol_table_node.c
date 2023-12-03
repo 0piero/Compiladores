@@ -1,10 +1,10 @@
-#include "symbol_table.h"
+#include "symbol_table_node.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-symbol_table* allocate_symbol_table(){
-  symbol_table *st = malloc(sizeof(symbol_table));
+symbol_table_node* allocate_symbol_table_node(){
+  symbol_table_node *st = malloc(sizeof(symbol_table_node));
   st->nome = malloc(40);
   st->escopo = malloc(40);
   st->id = -1;
@@ -15,7 +15,7 @@ symbol_table* allocate_symbol_table(){
   return st;
 }
 
-void print_line(symbol_table *st){
+void print_line(symbol_table_node *st){
   char *nodeTypeString = malloc(20);
   char *dataTypeString = malloc(20);
 
@@ -42,8 +42,8 @@ void print_line(symbol_table *st){
   printf("\n");
 }
 
-void print_symbol_table(symbol_table* st){
-  symbol_table *aux = st;
+void print_symbol_table_node(symbol_table_node* st){
+  symbol_table_node *aux = st;
   if(aux->next == NULL && aux->id == -1){
     printf("Tabela vazia.\n");
     return;
@@ -55,9 +55,9 @@ void print_symbol_table(symbol_table* st){
 
 }
 
-void insert_symbol_table(symbol_table* st, char* nome, char* escopo, int datatype, int nodetype, int line){
-  symbol_table *head = st;
-  symbol_table *aux = allocate_symbol_table();
+void insert_symbol_table_node(symbol_table_node* st, char* nome, char* escopo, int datatype, int nodetype, int line){
+  symbol_table_node *head = st;
+  symbol_table_node *aux = allocate_symbol_table_node();
   int id = 1;
   // Primeiro elemento
   if(st->next == NULL && st->id == -1){
@@ -92,8 +92,8 @@ void insert_symbol_table(symbol_table* st, char* nome, char* escopo, int datatyp
   st = head;
 }
 
-symbol_table* findTable(symbol_table* table, TokenNode* tkNode){
-  symbol_table *head = table;
+symbol_table_node* findTable(symbol_table_node* table, TokenNode* tkNode){
+  symbol_table_node *head = table;
   while(head != NULL){
     if(
         !strcmp(head->nome, tkNode->lexem) &&

@@ -2,32 +2,32 @@
 #include "./common/types.h"
 #include "./parser/syntax_tree.h"
 #include "./parse_tree.h"
-#include "./semantic_analyzer/symbol_table.h"
+#include "./semantic_analyzer/symbol_table_node.h"
 #include "./semantic_analyzer/analyze.h"
 
 #include <stdio.h>
 #include <string.h>
 
-void tree_to_table(syntax_tree *t, symbol_table *st);
+void tree_to_table(syntax_tree *t, symbol_table_node *st);
 
 int main(){
   syntax_tree *t = parseTree();
   syntax_tree_display(t);
 
-  symbol_table *st = allocate_symbol_table();
+  symbol_table_node *st = allocate_symbol_table_node();
 
   printf("\nAllocating Symbols table...\n");
   tree_to_table(t, st);
-  print_symbol_table(st);
+  print_symbol_table_node(st);
   printf("\n");
   
   semanticAnalyze(t, st);
 }
 
-void tree_to_table(syntax_tree *t, symbol_table *st){
+void tree_to_table(syntax_tree *t, symbol_table_node *st){
   while(t != NULL){
 		if(!strcmp(t->node_data->token, "ID")){
-      insert_symbol_table(st,
+      insert_symbol_table_node(st,
                           t->node_data->lexem,
                           t->node_data->scope,
                           t->node_data->datatype,
