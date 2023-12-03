@@ -2,7 +2,7 @@
 segundo o algoritmo de Euclides. */
 int x;
 
-void a(void){
+int a(void){
     return;
 }
 
