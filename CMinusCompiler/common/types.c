@@ -32,7 +32,7 @@ TokenNode* allocate_token_node(){
 
     t->token = "\0";
     t->lexem = "\0";
-    t->scope = "\0";
+    t->scope = "global";
     t->len = "\0";
 
     t->nodetype = -1;

@@ -102,20 +102,23 @@
               enum var_decl_enum {espc_type};
 
               $$ = $2; /* passando o token node do terminal id*/
-              $$->child = (syntax_tree**) malloc(sizeof(syntax_tree*));
+              $$->child = syntax_tree_alloc_node(1);
               $$->child[espc_type] = $1;
               $$->n_child = 1;
+              $$->node_data->nodetype = VARIAVEL;
+              $$->node_data->datatype = $1->node_data->datatype;
             }
           | tipo-especificador id LBRA num RBRA SEMICOLON {
               //printf("var-decl <- tipo-especificador id LBRA num RBRA SEMICOLON\n");
               enum var_decl_enum {espc_type, num};
 
               $$ = $2;
-              $$->child = (syntax_tree**) malloc(2 * sizeof(syntax_tree*));
+              $$->child = syntax_tree_alloc_node(1);
 
               $$->child[espc_type] = $1;
               $$->child[num] = $4;
               $$->n_child = 2;
+              $$->node_data->nodetype = VARIAVEL;
             }
           ;
 
@@ -124,12 +127,14 @@
                         $$ = syntax_tree_alloc_node(0);
                         $$->node_data->token = "INT";
                         $$->node_data->line = _curr_token->line;
+                        $$->node_data->datatype = INTEGER_T;
                       }
                     | VOID {
                         //printf("tipo-especificador <- VOID\n");
                         $$ = syntax_tree_alloc_node(0);
                         $$->node_data->token = "VOID";
                         $$->node_data->line = _curr_token->line;
+                        $$->node_data->datatype = VOID_T;
                       }
                     ;
   
@@ -138,11 +143,13 @@
               enum fun_decl_enum {espc_type, params, comp_decl};
 
               $$ = $2;
-              $$->child = (syntax_tree**) malloc(3 * sizeof(syntax_tree*));              
+              $$->child = syntax_tree_alloc_node(3);             
               $$->child[espc_type] = $1;
               $$->child[params] = $4;
               $$->child[comp_decl] = $6;
               $$->n_child = 3;
+              $$->node_data->nodetype = FUNCAO;
+              $$->node_data->datatype = $1->node_data->datatype;
             }
           ;
 
@@ -184,7 +191,7 @@
             //printf("param <- tipo-especificador id\n");
             enum param_enum {espc_type};
             $$ = $2;
-            $$->child = (syntax_tree**) malloc(sizeof(syntax_tree*));
+            $$->child = syntax_tree_alloc_node(1);
             $$->child[espc_type] = $1;
             $$->n_child = 1;
           }
@@ -192,7 +199,7 @@
             //printf("param <- id LBRA RBRA\n");
             enum param_enum {espc_type};
             $$ = $2;
-            $$->child = (syntax_tree**) malloc(sizeof(syntax_tree*));
+            $$->child = syntax_tree_alloc_node(1);
             $$->child[espc_type] = $1;
             $$->n_child = 1;
           }
@@ -359,15 +366,15 @@
   var:  id {
           //printf("var <- id\n");
           $$ = $1;
+          $$->node_data->nodetype = VARIAVEL;
         }
      |  id LBRA expr RBRA {
           //printf("var <- id LBRA expr RBRA\n");
           $$ = $1; /* ID node */
-          $$->child = (syntax_tree**) malloc(sizeof(syntax_tree*));
+          $$->child = syntax_tree_alloc_node(1);
           $$->child[0] = $3; /* ID->child[0] = expr */
           $$->n_child = 1;
-          $$->node_data->datatype = VARIAVEL;
-          $$->node_data->datatype = INTEGER_T;
+          $$->node_data->nodetype = VARIAVEL;
         }
      ;
 
@@ -493,7 +500,7 @@
               //printf("ativacao <- id LPAREN args RPAREN\n");
               $$ = $1;
               enum ativacao_enum {ativacao_args};
-              $$->child = (syntax_tree**) malloc(sizeof(syntax_tree*));
+              $$->child = syntax_tree_alloc_node(1);
               $$->child[ativacao_args] = $3; /* isso pode ser NULL */
               $$->n_child = 1;
             }
@@ -586,7 +593,7 @@ int tok_to_num(char* tok){
 }
 
 syntax_tree*  parseTree(){
-  tree = (syntax_tree*) malloc(sizeof(syntax_tree));
+  tree = syntax_tree_alloc_node(3);
   pseudo_stack_R_mst_decl_node = stack_alloc();                                
   pseudo_stack_R_mst_param = stack_alloc();
   pseudo_stack_L_var_decl = stack_alloc();                                

@@ -15,28 +15,27 @@ int main(){
 
   symbol_table *st = allocate_symbol_table();
   printf("Allocating Symbols table...\n");
-  insert_symbol_table(st, "aux", "main", INTEGER_T, VARIAVEL, 3);
-  insert_symbol_table(st, "aux", "main", INTEGER_T, VARIAVEL, 4);
-
-  insert_symbol_table(st, "i", "main", INTEGER_T, VARIAVEL, 1);
-  insert_symbol_table(st, "i", "main", INTEGER_T, VARIAVEL, 2);
-  insert_symbol_table(st, "i", "main", INTEGER_T, VARIAVEL, 9);
-
-
-  insert_symbol_table(st, "func", "global", VOID_T, FUNCAO, 10);
+  tree_to_table(t, st);
 
   print_symbol_table(st);
 }
 
 void tree_to_table(syntax_tree *t, symbol_table *st){
-	while(t != NULL){
+  while(t != NULL){
 		if(!strcmp(t->node_data->token, "ID")){
-      // Insert in table
+      insert_symbol_table(st,
+                          t->node_data->lexem,
+                          t->node_data->scope,
+                          t->node_data->datatype,
+                          t->node_data->nodetype,
+                          t->node_data->line);
     }
-		//Filhos
-		for(int i = 0; i < 3; i++){
-			tree_to_table(t->child[i], st);
+		
+    //Filhos
+		for(int i = 0; i < t->n_child; i++){
+     tree_to_table(t->child[i], st);   
 		}
-			t = t->sibling;
+
+    t = t->sibling;
 	}
 }

@@ -16,11 +16,24 @@ symbol_table* allocate_symbol_table(){
 }
 
 void print_line(symbol_table *st){
+  char *nodeTypeString = malloc(20);
+  char *dataTypeString = malloc(20);
+
   printf("%d ", st->id);
   printf("%10s ", st->nome);
   printf("%10s    ", st->escopo);
-  printf("%d    ", st->datatype);
-  printf("%d    ", st->nodetype);
+
+  if(st->datatype == INTEGER_T) strcpy(dataTypeString, "INTEIRO");
+  else if(st->datatype == VOID_T) strcpy(dataTypeString, "VAZIO");
+  else strcpy(dataTypeString, "INDEFINIDO");
+
+  if(st->nodetype == VARIAVEL) strcpy(nodeTypeString, "VARIAVEL");
+  else if(st->nodetype == FUNCAO) strcpy(nodeTypeString, "FUNCAO");
+  else strcpy(nodeTypeString, "INDEFINIDO");
+
+  printf("%10s    ", dataTypeString);
+  printf("%10s    ", nodeTypeString);
+
   LinkedList *aux = st->lines;
   while(aux != NULL){
     printf("%d, ", aux->data);
