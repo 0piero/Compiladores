@@ -27,7 +27,6 @@ void print_node_data(symbol_table_node *st){
   char *nodeTypeString = malloc(20);
   char *dataTypeString = malloc(20);
 
-  printf("%3d ", st->id);
   printf("%10s ", st->nome);
   printf("%10s    ", st->escopo);
 
@@ -53,7 +52,6 @@ void print_node_data(symbol_table_node *st){
 void print_symbol_table_line(symbol_table_node* nod){
   symbol_table_node *aux = nod;
   if (aux == NULL){
-    printf("(empty line)\n");
     return;
   }
   while(aux){
