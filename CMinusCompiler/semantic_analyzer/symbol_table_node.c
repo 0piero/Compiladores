@@ -52,8 +52,8 @@ void print_node_data(symbol_table_node *st){
 
 void print_symbol_table_line(symbol_table_node* nod){
   symbol_table_node *aux = nod;
-  if(aux->next == NULL && aux->id == -1){
-    printf("Tabela vazia.\n");
+  if (aux == NULL){
+    printf("(empty line)\n");
     return;
   }
   while(aux){
@@ -71,8 +71,13 @@ void print_symbol_table(symbol_table* st){
 }
 
 void insert_symbol_table_node(symbol_table* st, char* nome, char* escopo, int datatype, int nodetype, int line){
-  char* key_str = strcat(strcat(escopo, "_"), nome);
+  int size_key_str = strlen(nome) + strlen(escopo) + 1 + 1;
+  char* key_str = (char*) malloc((size_key_str) * sizeof(char));
+  snprintf(key_str, size_key_str, "%s%s%s", escopo, "_", nome);
+
   long int hash_key = symbol_table_hash(key_str);
+
+  
 
   symbol_table_node* head = st->tbl[hash_key];
   symbol_table_node* aux;
@@ -80,12 +85,12 @@ void insert_symbol_table_node(symbol_table* st, char* nome, char* escopo, int da
 
   // Primeiro elemento
   if (head == NULL){
-    head = allocate_symbol_table_node();
-    head->nome = nome;
-    head->escopo = escopo;
-    head->datatype = datatype;
-    head->nodetype = nodetype;
-    insert_linked_list(head->lines, line);
+    (st->tbl)[hash_key] = allocate_symbol_table_node();
+    (st->tbl)[hash_key]->nome = nome;
+    (st->tbl)[hash_key]->escopo = escopo;
+    (st->tbl)[hash_key]->datatype = datatype;
+    (st->tbl)[hash_key]->nodetype = nodetype;
+    insert_linked_list(st->tbl[hash_key]->lines, line);
     return;
   }
 
@@ -105,10 +110,15 @@ void insert_symbol_table_node(symbol_table* st, char* nome, char* escopo, int da
   head->next->datatype = datatype;
   head->next->nodetype = nodetype;
   insert_linked_list(head->next->lines, line);
+  return;
 }
 
 symbol_table_node* findTable(symbol_table* table, TokenNode* tkNode){
-  char* key_str = strcat(strcat(tkNode->scope, "_"), tkNode->lexem);
+
+  int size_key_str = strlen(tkNode->lexem) + strlen(tkNode->scope) + 1 + 1;
+  char* key_str = (char*) malloc((size_key_str) * sizeof(char));
+  snprintf(key_str, size_key_str, "%s%s%s", tkNode->scope, "_", tkNode->lexem);
+
   long int hash_key = symbol_table_hash(key_str);
 
   symbol_table_node *head = table->tbl[hash_key];

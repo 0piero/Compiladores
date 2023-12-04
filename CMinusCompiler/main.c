@@ -57,6 +57,7 @@ void fixDataTypes(syntax_tree* t, symbol_table *st){ /* ok */
         TokenNode *funcTokNode = allocate_token_node();
         funcTokNode->lexem = t->node_data->lexem;
         strcpy(funcTokNode->scope, "global");
+        //printf("key str:[%s] [%s]\n", funcTokNode->lexem, funcTokNode->scope);
         symbol_table_node *funcNode = findTable(st, funcTokNode);
         if(funcNode == NULL){
           printf("ERRO SEMÂNTICO: funcao não declarada. LINHA: %d\n", t->node_data->line);
