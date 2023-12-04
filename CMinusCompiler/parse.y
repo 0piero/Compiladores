@@ -122,8 +122,10 @@
               $$->child[num] = $4;
               $$->n_child = 2;
               $$->node_data->nodetype = VARIAVEL;
+              $$->node_data->datatype = $1->node_data->datatype;
               $$->isVarDecl = 1;
               if($1->node_data->datatype == VOID_T) yyerror($1->node_data->token);
+              if(atoi($4->node_data->lexem) < 0) yyerror($4->node_data->token);
             }
           ;
 
@@ -379,6 +381,7 @@
           //printf("var <- id\n");
           $$ = $1;
           $$->node_data->nodetype = VARIAVEL;
+          $$->node_data->datatype = INTEGER_T;
         }
      |  id LBRA expr RBRA {
           //printf("var <- id LBRA expr RBRA\n");
@@ -387,6 +390,11 @@
           $$->child[0] = $3; /* ID->child[0] = expr */
           $$->n_child = 1;
           $$->node_data->nodetype = VARIAVEL;
+          $$->node_data->datatype = INTEGER_T;
+          if(!strcmp($3->node_data->token, "NUMBER")){
+            printf("%s\n", $3->node_data->lexem);
+            if(atoi($3->node_data->lexem) < 0) yyerror($4->node_data->token);
+          }
         }
      ;
 
