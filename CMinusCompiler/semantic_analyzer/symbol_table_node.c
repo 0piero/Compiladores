@@ -3,6 +3,14 @@
 #include <stdio.h>
 #include <string.h>
 
+symbol_table* allocate_symbol_table(){
+  symbol_table* s = (symbol_table*) malloc(sizeof(symbol_table));
+  int i;
+  for (i=0;i<SYMBOL_TABLE_SIZE;i++){
+    (s->tbl)[i] = NULL;
+  }
+  return s;
+}
 symbol_table_node* allocate_symbol_table_node(){
   symbol_table_node *st = malloc(sizeof(symbol_table_node));
   st->nome = malloc(40);
@@ -42,8 +50,8 @@ void print_node_data(symbol_table_node *st){
   printf("\n");
 }
 
-void print_symbol_table_line(symbol_table_node* st){
-  symbol_table_node *aux = st;
+void print_symbol_table_line(symbol_table_node* nod){
+  symbol_table_node *aux = nod;
   if(aux->next == NULL && aux->id == -1){
     printf("Tabela vazia.\n");
     return;
@@ -53,6 +61,13 @@ void print_symbol_table_line(symbol_table_node* st){
     aux = aux->next;
   }
 
+}
+
+void print_symbol_table(symbol_table* st){
+  int i;
+  for (i=0;i<SYMBOL_TABLE_SIZE;i++){
+    print_symbol_table_line((st->tbl)[i]);
+  }
 }
 
 void insert_symbol_table_node(symbol_table* st, char* nome, char* escopo, int datatype, int nodetype, int line){

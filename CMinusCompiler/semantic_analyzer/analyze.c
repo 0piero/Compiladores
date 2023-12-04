@@ -1,7 +1,11 @@
 #include "./analyze.h"
 #include <string.h>
+#include <stdio.h>
 
-void semanticAnalyze(syntax_tree *root, syntax_tree* tree, symbol_table_node* table){
+void analyzeAssignment(syntax_tree* tree, symbol_table* table);
+void analyzeActivation(syntax_tree *root, syntax_tree *tree, symbol_table* table);
+
+void semanticAnalyze(syntax_tree* root, syntax_tree* tree, symbol_table* table){
   while(tree != NULL){
 
     if(!strcmp(tree->node_data->token, "ASSIGN")){
@@ -22,7 +26,7 @@ void semanticAnalyze(syntax_tree *root, syntax_tree* tree, symbol_table_node* ta
   }
 }
 
-void analyzeAssignment(syntax_tree* tree, symbol_table_node* table){
+void analyzeAssignment(syntax_tree* tree, symbol_table* table){
   symbol_table_node *varLine = findTable(table, tree->child[0]->node_data);
   if(varLine->datatype == -1){
     TokenNode *tk = tree->child[0]->node_data;
@@ -53,7 +57,7 @@ void analyzeAssignment(syntax_tree* tree, symbol_table_node* table){
 
 }
 
-void analyzeActivation(syntax_tree *root, syntax_tree *tree, symbol_table_node* table){
+void analyzeActivation(syntax_tree *root, syntax_tree *tree, symbol_table* table){
   syntax_tree* param = tree->child[0];
   
   while(param != NULL){
