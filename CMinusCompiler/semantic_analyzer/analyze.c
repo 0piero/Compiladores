@@ -45,7 +45,6 @@ void analyzeAssignment(syntax_tree* tree, symbol_table_node* table){
 
   
   if(varLine->datatype != exprType){
-    printf("%d %d\n", varLine->datatype, exprType);
     printf("ERRO SEMÂNTICO: atribuição com tipos diferentes. ");
     printf("LINHA: %d\n", tree->child[1]->node_data->line);
     exit(1);
