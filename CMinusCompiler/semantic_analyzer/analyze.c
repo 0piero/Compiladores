@@ -4,6 +4,7 @@
 
 void analyzeAssignment(syntax_tree* tree, symbol_table* table);
 void analyzeActivation(syntax_tree *root, syntax_tree *tree, symbol_table* table);
+void DeclUniqueness(syntax_tree *root, symbol_table *tbl);
 
 void semanticAnalyze(syntax_tree* root, syntax_tree* tree, symbol_table* table){
   while(tree != NULL){
@@ -90,3 +91,26 @@ void analyzeActivation(syntax_tree *root, syntax_tree *tree, symbol_table* table
     param = param->sibling;
   }
 }
+
+void DeclUniqueness(syntax_tree *root, symbol_table *tbl){
+  syntax_tree* nod = root;
+  while (nod != NULL){
+    /* filho 0 zero sempre guarda o tipo de uma variavel, poderia ser mais explicito */
+    if ((nod->isVarDecl || nod->node_data->nodetype == FUNCAO) &&
+      (!strcmp(nod->child[0]->node_data->token, "INT") || !strcmp(nod->child[0]->node_data->token, "VOID"))){
+
+      symbol_table_node* var_nod = findTable(tbl, nod->node_data);
+      if (var_nod != NULL && var_nod->lines->next != NULL){
+        /* exibe a linha seguinte na lista de linhas do simbolo encontrado na tabela  */
+        printf("ERRO SEMÂNTICO: declaração da função %s não-única. LINHA: %d\n", var_nod->nome, var_nod->lines->next->data);
+      }
+    }
+    for(int i = 0; i < nod->n_child; i++){ /* se fosse var n precisaria verificar o filho 0 */ 
+      DeclUniqueness(nod->child[i], tbl);
+    }
+    nod = nod->sibling;
+  }
+}
+
+
+

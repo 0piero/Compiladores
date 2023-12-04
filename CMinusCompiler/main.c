@@ -20,10 +20,11 @@ int main(){ /* ok */
   printf("\nAllocating Symbols table...\n");
   tree_to_table(t, st);
   fixDataTypes(t, st);
-  print_symbol_table(st);
+  DeclUniqueness(t, st);
+  //print_symbol_table(st);
   printf("\n");
   
-  semanticAnalyze(t, t, st);
+  //semanticAnalyze(t, t, st);
 }
 
 void tree_to_table(syntax_tree *t, symbol_table *st){ /* ok */
