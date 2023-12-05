@@ -19,7 +19,9 @@ symbol_table_node* allocate_symbol_table_node(){
   st->datatype = -1;
   st->nodetype = -1;
   st->lines = allocate_linked_list();
+  st->lines_decl = allocate_linked_list();
   st->next = NULL;
+  st->visited = 0;
   return st;
 }
 
@@ -68,7 +70,7 @@ void print_symbol_table(symbol_table* st){
   }
 }
 
-void insert_symbol_table_node(symbol_table* st, char* nome, char* escopo, int datatype, int nodetype, int line){
+void insert_symbol_table_node(symbol_table* st, char* nome, char* escopo, int datatype, int nodetype, int line, int isVarDecl){
   int size_key_str = strlen(nome) + strlen(escopo) + 1 + 1;
   char* key_str = (char*) malloc((size_key_str) * sizeof(char));
   snprintf(key_str, size_key_str, "%s%s%s", escopo, "_", nome);
@@ -89,12 +91,18 @@ void insert_symbol_table_node(symbol_table* st, char* nome, char* escopo, int da
     (st->tbl)[hash_key]->datatype = datatype;
     (st->tbl)[hash_key]->nodetype = nodetype;
     insert_linked_list(st->tbl[hash_key]->lines, line);
+    if (isVarDecl == 1) {
+      insert_linked_list(st->tbl[hash_key]->lines_decl, line);
+    }
     return;
   }
 
   while(aux != NULL){
     if(!strcmp(aux->nome, nome) && !strcmp(aux->escopo, escopo)){
       insert_linked_list(aux->lines, line);
+      if (isVarDecl == 1) {
+        insert_linked_list(aux->lines_decl, line);
+      }
       return;
     }
     head = aux;
@@ -108,6 +116,9 @@ void insert_symbol_table_node(symbol_table* st, char* nome, char* escopo, int da
   head->next->datatype = datatype;
   head->next->nodetype = nodetype;
   insert_linked_list(head->next->lines, line);
+  if (isVarDecl == 1) {
+    insert_linked_list(head->next->lines_decl, line);
+  }
   return;
 }
 
