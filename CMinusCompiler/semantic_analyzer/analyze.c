@@ -10,15 +10,15 @@ void ConsistentFRet(syntax_tree *root, syntax_tree *nod, symbol_table *tbl);
 void semanticAnalyze(syntax_tree* root, syntax_tree* tree, symbol_table* table){
   while(tree != NULL){
     if((tree->node_data != NULL) && (tree->node_data->nodetype == FUNCAO) && (tree->isVarDecl==1)){
-      /* passa por todo o corpo da funcao (tree->child[2]) em busca do token RETURN para verificar o tipo*/
-      ConsistentFRet(tree, tree->child[2], table);
+      //printf("%s\n", tree->node_data->lexem);
+      ConsistentFRet(tree, tree->child[2]->child[1], table); // child[2] eh o node de comp-decl
     }
     if(!strcmp(tree->node_data->token, "ASSIGN")){
       analyzeAssignment(tree, table);
     }
-    //if(tree->isActivation){
-    //  analyzeActivation(root, tree, table);
-    //}
+    if(tree->isActivation){
+      analyzeActivation(root, tree, table);
+    }
     //Caso o nó não tenha filhos.
     if(tree->n_child == 0) return;
 
@@ -33,21 +33,20 @@ void semanticAnalyze(syntax_tree* root, syntax_tree* tree, symbol_table* table){
 void analyzeAssignment(syntax_tree* tree, symbol_table* table){
   symbol_table_node *varLine = findTable(table, tree->child[0]->node_data);
 
-  /* N entendi */
   if(varLine->datatype == -1){
     TokenNode *tk = tree->child[0]->node_data;
-    strcpy(tk->scope, "global");
-    symbol_table_node *varLineGlobal = findTable(table, tk);
+    char srch_scope[6] = "global";
+    TokenNode*  tk_cpy = copy_tkn_node_scope(tk, srch_scope);
+    symbol_table_node *varLineGlobal = findTable(table, tk_cpy);
     if(varLineGlobal) varLine = varLineGlobal;
   }
   int exprType = tree->child[1]->node_data->datatype;
 
-  /* se eh ativacao busca na tabela o tipo */
+
   if(tree->child[1]->node_data->nodetype == FUNCAO){
     exprType = findTable(table, tree->child[1]->node_data)->datatype;
   }
 
-  /* funcao da declaracao antes do uso e mesmo assim parece nao funcionar (precisar olhar as linhas) */
   if(varLine == NULL){
     printf("ERRO SEMÂNTICO: atribuição em variável não encontrada. ");
     printf("LINHA: %d\n", tree->child[0]->node_data->line);
@@ -71,8 +70,10 @@ void analyzeActivation(syntax_tree *root, syntax_tree *tree, symbol_table* table
   while(param != NULL){
     int currParamType = -1;
     if(param->isActivation){
-      strcpy(param->node_data->scope, "global");
-      currParamType = findTable(table, param->node_data)->datatype;
+      char srch_scope[6] = "global";
+      TokenNode* param_nod_cpy = copy_tkn_node_scope(param->node_data, srch_scope);
+
+      currParamType = findTable(table, param_nod_cpy)->datatype;
     }else{
       currParamType = param->node_data->datatype;
     }
@@ -140,42 +141,39 @@ void DeclUniqueness(syntax_tree *root, symbol_table *tbl){
 
 void ConsistentFRet(syntax_tree *root, syntax_tree *nod, symbol_table *tbl){
   while(nod != NULL){
-    if (nod->node_data != NULL && !strcmp(nod->node_data->token, "RETURN")){
-      //if (nod->n_child > 0 && nod->child[0]->isActivation == 1)
-      //{
-      //  printf("A\n");
-      //  symbol_table_node* atv_nod = findTable(tbl, nod->node_data);
-      //  if (atv_nod != NULL && atv_nod->datatype != root->node_data->datatype){
-      //    printf("ERRO SEMÂNTICO: retorno da função %s inconsistente com a definição. LINHA: %d\n",
-      //      root->node_data->lexem, nod->node_data->line);  
-      //  }
-      //}
+    if (!strcmp(nod->node_data->token, "RETURN")){
 
-      //else if(nod->n_child == 0 && root->node_data->datatype != VOID_T) /* return com 0 filhos retorna void */
-      //{
-      //  printf("B\n");
-      //  printf("ERRO SEMÂNTICO: retorno da função %s inconsistente com a definição. LINHA: %d\n",
-      //    root->node_data->lexem, nod->node_data->line);
-      //}
-      if(nod->n_child > 0 && nod->child[0]->isActivation == 0)
+      if (nod->n_child > 0 && nod->child[0]->isActivation == 1)
       {
-        symbol_table_node* atv_nod = findTable(tbl, nod->child[0]->node_data);
-        printf("%d %d\n", atv_nod->datatype, root->node_data->datatype);
-        if (atv_nod->datatype != root->node_data->datatype){
+        /* copia com escopo global para a findTable */
+        char srch_scope[6] = "global";
+        TokenNode* glbl_nod_data = copy_tkn_node_scope(nod->child[0]->node_data, srch_scope);
+
+        symbol_table_node* atv_nod = findTable(tbl, glbl_nod_data);
+        if (atv_nod != NULL && atv_nod->datatype != root->node_data->datatype){
+          printf("ERRO SEMÂNTICO: retorno da função %s inconsistente com a definição. LINHA: %d\n",
+            root->node_data->lexem, nod->node_data->line);  
+        }
+      }
+
+      else if(nod->n_child == 0 && root->node_data->datatype != VOID_T) /* return com 0 filhos retorna void */
+      {
+        printf("ERRO SEMÂNTICO: retorno da função %s inconsistente com a definição. LINHA: %d\n",
+          root->node_data->lexem, nod->node_data->line);
+      }
+      
+      else if(nod->n_child > 0 && nod->child[0]->isActivation == 0)
+      {
+        if ((INTEGER_T != root->node_data->datatype)){
           printf("ERRO SEMÂNTICO: retorno da função %s inconsistente com a definição. LINHA: %d\n",
             root->node_data->lexem, nod->node_data->line);
         }
       }
-      for(int i = 0; i < nod->n_child; i++){
-        ConsistentFRet(root, nod->child[i], tbl);
-      }
+    }
+    for(int i = 0; i < nod->n_child; i++){
+      ConsistentFRet(root, nod->child[i], tbl);
     }
     nod = nod->sibling;
   }
 } 
-//void DeclBfUse(){
-
-//}
-
-
 

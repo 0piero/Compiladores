@@ -5,6 +5,7 @@
 
 #define INTEGER_T 0
 #define VOID_T 1
+#define INTEGER_ARR 2
 
 #define FUNCAO 2
 #define VARIAVEL 3
@@ -31,5 +32,6 @@ typedef struct TokenNode TokenNode;
 
 TokenNode* allocate_token_node();
 void printTokenNode(TokenNode*);
+TokenNode* copy_tkn_node_scope(TokenNode* nod, char* scope);
 
 #endif

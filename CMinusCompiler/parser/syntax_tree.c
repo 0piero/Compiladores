@@ -51,5 +51,3 @@ void update_scope(syntax_tree* root, char* scope){
 
 
 
-
-

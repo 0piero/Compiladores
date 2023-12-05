@@ -57,3 +57,10 @@ void printTokenNode(TokenNode *t){
     }
 
 }
+
+TokenNode* copy_tkn_node_scope(TokenNode* nod, char* scope){
+  TokenNode* cpy_nod = allocate_token_node();
+  cpy_nod->lexem = nod->lexem;
+  cpy_nod->scope = scope;
+  return cpy_nod;
+}

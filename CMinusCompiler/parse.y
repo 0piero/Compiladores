@@ -15,20 +15,11 @@
   TokenNode* next_token();
   static syntax_tree* tree;            /* raiz da syntax_tree */
   TokenNode* _curr_token;       /* struct do token atual retornado pela yylex contendo os metadados */
-  syntax_tree* R_mst_decl_node; /* (utilizado para as regras 2 e 3 da CFG) mantem um ponteiro pro nó declaracao
-                                   mais a esquerda corrente na arvore 
-                                */
   stack* pseudo_stack_R_mst_decl_node;                                
-  //syntax_tree* R_mst_param;     
-                                /* (utilizado para as regras 8 e 9 da CFG) mantem um ponteiro pro nó param
-                                   mais a esquerda corrente na arvore que se origina de param-list 
-                                */
+
   stack* pseudo_stack_R_mst_param;
-  //syntax_tree* L_var_decl;
   stack* pseudo_stack_L_var_decl;                                
-  //syntax_tree* L_stmt;
   stack* pseudo_stack_L_stmt;
-  //syntax_tree* L_mst_expr;
   stack* pseudo_stack_L_mst_expr;
 
 
@@ -122,7 +113,7 @@
               $$->child[num] = $4;
               $$->n_child = 2;
               $$->node_data->nodetype = VARIAVEL;
-              $$->node_data->datatype = $1->node_data->datatype;
+              $$->node_data->datatype = INTEGER_ARR;
               $$->isVarDecl = 1;
               if($1->node_data->datatype == VOID_T) yyerror($1->node_data->token);
               if(atoi($4->node_data->lexem) < 0) yyerror($4->node_data->token);
@@ -219,7 +210,7 @@
             $$->n_child = 1;
             $$->isVarDecl = 1;
             $$->node_data->nodetype = VARIAVEL;
-            $$->node_data->datatype = $1->node_data->datatype;
+            $$->node_data->datatype = INTEGER_ARR;
           }
        ;
 

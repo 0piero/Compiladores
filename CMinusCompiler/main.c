@@ -19,12 +19,10 @@ int main(){ /* ok */
 
   printf("\nAllocating Symbols table...\n");
   tree_to_table(t, st);
-  //DeclUniqueness(t, st);
-  semanticAnalyze(t, t, st);
   fixDataTypes(t, st);
   print_symbol_table(st);
   printf("\n");
-  
+  DeclUniqueness(t, st);
   semanticAnalyze(t, t, st);
 }
 
