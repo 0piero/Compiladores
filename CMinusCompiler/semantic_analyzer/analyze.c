@@ -99,9 +99,9 @@ void DeclUniqueness(syntax_tree *root, symbol_table *tbl){
     if (nod->isVarDecl || (nod->node_data->nodetype == FUNCAO && nod->isActivation==0)){
 
       symbol_table_node* var_nod = findTable(tbl, nod->node_data);
-      if (var_nod != NULL && var_nod->lines->next != NULL){
+      if (var_nod != NULL && var_nod->lines_decl->next != NULL){
         /* exibe a linha seguinte na lista de linhas do simbolo encontrado na tabela  */
-        printf("ERRO SEMÂNTICO: declaração da função %s não-única. LINHA: %d\n", var_nod->nome, var_nod->lines->next->data);
+        printf("ERRO SEMÂNTICO: declaração %s não-única. LINHA: %d\n", var_nod->nome, var_nod->lines->next->data);
       }
     }
     for(int i = 0; i < nod->n_child; i++){ /* se fosse var n precisaria verificar o filho 0 */ 

@@ -156,6 +156,7 @@
               $$->child[comp_decl] = $6;
               $$->n_child = 3;
               $$->node_data->nodetype = FUNCAO;
+              $$->isVarDecl = 1;
               $$->node_data->datatype = $1->node_data->datatype;
 
               update_scope($4, $2->node_data->lexem);
@@ -204,6 +205,7 @@
             $$->child = syntax_tree_alloc_node(1);
             $$->child[espc_type] = $1;
             $$->n_child = 1;
+            $$->isVarDecl = 1;
             $$->node_data->nodetype = VARIAVEL;
             $$->node_data->datatype = $1->node_data->datatype;
           }
@@ -214,6 +216,7 @@
             $$->child = syntax_tree_alloc_node(1);
             $$->child[espc_type] = $1;
             $$->n_child = 1;
+            $$->isVarDecl = 1;
             $$->node_data->nodetype = VARIAVEL;
             $$->node_data->datatype = $1->node_data->datatype;
           }

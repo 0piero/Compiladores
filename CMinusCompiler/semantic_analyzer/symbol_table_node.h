@@ -13,6 +13,7 @@ struct symbol_table_node {
   int datatype;
   int nodetype;
   LinkedList *lines;
+  LinkedList *lines_decl;
 
   symbol_table_node *next;
 };
@@ -29,7 +30,7 @@ void print_node_data(symbol_table_node *st);
 void print_symbol_table_line(symbol_table_node* nod);
 void print_symbol_table(symbol_table* st);
 
-void insert_symbol_table_node(symbol_table* st, char* nome, char* escopo, int datatype, int nodetype, int line);
+void insert_symbol_table_node(symbol_table* st, char* nome, char* escopo, int datatype, int nodetype, int line, int isVarDecl);
 
 long int symbol_table_hash(char* key); /* a chave pode ser definida como uma combinacao de id+scope */
 
