@@ -352,6 +352,7 @@
                   $$->node_data->token = "RETURN";
                   $$->n_child = 0;
                   $$->node_data->datatype = VOID_T;
+                  $$->node_data->line = _curr_token->line;
                 }
               | RETURN expr SEMICOLON {
                   //printf("retorno-decl <- RETURN expr SEMICOLON\n");
@@ -361,6 +362,7 @@
                   $$->node_data->token = "RETURN";
                   $$->child[ret_expr] = $2;
                   $$->n_child = 1;
+                  $$->node_data->line = _curr_token->line;
                 }
               ;
 
