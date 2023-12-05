@@ -158,6 +158,7 @@
               $$->node_data->nodetype = FUNCAO;
               $$->isVarDecl = 1;
               $$->node_data->datatype = $1->node_data->datatype;
+              $$->isFunDecl = 1;
 
               update_scope($4, $2->node_data->lexem);
               update_scope($6, $2->node_data->lexem);
