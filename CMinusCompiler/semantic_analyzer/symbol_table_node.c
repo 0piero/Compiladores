@@ -21,6 +21,7 @@ symbol_table_node* allocate_symbol_table_node(){
   st->lines = allocate_linked_list();
   st->lines_decl = allocate_linked_list();
   st->next = NULL;
+  st->visited = 0;
   return st;
 }
 

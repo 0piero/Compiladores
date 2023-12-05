@@ -14,7 +14,7 @@ struct symbol_table_node {
   int nodetype;
   LinkedList *lines;
   LinkedList *lines_decl;
-
+  int visited; /* marcação para verificar se o ID foi visitado na tabela de simbolos durante a verificacao de declaracao unica*/
   symbol_table_node *next;
 };
 

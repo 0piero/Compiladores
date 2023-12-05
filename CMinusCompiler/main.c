@@ -19,6 +19,7 @@ int main(){ /* ok */
 
   printf("\nAllocating Symbols table...\n");
   tree_to_table(t, st);
+  DeclUniqueness(t, st);
   fixDataTypes(t, st);
   print_symbol_table(st);
   printf("\n");
@@ -34,7 +35,8 @@ void tree_to_table(syntax_tree *t, symbol_table *st){ /* ok */
                           t->node_data->scope,
                           t->node_data->datatype,
                           t->node_data->nodetype,
-                          t->node_data->line);
+                          t->node_data->line,
+                          t->isVarDecl);
     }
 		
     //Filhos
