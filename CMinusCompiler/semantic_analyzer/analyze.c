@@ -13,7 +13,7 @@ void semanticAnalyze(syntax_tree* root, syntax_tree* tree, symbol_table* table){
       analyzeAssignment(tree, table);
     }
     if(tree->isActivation){
-      analyzeActivation(root, tree, table);
+      // analyzeActivation(root, tree, table);
     }
 
     // Caso o nó não tenha filhos.
