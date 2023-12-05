@@ -11,6 +11,7 @@ struct syntax_tree {
 	int n_child;
 	TokenNode* node_data;
 	int isActivation;
+	int isFunDecl;
 	int isVarDecl;
 };
 

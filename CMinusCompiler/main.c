@@ -25,7 +25,7 @@ int main(){ /* ok */
   print_symbol_table(st);
   printf("\n");
   
-  //semanticAnalyze(t, t, st);
+  semanticAnalyze(t, t, st);
 }
 
 void tree_to_table(syntax_tree *t, symbol_table *st){ /* ok */

@@ -13,6 +13,7 @@ syntax_tree* syntax_tree_alloc_node(int n_child){
 	t->n_child = n_child;
 	t->isActivation = 0;
 	t->isVarDecl = 0;
+	t->isFunDecl = 0;
 	return t;
 }
 

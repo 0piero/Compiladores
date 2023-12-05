@@ -66,35 +66,49 @@ void analyzeAssignment(syntax_tree* tree, symbol_table* table){
 
 void analyzeActivation(syntax_tree *root, syntax_tree *tree, symbol_table* table){
   syntax_tree* param = tree->child[0];
-  
+  syntax_tree *funcParams;
+  int flag = 1;
   while(param != NULL){
-    symbol_table_node* currParam = findTable(table, param->node_data);
-    if(!currParam){
+    int currParamType = -1;
+    if(param->isActivation){
       strcpy(param->node_data->scope, "global");
-      currParam = findTable(table, param->node_data);
+      currParamType = findTable(table, param->node_data)->datatype;
+    }else{
+      currParamType = param->node_data->datatype;
     }
-
-    int currType = currParam->datatype;
   
     while(root != NULL){
-      // Se nao for ativacao, e uma declaracao.
       // printTokenNode(root->node_data);
-      if(!root->isActivation) break;
+      if(root->isFunDecl && flag){
+        flag = 0;
+        funcParams = root->child[1];
+        break;
+      }
       root = root->sibling;
     }
 
-    if(!root){
+    if(!root && flag){
       printf("ERRO SEMÂNTICO: funcao não declarada. LINHA: %d\n", tree->node_data->line);
       exit(1);
     }
 
-    int funcDeclType = root->node_data->datatype;
-    if(funcDeclType != currType){
+    int funcDeclType = funcParams->node_data->datatype;
+    if(funcDeclType != currParamType){
       printf("ERRO SEMÂNTICO: argumento de tipo diferente. LINHA: %d\n", tree->node_data->line);
       exit(1);
     }
 
+    funcParams = funcParams->sibling;
     param = param->sibling;
+
+    if(!funcParams && param){
+      printf("ERRO SEMÂNTICO: faltando argumentos. LINHA: %d\n", tree->node_data->line);
+      exit(1);
+    }
+    if(funcParams && !param){
+      printf("ERRO SEMÂNTICO: argumentos a mais. LINHA: %d\n", tree->node_data->line);
+      exit(1);
+    }
   }
 }
 
