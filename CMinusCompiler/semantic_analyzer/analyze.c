@@ -70,10 +70,9 @@ void analyzeActivation(syntax_tree *root, syntax_tree *tree, symbol_table* table
   while(param != NULL){
     int currParamType = -1;
     if(param->isActivation){
-      char srch_scope[6] = "global";
-      TokenNode* param_nod_cpy = copy_tkn_node_scope(param->node_data, srch_scope);
-
-      currParamType = findTable(table, param_nod_cpy)->datatype;
+      TokenNode *tk = param->node_data;
+      strcpy(tk->scope, "global");
+      currParamType = findTable(table, tk)->datatype;
     }else{
       currParamType = param->node_data->datatype;
     }

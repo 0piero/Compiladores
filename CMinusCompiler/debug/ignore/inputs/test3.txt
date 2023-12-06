@@ -1,10 +1,7 @@
 /* Um programa para calcular o mdc
 segundo o algoritmo de Euclides. */
-/* OK */
+/* OK (tambem gera um efeito cascata de erros) */
 
-void t(void){
-	return ;
-}
 int gcd (int u, int v)
 {
     if (v == 0) return u;
@@ -13,8 +10,11 @@ int gcd (int u, int v)
 }
 
 
-void t(void){
-	return ;
+void main(void)
+{
+    int x; int y;
+    x = input(); y = input();
+    output(gcd(x,y));
 }
 
 void main(void)
@@ -23,4 +23,3 @@ void main(void)
     x = input(); y = input();
     output(gcd(x,y));
 }
-
